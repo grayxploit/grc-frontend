@@ -1,0 +1,169 @@
+<!-- login.component.html -->
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#040d1a] via-[#071428] to-[#0a1a35]">
+
+    <!-- Card -->
+    <div class="relative w-full max-w-md mx-4 rounded-2xl border border-blue-500/20 bg-[#0d1b2e]/80 backdrop-blur-xl shadow-2xl shadow-blue-950/60 px-10 py-10">
+  
+      <!-- Subtle glow border effect -->
+      <div class="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-blue-400/10"></div>
+  
+      <!-- Logo -->
+      <div class="flex justify-center mb-6">
+          <app-logo
+              [withText]="false"
+               [glow]="false"
+  
+              [size]="64">
+             
+  
+          </app-logo>
+      </div>
+  
+      <!-- Heading -->
+      <h1 class="text-center text-2xl font-bold text-white mb-1 tracking-tight">Welcome back</h1>
+      <p class="text-center text-sm text-slate-400 mb-8">Sign in to GrayXploit CyberControl</p>
+  
+      <!-- Error message -->
+      <div
+        *ngIf="errorMessage"
+        class="mb-5 flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400"
+        role="alert"
+      >
+        <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        {{ errorMessage }}
+      </div>
+  
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <!-- Email Field -->
+        <div class="mb-5">
+          <label for="email" class="block text-sm text-slate-300 mb-2">Email</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-4 flex items-center text-slate-500 pointer-events-none">
+              <!-- Mail icon -->
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="M2 7l10 7 10-7"/>
+              </svg>
+            </span>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              formControlName="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              class="w-full rounded-xl border border-slate-700/60 bg-[#111f33] py-3 pl-11 pr-4
+                     text-sm text-slate-200 placeholder-slate-600
+                     outline-none ring-0
+                     transition duration-150
+                     focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/40
+                     hover:border-slate-600"
+            />
+          </div>
+        </div>
+  
+        <!-- Password Field -->
+        <div class="mb-7">
+          <label for="password" class="block text-sm text-slate-300 mb-2">Password</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-4 flex items-center text-slate-500 pointer-events-none">
+              <!-- Lock icon -->
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <rect x="5" y="11" width="14" height="10" rx="2"/>
+                <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+              </svg>
+            </span>
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              name="password"
+              formControlName="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              class="w-full rounded-xl border border-slate-700/60 bg-[#111f33] py-3 pl-11 pr-12
+                     text-sm text-slate-200 placeholder-slate-600
+                     outline-none ring-0
+                     transition duration-150
+                     focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/40
+                     hover:border-slate-600"
+            />
+            <!-- Toggle visibility -->
+            <button
+              type="button"
+              (click)="togglePasswordVisibility()"
+              class="absolute inset-y-0 right-4 flex items-center text-slate-500 hover:text-slate-300 transition-colors"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            >
+              <!-- Eye icon -->
+              <svg *ngIf="!showPassword" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <!-- Eye-off icon -->
+              <svg *ngIf="showPassword" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+  
+        <!-- Sign In Button -->
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          class="relative w-full rounded-xl py-3.5 text-sm font-semibold text-white
+                 bg-gradient-to-r from-blue-500 to-violet-500
+                 hover:from-blue-400 hover:to-violet-400
+                 active:scale-[0.98]
+                 disabled:opacity-60 disabled:cursor-not-allowed
+                 transition-all duration-200 ease-in-out
+                 shadow-lg shadow-blue-700/30
+                 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+        >
+          <span *ngIf="!isSubmitting">Sign in</span>
+          <span *ngIf="isSubmitting" class="flex items-center justify-center gap-2">
+            <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+            </svg>
+            Signing in…
+          </span>
+        </button>
+      </form>
+  
+      <!-- Demo Credentials -->
+      <div class="mt-5">
+        <button
+          type="button"
+          (click)="useDemoCredentials()"
+          class="w-full text-left rounded-xl border border-slate-700/40 bg-[#0f1e30] px-5 py-4
+                 hover:border-blue-500/30 hover:bg-[#132033]
+                 transition duration-150 group"
+        >
+          <span class="block text-sm font-medium text-blue-400 group-hover:text-blue-300 transition-colors">
+            Use demo credentials →
+          </span>
+          <span class="mt-0.5 block text-xs text-slate-500">
+            demo&#64;grayxploit.io · Demo1234!
+          </span>
+        </button>
+      </div>
+  
+      <!-- Create Account -->
+      <p class="mt-6 text-center text-sm text-slate-500">
+        No account?
+        <button
+          type="button"
+          (click)="onCreateAccount()"
+          class="ml-1 text-blue-400 hover:text-blue-300 transition-colors font-medium"
+        >
+          Create one
+        </button>
+      </p>
+  
+    </div>
+  </div>

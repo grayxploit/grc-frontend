@@ -4,25 +4,26 @@ import {
   isMainModule,
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
+import { config } from 'dotenv';
 import express from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { join } from 'node:path';
 
+config({ path: join(import.meta.dirname, '../.env') });
+
 const browserDistFolder = join(import.meta.dirname, '../browser');
+const apiTarget = process.env['API_URL'] || 'http://127.0.0.1:8000';
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
-/**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/{*splat}', (req, res) => {
- *   // Handle API request
- * });
- * ```
- */
+app.use(
+  '/api',
+  createProxyMiddleware({
+    target: `${apiTarget}/api`,
+    changeOrigin: true,
+  }),
+);
 
 /**
  * Serve static files from /browser
