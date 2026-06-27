@@ -20,7 +20,7 @@ const angularApp = new AngularNodeAppEngine();
 app.use(
   '/api',
   createProxyMiddleware({
-    target: `${apiTarget}/api`,
+    target: apiTarget,
     changeOrigin: true,
   }),
 );

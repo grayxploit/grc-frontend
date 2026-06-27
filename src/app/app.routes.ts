@@ -5,21 +5,22 @@ import { Login } from './pages/public/login/login';
 import { authGuard } from './guards/auth/auth-guard';
 import { Dashboard } from './pages/authenticated/dashboard/dashboard';
 import { Authenticated } from './shared/layouts/authenticated/authenticated';
+import { Controls } from './pages/authenticated/controls/controls';
 
 export const routes: Routes = [
     {
-        path:'',
-        component:Public,
-        children:[
+        path: '',
+        component: Public,
+        children: [
             {
-                path:'',
-                pathMatch:'full',
-                component:Home
+                path: '',
+                pathMatch: 'full',
+                component: Home
             },
             {
-                path:'login',
-                component:Login
-                
+                path: 'login',
+                component: Login
+
             }
         ]
     },
@@ -33,7 +34,13 @@ export const routes: Routes = [
                 component: Dashboard,
                 data: { title: 'Dashboard', description: 'User dashboard' }
             },
-            
+            {
+                path: 'controls',
+                component: Controls,
+                title: 'Controls'
+            }
+
+
         ]
     }
 ];

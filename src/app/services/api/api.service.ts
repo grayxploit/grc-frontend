@@ -8,14 +8,13 @@ import { ApiResponse } from './api-response.model';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   readonly apiUrl = environment.apiUrl;
-  private readonly prefix = 'api';
   readonly apiVersion = 'v1';
   readonly apiUrlWithVersion = `${this.apiUrl}/${this.apiVersion}`;
 
   constructor(private http: HttpClient) {}
 
   private makeRequest<T>(method: string, endpoint: string, body?: any, isProtected: boolean = false, options?: any): Observable<ApiResponse<T>> {
-    const url = `${this.prefix}/${this.apiVersion}/${endpoint}`;
+    const url = `${this.apiUrl}/${this.apiVersion}/${endpoint}`;
     console.log('ApiService: Making request to:', url);
     const headers = this.createHeaders(isProtected);
     const requestOptions = {

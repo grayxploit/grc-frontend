@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, ElementRef, inject, Input, QueryList, ViewChildren, } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject, Input, PLATFORM_ID, QueryList, ViewChildren, } from '@angular/core';
 import { Subscription, combineLatest } from 'rxjs';
 import { SidebarService } from '../../../services/sidebar/sidebar.service';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SafeHtmlPipePipe } from '../../../pipes/safe-html-pipe';
 import { Logo } from '../../components/common/logo/logo';
 
@@ -31,7 +31,7 @@ export type NavItem = {
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
-
+  private platformId = inject(PLATFORM_ID);
   @Input() public navItems: NavItem[] = [];
   @Input() public title: string = 'Menu'
   openSubmenu: string | null | number = null;
@@ -100,12 +100,14 @@ export class Sidebar {
       this.openSubmenu = key;
 
       setTimeout(() => {
-        const el = document.getElementById(key);
-        if (el) {
-          const measured = el.scrollHeight;
-          const height = measured > 0 ? measured : (this.subMenuHeights[key] || 0);
-          this.subMenuHeights = { ...this.subMenuHeights, [key]: height };
-          this.cdr.detectChanges();
+        if (isPlatformBrowser(this.platformId)) {
+          const el = document.getElementById(key);
+          if (el) {
+            const measured = el.scrollHeight;
+            const height = measured > 0 ? measured : (this.subMenuHeights[key] || 0);
+            this.subMenuHeights = { ...this.subMenuHeights, [key]: height };
+            this.cdr.detectChanges();
+          }
         }
       });
     }
@@ -133,10 +135,12 @@ export class Sidebar {
               this.openSubmenu = key;
 
               setTimeout(() => {
-                const el = document.getElementById(key);
-                if (el) {
-                  this.subMenuHeights = { ...this.subMenuHeights, [key]: el.scrollHeight };
-                  this.cdr.detectChanges();
+                if (isPlatformBrowser(this.platformId)) {
+                  const el = document.getElementById(key);
+                  if (el) {
+                    this.subMenuHeights = { ...this.subMenuHeights, [key]: el.scrollHeight };
+                    this.cdr.detectChanges();
+                  }
                 }
               });
             }

@@ -1,0 +1,227 @@
+import { inject } from '@angular/core';
+import {
+  HttpInterceptorFn,
+  HttpRequest,
+  HttpHandlerFn,
+  HttpClient
+} from '@angular/common/http';
+import { throwError } from 'rxjs';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { catchError, switchMap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
+import { REFRESH_ENDPOINT, ACCESS_TOKEN } from '../../services/auth/auth.service';
+
+const jwtHelper = new JwtHelperService();
+
+// Helper function to get appropriate error message
+const getErrorMessage = (error: any): string => {
+  if (error.status === 0) {
+    return 'Network error. Please check your connection.';
+  } else if (error.status >= 500) {
+    return 'Server error. Please try again later.';
+  } else if (error.status === 404) {
+    return 'Resource not found.';
+  } else if (error.status === 403) {
+    return 'Access denied.';
+  } else if (error.status === 400 || error.status === 406) {
+    // For client errors, preserve the server message
+    return error.error?.message || 'Bad request.';
+  } else if (error.status === 409) {
+    return error.error?.message || 'Conflict error. Resource already exists.';
+  } else if (error.status === 429) {
+    return 'Too many requests. Please try again later.';
+  } else if (error.status === 422) {
+    // Handled separately below for field errors; keep a generic fallback
+    return error.error?.message || 'Validation error. Please check your input.';
+  } else {
+    return error.error?.message || 'An error occurred. Please try again.';
+  }
+};
+
+export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn) => {
+  const apiUrl = environment.apiUrl;
+  const prefix = 'api';
+  const apiVersion = 'v1';
+  const apiUrlWithVersion = `${apiUrl}/${apiVersion}`;
+  // Inject HttpClient directly to avoid circular dependency with ApiService
+  const http = inject(HttpClient);
+
+  // Don't modify headers for authentication endpoints
+  if (req.url.includes('auth/login') || req.url.includes('auth/refresh')) {
+    console.log('AuthInterceptor: Skipping auth endpoints');
+    let headers = req.headers
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+
+
+
+
+    const modifiedReq = req.clone({ headers });
+    return next(modifiedReq);
+  }
+
+
+
+  // Determine if this is a protected request (check BEFORE modifying headers)
+  const isProtected = req.headers.has('X-Is-Protected') ||
+    req.url.includes('/protected') ||
+    req.url.includes('api/') ||
+    req.method !== 'GET'; // Protect all non-GET requests by default
+
+  // Set basic headers for all requests, preserving existing ones
+  let headers = req.headers
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .delete('X-Is-Protected'); // Remove marker header before forwarding
+
+  if (isProtected) {
+    const token = typeof window !== 'undefined' ? localStorage.getItem(ACCESS_TOKEN) : null;
+
+    console.log("access token", token);
+    if (token) {
+      try {
+        // Check if token is expired
+        const isTokenExpired = jwtHelper.isTokenExpired(token);
+        if (isTokenExpired) {
+          console.log("AuthInterceptor: Token is expired, will attempt refresh on 401");
+        }
+
+        const decodedToken = jwtHelper.decodeToken(token);
+        console.log('decoded token', decodedToken);
+        if (decodedToken && decodedToken.sub) {
+          headers = headers.set('X-User-ID', decodedToken.sub);
+        }
+        headers = headers.set('Authorization', `Bearer ${token}`);
+      } catch (error) {
+        console.error('AuthInterceptor: Error decoding token for headers:', error);
+      }
+    } else {
+      console.log("AuthInterceptor: No token found for protected request");
+    }
+  }
+
+  const clonedReq = req.clone({ headers });
+
+  return next(clonedReq).pipe(
+    catchError(error => {
+      console.log("AuthInterceptor: Request failed with status:", error.status);
+
+      // Only handle 401 errors for token refresh, let other errors pass through
+      if (error.status === 401 && isProtected) {
+        console.log("AuthInterceptor: 401 error on protected request, attempting token refresh");
+
+        // Make direct HTTP call to refresh endpoint to avoid circular dependency
+        // Refresh token is in an httpOnly cookie — browser sends it automatically with withCredentials: true
+        const refreshUrl = `${apiUrlWithVersion}${REFRESH_ENDPOINT}`;
+
+        const refreshOptions = {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          withCredentials: true
+        };
+
+        // Send empty body — backend reads refresh_token from cookie, not request body
+        return http.post<any>(refreshUrl, {}, refreshOptions).pipe(
+          switchMap((response) => {
+            console.log("AuthInterceptor: Token refresh successful", response);
+
+            // Backend response shape: { status, message, data: { token: { access_token } } }
+            const newAccessToken = response?.data?.token?.access_token;
+
+            if (!newAccessToken) {
+              console.error("AuthInterceptor: No access token in refresh response");
+              if (typeof window !== 'undefined') {
+                localStorage.removeItem(ACCESS_TOKEN);
+              }
+              const standardizedError = {
+                status: 401,
+                error: {
+                  success: false,
+                  message: 'Authentication failed. Please login again.',
+                  data: null,
+                  error: 'Invalid refresh response'
+                }
+              };
+              return throwError(() => standardizedError);
+            }
+
+            // Save new access token (refresh token is handled via cookie by the browser)
+            if (typeof window !== 'undefined') {
+              localStorage.setItem(ACCESS_TOKEN, newAccessToken);
+            }
+
+            // Retry original request with new token
+            const retryHeaders = headers.set('Authorization', `Bearer ${newAccessToken}`);
+            const retryReq = req.clone({ headers: retryHeaders });
+            return next(retryReq);
+          }),
+          catchError(refreshError => {
+            console.error("AuthInterceptor: Token refresh failed:", refreshError);
+            // Clear access token — refresh token cookie will expire on its own
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem(ACCESS_TOKEN);
+            }
+            // Return standardized error response
+            const standardizedError = {
+              status: refreshError.status || 401,
+              error: {
+                success: false,
+                message: 'Authentication failed. Please login again.',
+                data: null,
+                error: refreshError.error || 'Token refresh failed'
+              }
+            };
+            return throwError(() => standardizedError);
+          })
+        );
+      }
+
+
+      if ((error.error.message === 'Validation failed' && error.status === 422) || (error.error.message === 'Validation failed' && error.status === 409)) {
+        // Parse validation errors and create field-specific error messages
+        const validationErrors: { [key: string]: string } = {};
+
+        if (error.error.error && Array.isArray(error.error.error)) {
+          error.error.error.forEach((errorMessage: string) => {
+            // Split by colon to get field name and error message
+            const colonIndex = errorMessage.indexOf(':');
+            if (colonIndex !== -1) {
+              const fieldName = errorMessage.substring(0, colonIndex).trim();
+              const fieldError = errorMessage.substring(colonIndex + 1).trim();
+              validationErrors[fieldName] = fieldError;
+            }
+          });
+        }
+
+        const standardizedError = {
+          status: error.status || 0,
+          error: {
+            success: false,
+            message: 'Validation failed',
+            data: null,
+            error: 'Validation Error',
+            validationErrors: validationErrors
+          }
+        };
+        console.log('ApiService: Handling validation errors:', standardizedError);
+        return throwError(() => standardizedError);
+      }
+
+      // For non-401 errors, preserve the original error structure and message
+      const standardizedError = {
+        status: error.status || 0,
+        error: {
+          success: false,
+          message: getErrorMessage(error),
+          data: null,
+          error: error.error || error.message || 'An unexpected error occurred'
+        }
+      };
+
+      console.error("AuthInterceptor: Standardized error response:", standardizedError);
+      return throwError(() => standardizedError);
+    })
+  );
+};

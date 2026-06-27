@@ -1,0 +1,71 @@
+<app-page-breadcrumb pageTitle="Basic Tables" />
+<div class="space-y-6">
+    <app-card title="Controls List">
+        <div
+            class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03]">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <!-- Table Head -->
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">ID</th>
+                        <th scope="col" class="px-6 py-3">Name</th>
+                        <th scope="col" class="px-6 py-3">Email</th>
+                        <th scope="col" class="px-6 py-3">Status</th>
+                        <th scope="col" class="px-6 py-3">Created At</th>
+                    </tr>
+                </thead>
+
+                <!-- Table Body -->
+                <tbody>
+                    <tr class="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                        <td class="px-6 py-4 text-gray-900 dark:text-white/90">#01</td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-white/90">John Doe</td>
+                        <td class="px-6 py-4">[EMAIL_ADDRESS]</td>
+                        <td class="px-6 py-4">
+                            <span
+                                class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-500">
+                                <svg class="w-1.5 h-1.5 fill-current" viewBox="0 0 6 6">
+                                    <circle cx="3" cy="3" r="3" />
+                                </svg>
+                                Active
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">2024-01-15</td>
+                    </tr>
+
+                    <tr class="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                        <td class="px-6 py-4 text-gray-900 dark:text-white/90">#02</td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-white/90">Jane Smith</td>
+                        <td class="px-6 py-4">[EMAIL_ADDRESS]</td>
+                        <td class="px-6 py-4">
+                            <span
+                                class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-500">
+                                <svg class="w-1.5 h-1.5 fill-current" viewBox="0 0 6 6">
+                                    <circle cx="3" cy="3" r="3" />
+                                </svg>
+                                Inactive
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">2024-01-14</td>
+                    </tr>
+
+                    <tr class="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                        <td class="px-6 py-4 text-gray-900 dark:text-white/90">#03</td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-white/90">Alice Johnson</td>
+                        <td class="px-6 py-4">[EMAIL_ADDRESS]</td>
+                        <td class="px-6 py-4">
+                            <span
+                                class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-500">
+                                <svg class="w-1.5 h-1.5 fill-current" viewBox="0 0 6 6">
+                                    <circle cx="3" cy="3" r="3" />
+                                </svg>
+                                Pending
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">2024-01-16</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </app-card>
+</div>

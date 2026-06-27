@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup , Validators} from '@angular/forms';
+import { Component, inject, signal, computed } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { Logo } from '../../../shared/components/common/logo/logo';
 import { CommonModule } from '@angular/common';
+import { User } from '../../../services/user/user.service';
 @Component({
   selector: 'app-login',
   imports: [
@@ -34,7 +35,8 @@ export class Login {
   public showPassword = false;
   public isSubmitting = false;
 
-  
+
+
   public onSubmit() {
     if (this.loginForm.invalid) {
       this.errorMessage = 'Please fill in all fields';
@@ -47,6 +49,7 @@ export class Login {
     }).subscribe({
       next: (response) => {
         this.authService.setToken(response.data.token.access_token);
+
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
@@ -74,5 +77,5 @@ export class Login {
   public togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
-  
+
 }
