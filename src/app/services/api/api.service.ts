@@ -4,7 +4,7 @@ import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { filter, map, Observable, throwError, catchError } from 'rxjs';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { HttpEventType } from '@angular/common/http';
-import { ApiResponse } from './api-response.model';
+import { ApiResponse, QueryFilter } from './api-response.model';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   readonly apiUrl = environment.apiUrl;
@@ -183,5 +183,13 @@ export class ApiService {
 
   public protectedDelete<T>(endpoint: string, data?: any, options?: any): Observable<ApiResponse<T>> {
     return this.makeRequest<T>('DELETE', endpoint, data, true, options);
+  }
+
+
+  public buildFilter(filter: QueryFilter): string {
+    const filterParams = Object.entries(filter)
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
+    return filterParams ? `&${filterParams}` : '';
   }
 }

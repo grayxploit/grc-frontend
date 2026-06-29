@@ -1,8 +1,10 @@
-import { SafeHtmlPipe } from './safe-html-pipe';
+import { SafeHtmlPipePipe } from './safe-html-pipe';
 
 describe('SafeHtmlPipe', () => {
   it('create an instance', () => {
-    const pipe = new SafeHtmlPipe();
+    const pipe = new SafeHtmlPipePipe({
+      bypassSecurityTrustHtml: (value: string) => value,
+    } as any);
     expect(pipe).toBeTruthy();
   });
 });
