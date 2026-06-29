@@ -7,9 +7,9 @@ import {
 } from '@angular/common/http';
 import { throwError } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { REFRESH_ENDPOINT, ACCESS_TOKEN } from '../../services/auth/auth.service';
+import { ACCESS_TOKEN } from '../../services/auth/auth.service';
 
 const jwtHelper = new JwtHelperService();
 
@@ -106,76 +106,22 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
     catchError(error => {
       console.log("AuthInterceptor: Request failed with status:", error.status);
 
-      // Only handle 401 errors for token refresh, let other errors pass through
+      // Only clear auth state for true authentication failures.
       if (error.status === 401 && isProtected) {
-        console.log("AuthInterceptor: 401 error on protected request, attempting token refresh");
-
-        // Make direct HTTP call to refresh endpoint to avoid circular dependency
-        // Refresh token is in an httpOnly cookie — browser sends it automatically with withCredentials: true
-        const refreshUrl = `${apiUrlWithVersion}${REFRESH_ENDPOINT}`;
-
-        const refreshOptions = {
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          withCredentials: true
+        console.log("AuthInterceptor: 401 on protected request; clearing session");
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem(ACCESS_TOKEN);
+        }
+        const standardizedError = {
+          status: 401,
+          error: {
+            success: false,
+            message: 'Session expired. Please log in again.',
+            data: null,
+            error: 'Authentication required'
+          }
         };
-
-        // Send empty body — backend reads refresh_token from cookie, not request body
-        return http.post<any>(refreshUrl, {}, refreshOptions).pipe(
-          switchMap((response) => {
-            console.log("AuthInterceptor: Token refresh successful", response);
-
-            // Backend response shape: { status, message, data: { token: { access_token } } }
-            const newAccessToken = response?.data?.token?.access_token;
-
-            if (!newAccessToken) {
-              console.error("AuthInterceptor: No access token in refresh response");
-              if (typeof window !== 'undefined') {
-                localStorage.removeItem(ACCESS_TOKEN);
-              }
-              const standardizedError = {
-                status: 401,
-                error: {
-                  success: false,
-                  message: 'Authentication failed. Please login again.',
-                  data: null,
-                  error: 'Invalid refresh response'
-                }
-              };
-              return throwError(() => standardizedError);
-            }
-
-            // Save new access token (refresh token is handled via cookie by the browser)
-            if (typeof window !== 'undefined') {
-              localStorage.setItem(ACCESS_TOKEN, newAccessToken);
-            }
-
-            // Retry original request with new token
-            const retryHeaders = headers.set('Authorization', `Bearer ${newAccessToken}`);
-            const retryReq = req.clone({ headers: retryHeaders });
-            return next(retryReq);
-          }),
-          catchError(refreshError => {
-            console.error("AuthInterceptor: Token refresh failed:", refreshError);
-            // Clear access token — refresh token cookie will expire on its own
-            if (typeof window !== 'undefined') {
-              localStorage.removeItem(ACCESS_TOKEN);
-            }
-            // Return standardized error response
-            const standardizedError = {
-              status: refreshError.status || 401,
-              error: {
-                success: false,
-                message: 'Authentication failed. Please login again.',
-                data: null,
-                error: refreshError.error || 'Token refresh failed'
-              }
-            };
-            return throwError(() => standardizedError);
-          })
-        );
+        return throwError(() => standardizedError);
       }
 
 

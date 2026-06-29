@@ -26,6 +26,7 @@ export class FrameworkCategory {
     filter: QueryFilter = {};
     frameworkCategories: FrameworkCategoryModel[] = [];
     meta!: PaginationMeta;
+    errorMessage = '';
 
     ngOnInit() {
       this.destroy$ = new Subject<void>();
@@ -43,11 +44,17 @@ export class FrameworkCategory {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response) => {
+            this.errorMessage = '';
             this.frameworkCategories = [...response.data];
             this.meta = { ...response.meta };
             this.cdr.markForCheck(); // force view update after async data
           },
-          error: (error) => console.error(error),
+          error: (error) => {
+            this.errorMessage = error?.error?.message || 'Unable to load framework categories.';
+            this.frameworkCategories = [];
+            this.cdr.markForCheck();
+            console.error(error);
+          },
         });
     }
 
