@@ -6,11 +6,13 @@ import { Subject, takeUntil } from 'rxjs';
 import { Card } from '../../../../shared/components/common/card/card';
 import { PageBreadcrumb } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-framework-category',
   imports: [
     CommonModule,
+    FormsModule,
     PageBreadcrumb,
     Card
   ],
@@ -27,6 +29,16 @@ export class FrameworkCategory {
     frameworkCategories: FrameworkCategoryModel[] = [];
     meta!: PaginationMeta;
     errorMessage = '';
+
+    // Modal properties
+    isCreateModalOpen = false;
+    modalErrorMessage = '';
+    isSubmitting = false;
+    createForm = {
+        name: '',
+        description: '',
+        status: 'active'
+    };
 
     ngOnInit() {
       this.destroy$ = new Subject<void>();
@@ -56,6 +68,47 @@ export class FrameworkCategory {
             console.error(error);
           },
         });
+    }
+
+    openCreateModal() {
+        this.isCreateModalOpen = true;
+        this.modalErrorMessage = '';
+        this.createForm = {
+            name: '',
+            description: '',
+            status: 'active'
+        };
+    }
+
+    closeCreateModal() {
+        this.isCreateModalOpen = false;
+        this.modalErrorMessage = '';
+    }
+
+    submitCreateForm() {
+        if (!this.createForm.name || !this.createForm.status) {
+            this.modalErrorMessage = 'Name and status are required.';
+            return;
+        }
+
+        this.isSubmitting = true;
+        this.modalErrorMessage = '';
+
+        this.frameworkCategoryService.createFrameworkCategory(this.createForm)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: (response) => {
+                    this.isSubmitting = false;
+                    this.closeCreateModal();
+                    this.getAllFrameworkCategory();
+                },
+                error: (error) => {
+                    this.isSubmitting = false;
+                    this.modalErrorMessage = error?.error?.message || 'Unable to create framework category.';
+                    this.cdr.markForCheck();
+                    console.error(error);
+                }
+            });
     }
 
 }

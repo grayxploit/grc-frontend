@@ -16,3 +16,9 @@ export interface FrameworkCategory {
     created_at: string;
     updated_at: string;
 }
+
+export interface FrameworkCategoryCreateRequest {
+    name: string;
+    description: string;
+    status: string;
+}

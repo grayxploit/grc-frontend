@@ -6,6 +6,13 @@
             {{ errorMessage }}
         </div>
         }
+        <div class="mb-4 flex justify-end">
+            <button 
+                (click)="openCreateModal()"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                Create Framework Category
+            </button>
+        </div>
         <div
             class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/3">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -39,3 +46,67 @@
         </div>
     </app-card>
 </div>
+
+<!-- Create Modal -->
+@if (isCreateModalOpen) {
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-999999">
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
+        <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Create Framework Category</h2>
+        
+        @if (modalErrorMessage) {
+        <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300">
+            {{ modalErrorMessage }}
+        </div>
+        }
+        
+        <form (ngSubmit)="submitCreateForm()">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
+                <input 
+                    type="text" 
+                    [(ngModel)]="createForm.name" 
+                    name="name"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+                <textarea 
+                    [(ngModel)]="createForm.description" 
+                    name="description"
+                    rows="3"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </textarea>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
+                <select 
+                    [(ngModel)]="createForm.status" 
+                    name="status"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button 
+                    type="button"
+                    (click)="closeCreateModal()"
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
+                    Cancel
+                </button>
+                <button 
+                    type="submit"
+                    [disabled]="isSubmitting"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50">
+                    {{ isSubmitting ? 'Creating...' : 'Create' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}
