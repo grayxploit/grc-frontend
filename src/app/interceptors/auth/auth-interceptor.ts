@@ -5,9 +5,9 @@ import {
   HttpHandlerFn,
   HttpClient
 } from '@angular/common/http';
-import { throwError } from 'rxjs';
+import { throwError, of } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { catchError } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { ACCESS_TOKEN } from '../../services/auth/auth.service';
 
@@ -80,10 +80,38 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
     console.log("access token", token);
     if (token) {
       try {
-        // Check if token is expired
         const isTokenExpired = jwtHelper.isTokenExpired(token);
         if (isTokenExpired) {
-          console.log("AuthInterceptor: Token is expired, will attempt refresh on 401");
+          console.log('AuthInterceptor: Token expired; attempting refresh before request');
+          return http.post<any>(`${apiUrlWithVersion}/auth/refresh-token`, {}, { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, withCredentials: true }).pipe(
+            switchMap((response) => {
+              const newAccessToken = response?.data?.token?.access_token;
+              if (!newAccessToken) {
+                if (typeof window !== 'undefined') {
+                  localStorage.removeItem(ACCESS_TOKEN);
+                }
+                return throwError(() => ({ status: 401, error: { success: false, message: 'Session expired. Please log in again.', data: null, error: 'Authentication required' } }));
+              }
+
+              if (typeof window !== 'undefined') {
+                localStorage.setItem(ACCESS_TOKEN, newAccessToken);
+              }
+
+              const decodedToken = jwtHelper.decodeToken(newAccessToken);
+              if (decodedToken && decodedToken.sub) {
+                headers = headers.set('X-User-ID', decodedToken.sub);
+              }
+              headers = headers.set('Authorization', `Bearer ${newAccessToken}`);
+              const refreshedReq = req.clone({ headers });
+              return next(refreshedReq);
+            }),
+            catchError(() => {
+              if (typeof window !== 'undefined') {
+                localStorage.removeItem(ACCESS_TOKEN);
+              }
+              return throwError(() => ({ status: 401, error: { success: false, message: 'Session expired. Please log in again.', data: null, error: 'Authentication required' } }));
+            })
+          );
         }
 
         const decodedToken = jwtHelper.decodeToken(token);
