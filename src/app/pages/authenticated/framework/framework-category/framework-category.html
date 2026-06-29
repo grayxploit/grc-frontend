@@ -2,7 +2,7 @@
 <div class="space-y-6">
     <app-card title="Framework Categories">
         <div
-            class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03]">
+            class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/3">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <!-- Table Head -->
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -15,14 +15,20 @@
                 </thead>
                 <!-- Table Body -->
                 <tbody>
-                    @for (frameworkCategory of frameworkCategories; track frameworkCategory.id) {
+                    @if (frameworkCategories.length === 0) {
+                    <tr>
+                        <td colspan="4" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                            No framework categories found.
+                        </td>
+                    </tr>
+                    } @else { @for (frameworkCategory of frameworkCategories; track frameworkCategory.id) {
                     <tr class="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50">
                         <td class="px-6 py-4 text-gray-900 dark:text-white/90">{{ frameworkCategory.id }}</td>
-                        <td class="px       -6 py-4 text-gray-900 dark:text-white/90">{{ frameworkCategory.name }}</td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-white/90">{{ frameworkCategory.name }}</td>
                         <td class="px-6 py-4 text-gray-900 dark:text-white/90">{{ frameworkCategory.description }}</td>
                         <td class="px-6 py-4 text-gray-900 dark:text-white/90">{{ frameworkCategory.status }}</td>
                     </tr>
-                    }
+                    } }
                 </tbody>
             </table>
         </div>
