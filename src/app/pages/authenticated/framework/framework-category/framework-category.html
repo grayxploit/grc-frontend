@@ -6,7 +6,12 @@
             {{ errorMessage }}
         </div>
         }
-        <div class="mb-4 flex justify-end">
+        <div class="mb-4 flex justify-end space-x-3">
+            <button 
+                (click)="openImportModal()"
+                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                Import Categories
+            </button>
             <button 
                 (click)="openCreateModal()"
                 class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
@@ -116,6 +121,97 @@
                 </button>
             </div>
         </form>
+    </div>
+</div>
+}
+
+<!-- Import Modal -->
+@if (isImportModalOpen) {
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-999999">
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-lg">
+        <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Import Framework Categories</h2>
+        
+        @if (modalErrorMessage) {
+        <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300">
+            {{ modalErrorMessage }}
+        </div>
+        }
+        
+        @if (importSuccessMessage) {
+        <div class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 dark:border-green-900/50 dark:bg-green-900/20 dark:text-green-300">
+            {{ importSuccessMessage }}
+        </div>
+        }
+        
+        @if (importProgress) {
+        <div class="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-900/50">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-medium text-blue-700 dark:text-blue-300">Import Progress</span>
+                <span class="text-sm text-blue-600 dark:text-blue-400">{{ importProgress.progress || 0 }}%</span>
+            </div>
+            <div class="w-full bg-blue-200 dark:bg-blue-800 rounded-full h-2.5 mb-2">
+                <div 
+                    class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
+                    [style.width.%]="importProgress.progress || 0">
+                </div>
+            </div>
+            @if (importProgress.message) {
+            <p class="text-xs text-blue-600 dark:text-blue-400">{{ importProgress.message }}</p>
+            }
+            @if (importProgress.total && importProgress.processed !== undefined) {
+            <p class="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                {{ importProgress.processed }} / {{ importProgress.total }} records processed
+            </p>
+            }
+        </div>
+        }
+        
+        @if (!isImporting && !importProgress) {
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Upload CSV File</label>
+            <input 
+                type="file" 
+                accept=".csv"
+                (change)="onFileSelected($event)"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        
+        <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">CSV Format:</p>
+            <code class="text-xs text-gray-600 dark:text-gray-400 block mb-2">name,description,status</code>
+            <button 
+                type="button"
+                (click)="downloadSampleCSV()"
+                class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                Download Sample CSV
+            </button>
+        </div>
+        }
+        
+        <div class="flex justify-end space-x-3">
+            @if (!isImporting && !importProgress) {
+            <button 
+                type="button"
+                (click)="closeImportModal()"
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
+                Cancel
+            </button>
+            <button 
+                type="button"
+                (click)="submitImport()"
+                [disabled]="isSubmitting || !selectedFile"
+                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50">
+                {{ isSubmitting ? 'Importing...' : 'Import' }}
+            </button>
+            } @else {
+            <button 
+                type="button"
+                (click)="closeImportModal()"
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
+                Close
+            </button>
+            }
+        </div>
     </div>
 </div>
 }

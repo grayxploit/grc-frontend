@@ -16,7 +16,7 @@ export class ApiService {
   private makeRequest<T>(method: string, endpoint: string, body?: any, isProtected: boolean = false, options?: any): Observable<ApiResponse<T>> {
     const url = `${this.apiUrl}/${this.apiVersion}/${endpoint}`;
     console.log('ApiService: Making request to:', url);
-    const headers = this.createHeaders(isProtected);
+    const headers = this.createHeaders(isProtected, body);
     const requestOptions = {
       headers,
       observe: 'response' as 'response',
@@ -56,12 +56,17 @@ export class ApiService {
   }
 
 
-  private createHeaders(isProtected: boolean = false): HttpHeaders {
+  private createHeaders(isProtected: boolean = false, body?: any): HttpHeaders {
     // Let the interceptor handle all headers including Content-Type, Accept, etc.
     let headers = new HttpHeaders();
     
     if (isProtected) {
       headers = headers.set('X-Is-Protected', 'true');
+    }
+    
+    // Don't set Content-Type for FormData - let Angular auto-set with boundary
+    if (body instanceof FormData) {
+      headers = headers.delete('Content-Type');
     }
     
     return headers;
@@ -171,6 +176,23 @@ export class ApiService {
 
   public protectedPost<T>(endpoint: string, data: any, options?: any): Observable<ApiResponse<T>> {
     return this.makeRequest<T>('POST', endpoint, data, true, options);
+  }
+
+  public protectedUpload<T>(endpoint: string, formData: FormData, options?: any): Observable<ApiResponse<T>> {
+    const url = `${this.apiUrl}/${this.apiVersion}/${endpoint}`;
+    const headers = this.createHeaders(true, formData);
+    const requestOptions = {
+      headers,
+      observe: 'response' as 'response',
+      withCredentials: true,
+      ...options
+    };
+
+    return this.http.post<T>(url, formData, requestOptions).pipe(
+      filter((event): event is HttpResponse<T> => event.type === HttpEventType.Response),
+      map(response => this.handleResponse<T>(response)),
+      catchError(this.handleError)
+    );
   }
 
   public protectedPut<T>(endpoint: string, data: any, options?: any): Observable<ApiResponse<T>> {

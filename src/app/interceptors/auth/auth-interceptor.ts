@@ -70,9 +70,13 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
 
   // Set basic headers for all requests, preserving existing ones
   let headers = req.headers
-    .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
     .delete('X-Is-Protected'); // Remove marker header before forwarding
+
+  // Only set Content-Type to application/json if not FormData
+  if (!(req.body instanceof FormData)) {
+    headers = headers.set('Content-Type', 'application/json');
+  }
 
   if (isProtected) {
     const token = typeof window !== 'undefined' ? localStorage.getItem(ACCESS_TOKEN) : null;

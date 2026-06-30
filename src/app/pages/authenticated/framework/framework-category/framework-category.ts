@@ -1,6 +1,6 @@
 import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { FrameworkCategoryService } from '../../../../services/framework/framework-category/framework-category.service';
-import { FrameworkCategory as FrameworkCategoryModel } from '../../../../services/framework/framework-category/framework-category.model';
+import { FrameworkCategory as FrameworkCategoryModel, FrameworkCategoryCreateRequest, ImportProgressEvent } from '../../../../services/framework/framework-category/framework-category.model';
 import { PaginationMeta, QueryFilter } from '../../../../services/api/api-response.model';
 import { Subject, takeUntil } from 'rxjs';
 import { Card } from '../../../../shared/components/common/card/card';
@@ -35,8 +35,16 @@ export class FrameworkCategory {
     // Modal properties
     isCreateModalOpen = false;
     isEditModalOpen = false;
+    isImportModalOpen = false;
     modalErrorMessage = '';
+    importSuccessMessage = '';
     isSubmitting = false;
+    selectedFile: File | null = null;
+    
+    // Import progress properties
+    importJobId: string | null = null;
+    importProgress: ImportProgressEvent | null = null;
+    isImporting = false;
     createForm = {
         name: '',
         description: '',
@@ -109,6 +117,218 @@ export class FrameworkCategory {
     closeEditModal() {
         this.isEditModalOpen = false;
         this.modalErrorMessage = '';
+    }
+
+    openImportModal() {
+        this.isImportModalOpen = true;
+        this.modalErrorMessage = '';
+        this.importSuccessMessage = '';
+        this.selectedFile = null;
+        this.importJobId = null;
+        this.importProgress = null;
+        this.isImporting = false;
+    }
+
+    closeImportModal() {
+        this.isImportModalOpen = false;
+        this.modalErrorMessage = '';
+        this.importSuccessMessage = '';
+        this.selectedFile = null;
+        this.importJobId = null;
+        this.importProgress = null;
+        this.isImporting = false;
+    }
+
+    onFileSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+            this.selectedFile = input.files[0];
+        }
+    }
+
+    downloadSampleCSV() {
+        const csvContent = 'name,description,status\n"Security Framework","Framework for security standards","active"\n"Compliance Framework","Framework for compliance management","active"\n"Risk Management Framework","Framework for risk assessment","inactive"';
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'framework-categories-sample.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }
+
+    submitImport() {
+        if (!this.selectedFile) {
+            this.modalErrorMessage = 'Please select a CSV file.';
+            return;
+        }
+
+        this.isSubmitting = true;
+        this.isImporting = true;
+        this.modalErrorMessage = '';
+        this.importSuccessMessage = '';
+        this.importProgress = {
+            status: 'uploading',
+            progress: 0,
+            message: 'Uploading CSV file...'
+        };
+        this.cdr.markForCheck();
+
+        this.importCategories(this.selectedFile);
+    }
+
+    importCategories(file: File) {
+        this.frameworkCategoryService.importCategories(file)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: (response) => {
+                    const importJob = response.data;
+                    this.importJobId = importJob.job_id;
+                    this.isSubmitting = false;
+
+                    const normalizedStatus = this.normalizeStatus(importJob.status || 'pending');
+                    if (normalizedStatus === 'completed') {
+                        this.completeImport({
+                            status: 'completed',
+                            progress: 100,
+                            message: 'Import completed.'
+                        });
+                        return;
+                    }
+
+                    this.importProgress = {
+                        status: normalizedStatus,
+                        progress: 0,
+                        message: this.importJobId ? 'Import queued. Waiting for progress...' : 'Import is processing...'
+                    };
+
+                    if (this.importJobId) {
+                        this.streamImportProgress();
+                    }
+
+                    this.cdr.markForCheck();
+                },
+                error: (error) => {
+                    this.isSubmitting = false;
+                    this.isImporting = false;
+                    this.importProgress = null;
+                    this.modalErrorMessage = error?.error?.message || 'Unable to import categories.';
+                    this.cdr.markForCheck();
+                    console.error(error);
+                }
+            });
+    }
+
+    streamImportProgress() {
+        if (!this.importJobId) return;
+
+        this.frameworkCategoryService.streamImportProgress(this.importJobId)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: (progress) => {
+                    const normalizedProgress = this.normalizeImportProgress({
+                        ...progress,
+                        status: this.normalizeStatus(progress.status),
+                    });
+
+                    this.importProgress = normalizedProgress;
+                    this.cdr.markForCheck();
+                    
+                    if (this.isImportComplete(this.importProgress)) {
+                        this.completeImport(this.importProgress);
+                    } else if (normalizedProgress.status === 'failed') {
+                        this.isImporting = false;
+                        this.isSubmitting = false;
+                        this.modalErrorMessage = normalizedProgress.message || 'Import failed.';
+                        this.cdr.markForCheck();
+                    }
+                },
+                error: (error) => {
+                    this.isImporting = false;
+                    this.modalErrorMessage = 'Error tracking import progress.';
+                    this.cdr.markForCheck();
+                    console.error(error);
+                }
+            });
+    }
+
+    private completeImport(progress: ImportProgressEvent | null) {
+        const normalizedProgress = progress ? this.normalizeImportProgress(progress) : {
+            status: 'completed',
+            progress: 100,
+            message: 'Import completed.',
+            total: 0,
+            processed: 0,
+        };
+
+        this.importProgress = {
+            ...normalizedProgress,
+            status: 'completed',
+            progress: normalizedProgress.progress ?? 100,
+            message: normalizedProgress.message || 'Import completed.'
+        };
+        this.importJobId = null;
+        this.isImporting = false;
+        this.isSubmitting = false;
+        this.importSuccessMessage = `Successfully imported categories.`;
+        this.getAllFrameworkCategory();
+        this.cdr.markForCheck();
+
+        setTimeout(() => {
+            this.closeImportModal();
+            this.cdr.markForCheck();
+        }, 1500);
+    }
+
+    private normalizeStatus(status?: string): string {
+        const normalized = String(status ?? '').trim().toLowerCase();
+        return normalized === '' ? 'pending' : normalized;
+    }
+
+    private normalizeImportProgress(progress: ImportProgressEvent): ImportProgressEvent {
+        const status = this.normalizeStatus(progress.status);
+        const total = progress.total ?? progress.total_rows ?? 0;
+        const processed = progress.processed ?? progress.processed_rows ?? 0;
+        const calculatedProgress = total > 0 ? Math.round((processed / total) * 100) : 0;
+
+        return {
+            ...progress,
+            status,
+            total,
+            processed,
+            progress: status === 'completed' ? 100 : (progress.progress ?? calculatedProgress),
+            message: progress.message || progress.error_message || this.getImportProgressMessage(status, processed, total)
+        };
+    }
+
+    private getImportProgressMessage(status: string, processed: number, total: number): string {
+        if (status === 'uploading') {
+            return 'Uploading CSV file...';
+        }
+
+        if (status === 'pending') {
+            return 'Import queued. Waiting for progress...';
+        }
+
+        if (status === 'processing' && total > 0) {
+            return `Processing ${processed} of ${total} rows...`;
+        }
+
+        if (status === 'completed') {
+            return 'Import completed.';
+        }
+
+        if (status === 'failed') {
+            return 'Import failed.';
+        }
+
+        return 'Import is processing...';
+    }
+
+    private isImportComplete(progress: ImportProgressEvent): boolean {
+        return progress.status === 'completed' || (!!progress.total && progress.processed === progress.total);
     }
 
     submitEditForm() {

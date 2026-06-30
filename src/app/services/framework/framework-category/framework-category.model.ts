@@ -22,3 +22,23 @@ export interface FrameworkCategoryCreateRequest {
     description: string;
     status: string;
 }
+
+export interface ImportJobResponse {
+    job_id: string;
+    status: string;
+}
+
+export interface ImportProgressEvent {
+    job_id?: string;
+    status: string;
+    progress?: number;
+    message?: string;
+    total?: number;
+    processed?: number;
+    total_rows?: number;
+    processed_rows?: number;
+    inserted_rows?: number;
+    skipped_rows?: number;
+    errors?: string[];
+    error_message?: string | null;
+}
