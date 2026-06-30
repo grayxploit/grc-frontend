@@ -24,5 +24,11 @@ export class FrameworkCategoryService {
             .pipe(map(response => response.data));
     }
 
+    updateFrameworkCategory(id: number, data: Partial<FrameworkCategoryCreateRequest>): Observable<ApiResponse<FrameworkCategory>> {
+        return this.apiService
+            .protectedPut<ApiResponse<FrameworkCategory>>(`framework/categories/${id}`, data)
+            .pipe(map(response => response.data));
+    }
+
 }
 

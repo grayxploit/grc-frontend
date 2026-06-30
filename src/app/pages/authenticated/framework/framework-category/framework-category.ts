@@ -5,6 +5,7 @@ import { PaginationMeta, QueryFilter } from '../../../../services/api/api-respon
 import { Subject, takeUntil } from 'rxjs';
 import { Card } from '../../../../shared/components/common/card/card';
 import { PageBreadcrumb } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb';
+import { Pagination } from '../../../../shared/components/common/pagination/pagination';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -14,7 +15,8 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     FormsModule,
     PageBreadcrumb,
-    Card
+    Card,
+    Pagination
   ],
   templateUrl: './framework-category.html',
   styleUrl: './framework-category.css',
@@ -32,9 +34,16 @@ export class FrameworkCategory {
 
     // Modal properties
     isCreateModalOpen = false;
+    isEditModalOpen = false;
     modalErrorMessage = '';
     isSubmitting = false;
     createForm = {
+        name: '',
+        description: '',
+        status: 'active'
+    };
+    editForm = {
+        id: 0,
         name: '',
         description: '',
         status: 'active'
@@ -52,7 +61,8 @@ export class FrameworkCategory {
 
 
   getAllFrameworkCategory() {
-      this.frameworkCategoryService.getAllFrameworkCategory({ page: 1, limit: 10 })
+      const page = this.filter['page'] || 1;
+      this.frameworkCategoryService.getAllFrameworkCategory({ page, limit: 3 })
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response) => {
@@ -85,6 +95,48 @@ export class FrameworkCategory {
         this.modalErrorMessage = '';
     }
 
+    openEditModal(frameworkCategory: FrameworkCategoryModel) {
+        this.isEditModalOpen = true;
+        this.modalErrorMessage = '';
+        this.editForm = {
+            id: frameworkCategory.id,
+            name: frameworkCategory.name,
+            description: frameworkCategory.description,
+            status: frameworkCategory.status
+        };
+    }
+
+    closeEditModal() {
+        this.isEditModalOpen = false;
+        this.modalErrorMessage = '';
+    }
+
+    submitEditForm() {
+        if (!this.editForm.name || !this.editForm.status) {
+            this.modalErrorMessage = 'Name and status are required.';
+            return;
+        }
+
+        this.isSubmitting = true;
+        this.modalErrorMessage = '';
+
+        this.frameworkCategoryService.updateFrameworkCategory(this.editForm.id, this.editForm)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: (response) => {
+                    this.isSubmitting = false;
+                    this.closeEditModal();
+                    this.getAllFrameworkCategory();
+                },
+                error: (error) => {
+                    this.isSubmitting = false;
+                    this.modalErrorMessage = error?.error?.message || 'Unable to update framework category.';
+                    this.cdr.markForCheck();
+                    console.error(error);
+                }
+            });
+    }
+
     submitCreateForm() {
         if (!this.createForm.name || !this.createForm.status) {
             this.modalErrorMessage = 'Name and status are required.';
@@ -109,6 +161,11 @@ export class FrameworkCategory {
                     console.error(error);
                 }
             });
+    }
+
+    onPageChange(page: number) {
+        this.filter['page'] = page;
+        this.getAllFrameworkCategory();
     }
 
 }
