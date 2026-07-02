@@ -1,6 +1,6 @@
 import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { FrameworkCategoryService } from '../../../../services/framework/framework-category/framework-category.service';
-import { FrameworkCategory as FrameworkCategoryModel, FrameworkCategoryCreateRequest, ImportProgressEvent } from '../../../../services/framework/framework-category/framework-category.model';
+import { FrameworkCategory as FrameworkCategoryModel, ImportProgressEvent } from '../../../../services/framework/framework-category/framework-category.model';
 import { PaginationMeta, QueryFilter } from '../../../../services/api/api-response.model';
 import { Subject, takeUntil } from 'rxjs';
 import { Card } from '../../../../shared/components/common/card/card';

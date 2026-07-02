@@ -82,53 +82,62 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
     const token = typeof window !== 'undefined' ? localStorage.getItem(ACCESS_TOKEN) : null;
 
     console.log("access token", token);
-    if (token) {
-      try {
-        const isTokenExpired = jwtHelper.isTokenExpired(token);
-        if (isTokenExpired) {
-          console.log('AuthInterceptor: Token expired; attempting refresh before request');
-          return http.post<any>(`${apiUrlWithVersion}/auth/refresh-token`, {}, { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, withCredentials: true }).pipe(
-            switchMap((response) => {
-              const newAccessToken = response?.data?.token?.access_token;
-              if (!newAccessToken) {
-                if (typeof window !== 'undefined') {
-                  localStorage.removeItem(ACCESS_TOKEN);
-                }
-                return throwError(() => ({ status: 401, error: { success: false, message: 'Session expired. Please log in again.', data: null, error: 'Authentication required' } }));
-              }
+    if (!token) {
+      console.log("AuthInterceptor: No token found for protected request; returning 401 immediately");
+      return throwError(() => ({
+        status: 401,
+        error: {
+          success: false,
+          message: 'Authentication token missing. Please log in again.',
+          data: null,
+          error: 'Authentication required'
+        }
+      }));
+    }
 
-              if (typeof window !== 'undefined') {
-                localStorage.setItem(ACCESS_TOKEN, newAccessToken);
-              }
-
-              const decodedToken = jwtHelper.decodeToken(newAccessToken);
-              if (decodedToken && decodedToken.sub) {
-                headers = headers.set('X-User-ID', decodedToken.sub);
-              }
-              headers = headers.set('Authorization', `Bearer ${newAccessToken}`);
-              const refreshedReq = req.clone({ headers });
-              return next(refreshedReq);
-            }),
-            catchError(() => {
+    try {
+      const isTokenExpired = jwtHelper.isTokenExpired(token);
+      if (isTokenExpired) {
+        console.log('AuthInterceptor: Token expired; attempting refresh before request');
+        return http.post<any>(`${apiUrlWithVersion}/auth/refresh-token`, {}, { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, withCredentials: true }).pipe(
+          switchMap((response) => {
+            const newAccessToken = response?.data?.token?.access_token;
+            if (!newAccessToken) {
               if (typeof window !== 'undefined') {
                 localStorage.removeItem(ACCESS_TOKEN);
               }
               return throwError(() => ({ status: 401, error: { success: false, message: 'Session expired. Please log in again.', data: null, error: 'Authentication required' } }));
-            })
-          );
-        }
+            }
 
-        const decodedToken = jwtHelper.decodeToken(token);
-        console.log('decoded token', decodedToken);
-        if (decodedToken && decodedToken.sub) {
-          headers = headers.set('X-User-ID', decodedToken.sub);
-        }
-        headers = headers.set('Authorization', `Bearer ${token}`);
-      } catch (error) {
-        console.error('AuthInterceptor: Error decoding token for headers:', error);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem(ACCESS_TOKEN, newAccessToken);
+            }
+
+            const decodedToken = jwtHelper.decodeToken(newAccessToken);
+            if (decodedToken && decodedToken.sub) {
+              headers = headers.set('X-User-ID', decodedToken.sub);
+            }
+            headers = headers.set('Authorization', `Bearer ${newAccessToken}`);
+            const refreshedReq = req.clone({ headers });
+            return next(refreshedReq);
+          }),
+          catchError(() => {
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem(ACCESS_TOKEN);
+            }
+            return throwError(() => ({ status: 401, error: { success: false, message: 'Session expired. Please log in again.', data: null, error: 'Authentication required' } }));
+          })
+        );
       }
-    } else {
-      console.log("AuthInterceptor: No token found for protected request");
+
+      const decodedToken = jwtHelper.decodeToken(token);
+      console.log('decoded token', decodedToken);
+      if (decodedToken && decodedToken.sub) {
+        headers = headers.set('X-User-ID', decodedToken.sub);
+      }
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    } catch (error) {
+      console.error('AuthInterceptor: Error decoding token for headers:', error);
     }
   }
 
