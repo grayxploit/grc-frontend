@@ -11,6 +11,7 @@ import { FrameworkService } from '../../../services/framework/framework.service'
 import { FrameworkCreateRequest, Framework as FrameworkModel } from '../../../services/framework/framework.model';
 import { PaginationMeta, QueryFilter } from '../../../services/api/api-response.model';
 import { ChangeDetectorRef } from '@angular/core';
+import { Pagination } from '../../../shared/components/common/pagination/pagination';
 
 @Component({
   selector: 'app-framework',
@@ -18,7 +19,8 @@ import { ChangeDetectorRef } from '@angular/core';
     CommonModule,
     PageBreadcrumb,
     Card,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    Pagination
   ],
   templateUrl: './framework.html',
   styleUrl: './framework.css',
@@ -262,4 +264,9 @@ submitEditForm() {
       },
     });
 }
+
+onPageChange(page: number) {
+        this.filter['page'] = page;
+        this.getAllFramework();
+    }
 }

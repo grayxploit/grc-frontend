@@ -65,7 +65,7 @@
                 </tbody>
             </table>
         </div>
-
+        <app-pagination [meta]="meta" (pageChange)="onPageChange($event)"></app-pagination>
     </app-card>
 
     @if (isCreateModalOpen) {

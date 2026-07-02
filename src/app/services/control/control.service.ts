@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { Control, ControlQueryParam, CreateControl } from './control.model';
 import { ApiResponse, PaginatedResponse } from '../api/api-response.model';
-import { Observable, pipe } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
@@ -21,9 +21,9 @@ export class ControlService {
     }
 
 
-    createControl(data: CreateControl): Observable<ApiResponse<Control>> {
+    createControl(data: CreateControl): Observable<Control> {
         return this.apiService
-            .protectedPost<ApiResponse<Control>>('control/', data)
+            .protectedPost<Control>('control/', data)
             .pipe(map(response => response.data));
     }
 
