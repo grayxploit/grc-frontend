@@ -43,7 +43,7 @@ export class Authenticated {
       subItems:[
         {
           path:'frameworks',
-          name:'List'
+          name:'Frameworks'
         },
         {
           path:'framework-categories',
