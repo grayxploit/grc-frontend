@@ -15,26 +15,28 @@ const jwtHelper = new JwtHelperService();
 
 // Helper function to get appropriate error message
 const getErrorMessage = (error: any): string => {
+  const serverMessage = error.error?.detail?.message || error.error?.message;
+
   if (error.status === 0) {
     return 'Network error. Please check your connection.';
   } else if (error.status >= 500) {
-    return 'Server error. Please try again later.';
+    return serverMessage || 'Server error. Please try again later.';
   } else if (error.status === 404) {
-    return 'Resource not found.';
+    return serverMessage || 'Resource not found.';
   } else if (error.status === 403) {
-    return 'Access denied.';
+    return serverMessage || 'Access denied.';
   } else if (error.status === 400 || error.status === 406) {
     // For client errors, preserve the server message
-    return error.error?.message || 'Bad request.';
+    return serverMessage || 'Bad request.';
   } else if (error.status === 409) {
-    return error.error?.message || 'Conflict error. Resource already exists.';
+    return serverMessage || 'Conflict error. Resource already exists.';
   } else if (error.status === 429) {
-    return 'Too many requests. Please try again later.';
+    return serverMessage || 'Too many requests. Please try again later.';
   } else if (error.status === 422) {
     // Handled separately below for field errors; keep a generic fallback
-    return error.error?.message || 'Validation error. Please check your input.';
+    return serverMessage || 'Validation error. Please check your input.';
   } else {
-    return error.error?.message || 'An error occurred. Please try again.';
+    return serverMessage || 'An error occurred. Please try again.';
   }
 };
 
@@ -166,7 +168,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
       }
 
 
-      if ((error.error.message === 'Validation failed' && error.status === 422) || (error.error.message === 'Validation failed' && error.status === 409)) {
+      if ((error.error?.message === 'Validation failed' && error.status === 422) || (error.error?.message === 'Validation failed' && error.status === 409)) {
         // Parse validation errors and create field-specific error messages
         const validationErrors: { [key: string]: string } = {};
 

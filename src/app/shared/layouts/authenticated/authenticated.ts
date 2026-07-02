@@ -61,6 +61,10 @@ export class Authenticated {
           name:'List'
         },
         {
+          path:'control-types',
+          name:'Types'
+        },
+        {
           path:'control-create',
           name:'Create',
 

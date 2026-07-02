@@ -11,6 +11,7 @@ import { ImportControl } from './pages/authenticated/controls/import-control/imp
 import { Framework } from './pages/authenticated/framework/framework';
 import { FrameworkCategory } from './pages/authenticated/framework/framework-category/framework-category';
 import { Countdown } from './pages/public/countdown/countdown';
+import { ControlType } from './pages/authenticated/controls/control-type/control-type';
 export const routes: Routes = [
     {
         path: '',
@@ -67,6 +68,11 @@ export const routes: Routes = [
                 path: 'framework-categories',
                 component: FrameworkCategory,
                 title: 'Framework Categories'
+            },
+            {
+                path: 'control-types',
+                component: ControlType,
+                title: 'Control Types'
             }
 
 

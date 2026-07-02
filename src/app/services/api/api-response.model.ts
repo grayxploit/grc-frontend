@@ -11,10 +11,34 @@ export interface ApiError {
   code?: string;
 }
 
+export interface ApiErrorPayload {
+  success: boolean;
+  message: string;
+  data?: any | null;
+  error?: {
+    detail?: ErrorDetail;
+    [key: string]: any;
+  };
+}
+
+export interface ApiErrorResponse {
+  status: number;
+  error: ApiErrorPayload;
+}
+
+export interface ErrorDetail {
+  status: string;
+  message: string;
+  error_code: string;
+}
+
 export interface ErrorResponse {
+  status?: string;
   message?: string;
+  error_code?: string;
   code?: string;
   error?: string;
+  detail?: ErrorDetail;
   validationErrors?: { [key: string]: string };
 }
 
@@ -47,3 +71,4 @@ export interface PaginatedResponse<T> {
 export interface QueryFilter {
   [key: string]: any
 }
+

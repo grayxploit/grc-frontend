@@ -4,7 +4,7 @@ import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { filter, map, Observable, throwError, catchError } from 'rxjs';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { HttpEventType } from '@angular/common/http';
-import { ApiResponse, QueryFilter } from './api-response.model';
+import { ApiErrorPayload, ApiResponse, QueryFilter } from './api-response.model';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   readonly apiUrl = environment.apiUrl;
@@ -72,7 +72,7 @@ export class ApiService {
     return headers;
   }
 
-  private handleError(error: any) {
+  private handleError(error: ApiErrorPayload) {
     // If the error is already standardized by the auth interceptor, pass it through
     if (error && error.error && typeof error.error === 'object' && 'success' in error.error) {
       console.log('ApiService: Passing through standardized error from interceptor:', error);
@@ -81,13 +81,15 @@ export class ApiService {
     
     // Handle raw HttpErrorResponse (fallback for non-intercepted errors)
     if (error instanceof HttpErrorResponse) {
+      const serverError = error.error;
+      const serverMessage = serverError?.detail?.message || serverError?.message;
      
-      if(error.error.message == 'Validation failed'){
+      if (serverError?.message == 'Validation failed') {
         // Parse validation errors and create field-specific error messages
         const validationErrors: { [key: string]: string } = {};
         
-        if (error.error.error && Array.isArray(error.error.error)) {
-          error.error.error.forEach((errorMessage: string) => {
+        if (serverError?.error && Array.isArray(serverError.error)) {
+          serverError.error.forEach((errorMessage: string) => {
             // Split by colon to get field name and error message
             const colonIndex = errorMessage.indexOf(':');
             if (colonIndex !== -1) {
@@ -116,9 +118,9 @@ export class ApiService {
         status: error.status || 0,
         error: {
           success: false,
-          message: error.error?.message || error.message || 'An unknown error occurred!',
+          message: serverMessage || error.message || 'An unknown error occurred!',
           data: null,
-          error: error.error || error.message || 'HTTP Error'
+          error: serverError || error.message || 'HTTP Error'
         }
       };
       console.log('ApiService: Standardizing raw HttpErrorResponse:', standardizedError);
@@ -213,5 +215,13 @@ export class ApiService {
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join('&');
     return filterParams ? `&${filterParams}` : '';
+  }
+
+  public extractApiErrorMessage(error: any): string | null {
+    return error?.error?.detail?.message
+      || error?.error?.error?.detail?.message
+      || error?.error?.message
+      || error?.message
+      || null;
   }
 }
