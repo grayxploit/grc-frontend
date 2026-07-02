@@ -1,0 +1,207 @@
+<div class="cursor" id="cursor"></div>
+<div class="grain"></div>
+
+<!-- Loading Screen -->
+<div class="loading-screen" id="loader">
+  <div class="text-center space-y-20">
+    <div class="text-7xl md:text-8xl font-display text-white tracking-wider">GRAYVIX</div>
+    <div class="loading-line mx-auto"><div class="loading-fill" id="loadBar"></div></div>
+    <p class="text-gray-600 text-xs tracking-[0.5em] uppercase" id="loadStatus">Initializing</p>
+  </div>
+</div>
+
+<main id="app" class="opacity-0 transition-opacity duration-1000">
+  
+  <!-- Hero Section with Three.js Canvas -->
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden z-10">
+    <canvas id="heroCanvas" class="absolute inset-0 w-full h-full"></canvas>
+    
+    <div class="relative z-20 text-center px-6 max-w-7xl mx-auto w-full">
+      <div class="inline-flex flex-col items-center gap-10 mb-20">
+        <div class="surface-card px-10 py-4 text-sm tracking-[0.4em] uppercase" style="color: var(--accent);">
+          Launching 07 · 07 · 2026
+        </div>
+        
+        <!-- Countdown -->
+        <div class="flex gap-4 md:gap-6 justify-center">
+          <div class="timer-unit"><div class="timer-digit" id="days">00</div><div class="timer-label">Days</div></div>
+          <div class="timer-unit"><div class="timer-digit" id="hours">00</div><div class="timer-label">Hours</div></div>
+          <div class="timer-unit"><div class="timer-digit" id="minutes">00</div><div class="timer-label">Minutes</div></div>
+          <div class="timer-unit"><div class="timer-digit" id="seconds">00</div><div class="timer-label">Seconds</div></div>
+        </div>
+      </div>
+
+      <h1 class="text-8xl md:text-[11rem] lg:text-[13rem] font-display text-white leading-none mb-8 tracking-tight">
+        GrayviX
+      </h1>
+      <p class="text-xl md:text-3xl text-gray-400 max-w-4xl mx-auto mb-3 font-light tracking-wide">
+        Governance, Risk & Compliance Automation
+      </p>
+      <p class="text-base md:text-xl text-gray-600 max-w-3xl mx-auto mb-20 font-light italic">
+        Precision engineered for the modern enterprise
+      </p>
+
+      <div class="flex flex-wrap gap-8 justify-center">
+        <button class="surface-elevated px-16 py-6 text-lg font-medium tracking-wider uppercase magnetic-btn" style="color: var(--accent); border-color: rgba(212,168,83,0.3);">
+          Request Demo
+        </button>
+        <button class="surface-elevated px-16 py-6 text-lg font-medium tracking-wider uppercase text-gray-300 magnetic-btn">
+          Join Waitlist
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Trust / Stats Section -->
+  <section class="relative z-10 py-40 px-6 max-w-7xl mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-1 text-center">
+      <div class="surface-card p-16">
+        <div class="flex justify-center items-baseline">
+          <span class="text-8xl font-display counter" data-target="500">0</span>
+          <span class="text-4xl font-display" style="color:var(--accent);">+</span>
+        </div>
+        <p class="text-gray-500 text-xs tracking-[0.4em] uppercase mt-4">Enterprises</p>
+      </div>
+      <div class="surface-card p-16">
+        <div class="flex justify-center items-baseline">
+          <span class="text-8xl font-display counter" data-target="98">0</span>
+          <span class="text-4xl font-display" style="color:var(--accent);">%</span>
+        </div>
+        <p class="text-gray-500 text-xs tracking-[0.4em] uppercase mt-4">Compliance</p>
+      </div>
+      <div class="surface-card p-16">
+        <div class="flex justify-center items-baseline">
+          <span class="text-8xl font-display counter" data-target="12">0</span>
+          <span class="text-4xl font-display" style="color:var(--accent);">+</span>
+        </div>
+        <p class="text-gray-500 text-xs tracking-[0.4em] uppercase mt-4">Frameworks</p>
+      </div>
+      <div class="surface-card p-16">
+        <div class="flex justify-center items-baseline">
+          <span class="text-8xl font-display counter" data-target="40">0</span>
+          <span class="text-4xl font-display" style="color:var(--accent);">%</span>
+        </div>
+        <p class="text-gray-500 text-xs tracking-[0.4em] uppercase mt-4">Faster Audits</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem/Solution Section -->
+  <section class="relative z-10 py-40 max-w-7xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-24 items-center">
+      <div class="space-y-12">
+        <h2 class="text-6xl md:text-7xl heading-xl">From Chaos to <span style="color:var(--accent);">Clarity</span></h2>
+        <div class="space-y-5">
+          <div class="surface-card p-8 text-lg font-light border-l-2 border-red-900/50">Manual evidence collection</div>
+          <div class="surface-card p-8 text-lg font-light border-l-2 border-red-900/50">Endless audit preparation</div>
+          <div class="surface-card p-8 text-lg font-light border-l-2 border-red-900/50">Fragmented risk visibility</div>
+        </div>
+      </div>
+      <div class="surface-elevated p-16 space-y-8" style="border-color: rgba(212,168,83,0.15);">
+        <div class="flex items-center gap-6 text-2xl font-light"><span class="text-4xl" style="color:var(--accent);">✓</span> Automated evidence collection</div>
+        <div class="flex items-center gap-6 text-2xl font-light"><span class="text-4xl" style="color:var(--accent);">✓</span> Continuous compliance monitoring</div>
+        <div class="flex items-center gap-6 text-2xl font-light"><span class="text-4xl" style="color:var(--accent);">✓</span> Real-time risk intelligence</div>
+        <div class="flex items-center gap-6 text-2xl font-light"><span class="text-4xl" style="color:var(--accent);">✓</span> Audit-ready in minutes</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture Section -->
+  <section class="relative z-10 py-40 px-6 max-w-7xl mx-auto">
+    <h2 class="text-6xl md:text-7xl heading-xl text-center mb-24">Unified <span style="color:var(--accent);">Architecture</span></h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-1">
+      <div class="surface-card p-12 text-center text-xl font-light">Governance</div>
+      <div class="surface-card p-12 text-center text-xl font-light">Risk Intelligence</div>
+      <div class="surface-card p-12 text-center text-xl font-light">Compliance</div>
+      <div class="surface-card p-12 text-center text-xl font-light">Vulnerability Mgmt</div>
+      <div class="surface-card p-12 text-center text-xl font-light">Evidence Hub</div>
+      <div class="surface-card p-12 text-center text-xl font-light">Asset Inventory</div>
+      <div class="surface-card p-12 text-center text-xl font-light">Copilot</div>
+      <div class="surface-card p-12 text-center text-xl font-light">Reports</div>
+      <div class="surface-card p-12 text-center text-xl font-light">Dashboard</div>
+    </div>
+  </section>
+
+  <!-- Frameworks Section -->
+  <section class="relative z-10 py-40 px-6 max-w-7xl mx-auto">
+    <h2 class="text-6xl heading-xl text-center mb-20">Framework <span style="color:var(--accent);">Coverage</span></h2>
+    <div class="flex flex-wrap justify-center gap-4" id="frameworkContainer">
+      <span class="surface-card px-10 py-6 text-lg font-light">ISO 27001</span>
+      <span class="surface-card px-10 py-6 text-lg font-light">SOC 2</span>
+      <span class="surface-card px-10 py-6 text-lg font-light">PCI DSS</span>
+      <span class="surface-card px-10 py-6 text-lg font-light">GDPR</span>
+      <span class="surface-card px-10 py-6 text-lg font-light">NIST CSF</span>
+      <span class="surface-card px-10 py-6 text-lg font-light">HIPAA</span>
+      <span class="surface-card px-10 py-6 text-lg font-light">CIS Controls</span>
+      <span class="surface-card px-10 py-6 text-lg font-light">COBIT</span>
+      <span class="surface-card px-10 py-6 text-lg font-light">CSA CCM</span>
+      <span class="surface-card px-10 py-6 text-lg font-light">DORA</span>
+    </div>
+  </section>
+
+  <!-- Dashboard Stats Section -->
+  <section class="relative z-10 py-40 px-6 max-w-7xl mx-auto">
+    <div class="surface-elevated p-20 grid md:grid-cols-3 gap-16 text-center" style="border-color: rgba(212,168,83,0.12);">
+      <div><div class="text-[8rem] font-display" style="color:var(--accent);"><span id="complianceScore">94</span>%</div><p class="text-gray-500 text-sm tracking-[0.3em] uppercase mt-4">Compliance Score</p></div>
+      <div><div class="text-[8rem] font-display" style="color:#a68a5c;"><span id="riskScore">12</span></div><p class="text-gray-500 text-sm tracking-[0.3em] uppercase mt-4">Active Risks</p></div>
+      <div><div class="text-[8rem] font-display" style="color:#8a9b8a;">A+</div><p class="text-gray-500 text-sm tracking-[0.3em] uppercase mt-4">Posture</p></div>
+    </div>
+  </section>
+
+  <!-- Roadmap Section -->
+  <section class="relative z-10 py-40 px-6 max-w-6xl mx-auto">
+    <h2 class="text-6xl heading-xl text-center mb-24">Roadmap</h2>
+    <div class="flex flex-col md:flex-row gap-1">
+      <div class="surface-card p-16 flex-1 text-center"><div class="text-5xl font-display" style="color:var(--accent);">Q3 2026</div><p class="text-gray-400 mt-5 text-lg font-light">Early Access</p></div>
+      <div class="surface-card p-16 flex-1 text-center"><div class="text-5xl font-display" style="color:var(--accent);">Q4 2026</div><p class="text-gray-400 mt-5 text-lg font-light">Automation</p></div>
+      <div class="surface-card p-16 flex-1 text-center"><div class="text-5xl font-display" style="color:var(--accent);">2027</div><p class="text-gray-400 mt-5 text-lg font-light">Global Scale</p></div>
+    </div>
+  </section>
+
+  <!-- Testimonial Section -->
+  <section class="relative z-10 py-40 px-6 max-w-4xl mx-auto text-center">
+    <div class="surface-elevated p-20" style="border-color: rgba(212,168,83,0.12);">
+      <div class="text-7xl font-display mb-10" style="color:var(--accent);">"</div>
+      <p class="text-3xl font-light leading-relaxed italic">GrayviX transformed our compliance operations into a strategic advantage.</p>
+      <div class="mt-12 text-xs tracking-[0.5em] uppercase" style="color:var(--accent);">— CISO, Fortune 100</div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="relative z-10 py-40 px-6 max-w-4xl mx-auto">
+    <h2 class="text-6xl heading-xl text-center mb-20">Frequently Asked</h2>
+    <div class="space-y-4">
+      <div class="surface-card p-10 cursor-pointer faq-item text-xl font-light flex justify-between items-center">
+        <span>How does evidence automation work?</span>
+        <span class="faq-icon" style="color:var(--accent);">+</span>
+      </div>
+      <div class="surface-card p-10 cursor-pointer faq-item text-xl font-light flex justify-between items-center">
+        <span>Multi-framework support?</span>
+        <span class="faq-icon" style="color:var(--accent);">+</span>
+      </div>
+      <div class="surface-card p-10 cursor-pointer faq-item text-xl font-light flex justify-between items-center">
+        <span>Deployment process?</span>
+        <span class="faq-icon" style="color:var(--accent);">+</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="relative z-10 py-44 text-center px-6">
+    <h2 class="text-7xl md:text-8xl heading-xl mb-12">Automate Compliance.<br><span style="color:var(--accent);">Reduce Risk.</span></h2>
+    <div class="flex flex-wrap gap-8 justify-center">
+      <button class="surface-elevated px-20 py-7 text-xl font-medium tracking-wider uppercase magnetic-btn" style="color:var(--accent); border-color: rgba(212,168,83,0.3);">Get Early Access</button>
+      <button class="surface-elevated px-20 py-7 text-xl font-medium tracking-wider uppercase text-gray-400 magnetic-btn">Contact Sales</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="relative z-10 py-16 border-t border-white/5 px-6">
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-between text-gray-600 text-xs tracking-[0.4em] uppercase">
+      <span style="color:var(--accent);">© 2026 GrayXploit</span>
+      <div class="flex gap-12">Platform · Frameworks · Security · Contact</div>
+    </div>
+  </footer>
+</main>
