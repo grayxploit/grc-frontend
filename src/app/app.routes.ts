@@ -10,14 +10,15 @@ import { Framework } from './pages/authenticated/framework/framework';
 import { FrameworkCategory } from './pages/authenticated/framework/framework-category/framework-category';
 import { Countdown } from './pages/public/countdown/countdown';
 import { ControlType } from './pages/authenticated/controls/control-type/control-type';
+import { Register } from './pages/public/register/register';
 export const routes: Routes = [
     {
-        path: '',
+        path: 'countdown',
         component: Countdown,
         title: 'GrayviX | Enterprise GRC Platform'
     },
     {
-        path: 'home',
+        path: '',
         component: Public,
         children: [
             {
@@ -29,6 +30,10 @@ export const routes: Routes = [
                 path: 'login',
                 component: Login
 
+            },
+            {
+                path:'register',
+                component:Register
             }
         ]
     },

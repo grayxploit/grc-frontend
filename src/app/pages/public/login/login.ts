@@ -71,7 +71,7 @@ export class Login {
 
   public onCreateAccount(): void {
     // Navigate to registration page
-    console.log('Navigate to create account');
+     this.router.navigate(['/register'])
   }
 
   public togglePasswordVisibility(): void {

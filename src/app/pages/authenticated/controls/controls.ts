@@ -163,7 +163,7 @@ export class Controls implements OnInit, OnDestroy {
     const formValue = this.createForm.getRawValue();
     const selectedFrameworkIds = this.getSelectedFrameworkIds();
     const frameworks: CreateControlFramework[] = selectedFrameworkIds.map((frameworkId) => ({
-      frameworlId: frameworkId,
+      frameworkId: frameworkId,
       severity: this.frameworkSeverities[frameworkId] as ControlSeverity,
     }));
 
