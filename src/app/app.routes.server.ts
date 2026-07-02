@@ -14,14 +14,6 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client
   },
   {
-    path: 'control-create',
-    renderMode: RenderMode.Client
-  },
-  {
-    path: 'control-import',
-    renderMode: RenderMode.Client
-  },
-  {
     path: 'frameworks',
     renderMode: RenderMode.Client
   },

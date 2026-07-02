@@ -58,20 +58,11 @@ export class Authenticated {
       subItems:[
         {
           path:'controls',
-          name:'List'
+          name:'Controls'
         },
         {
           path:'control-types',
           name:'Types'
-        },
-        {
-          path:'control-create',
-          name:'Create',
-
-        },
-        {
-          path:'control-import',
-          name:'Import'
         }
       ]
     },

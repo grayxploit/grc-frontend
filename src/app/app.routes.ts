@@ -6,8 +6,6 @@ import { authGuard } from './guards/auth/auth-guard';
 import { Dashboard } from './pages/authenticated/dashboard/dashboard';
 import { Authenticated } from './shared/layouts/authenticated/authenticated';
 import { Controls } from './pages/authenticated/controls/controls';
-import { CreateControl } from './pages/authenticated/controls/create-control/create-control';
-import { ImportControl } from './pages/authenticated/controls/import-control/import-control';
 import { Framework } from './pages/authenticated/framework/framework';
 import { FrameworkCategory } from './pages/authenticated/framework/framework-category/framework-category';
 import { Countdown } from './pages/public/countdown/countdown';
@@ -49,16 +47,7 @@ export const routes: Routes = [
                 component: Controls,
                 title: 'Controls'
             },
-            {
-                path: 'control-create',
-                component: CreateControl,
-                title: 'Create Control'
-            },
-            {
-                path: 'control-import',
-                component: ImportControl,
-                title: 'Import Control'
-            },
+           
             {
                 path: 'frameworks',
                 component: Framework,
