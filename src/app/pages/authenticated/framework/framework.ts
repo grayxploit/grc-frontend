@@ -196,26 +196,26 @@ export class Framework implements OnInit, OnDestroy {
   this.modalErrorMessage = '';
 
   const selectedCategoryValue =
-    typeof framework.category === 'object' && framework.category !== undefined
-      ? String(framework.category.id)
-      : framework.category !== undefined
-        ? String(framework.category)
-        : '';
+      typeof framework.category === 'object' && framework.category !== undefined
+        ? String(framework.category.id)
+        : framework.category !== undefined
+          ? String(framework.category)
+          : '';
 
-  this.editForm.patchValue({
-    id: framework.id,
-    name: framework.name,
-    description: framework.description ?? '',
-    status: framework.status,
-    category: selectedCategoryValue,
-    official_url: framework.official_url ?? '',
-    published_date: framework.published_date
-      ? framework.published_date.substring(0, 10)
-      : '',
-    version: framework.version ?? '',
-  });
+      this.editForm.patchValue({
+        id: framework.id,
+        name: framework.name,
+        description: framework.description ?? '',
+        status: framework.status,
+        category: selectedCategoryValue,
+        official_url: framework.official_url ?? '',
+        published_date: framework.published_date
+          ? framework.published_date.substring(0, 10)
+          : '',
+        version: framework.version ?? '',
+      });
 
-  this.isEditModalOpen = true;
+      this.isEditModalOpen = true;
 }
 
 closeEditModal() {

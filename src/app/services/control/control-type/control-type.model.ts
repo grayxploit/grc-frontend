@@ -12,6 +12,9 @@ export interface ControlTypeCreateRequest {
     name: string;
 }
 
+export interface ControlTypeUpdateRequest {
+    name: string;
+}
 export interface ControlTypeQueryParam {
     page: number;
     limit: number;

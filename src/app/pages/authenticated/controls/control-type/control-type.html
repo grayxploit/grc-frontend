@@ -61,7 +61,9 @@
 
                 </tbody>
             </table>
+            
          </div>
+         <app-pagination [meta]="meta" (pageChange)="onPageChange($event)"></app-pagination>
     </app-card>
     @if (isCreateModalOpen) {
         <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-999999">
@@ -107,13 +109,13 @@
                 {{ modalErrorMessage }}
             </div>
             }
-            <form [formGroup]="createForm" (ngSubmit)="submitCreateForm()">
+            <form [formGroup]="editForm" (ngSubmit)="submitEditForm()">
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
                     <input type="text" formControlName="name"
                         class="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="Enter framework name">
-                     @if (createForm.get('name')?.invalid && createForm.get('name')?.touched) {
+                     @if (editForm.get('name')?.invalid && editForm.get('name')?.touched) {
                     <p class="mt-2 text-sm text-red-600 dark:text-red-400">Name is required.</p>
                     } 
                 </div>
@@ -124,7 +126,7 @@
                     </button>
                     <button type="submit" [disabled]="isSubmitting"
                         class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50">
-                        {{ isSubmitting ? 'Creating...' : 'Create' }}
+                        {{ isSubmitting ? 'Updating...' : 'Update' }}
                     </button>
                 </div>
             </form>

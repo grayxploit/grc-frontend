@@ -1,6 +1,6 @@
 import { inject, Service } from '@angular/core';
 import { ApiService } from '../../api/api.service';
-import { ControlType, ControlTypeCreateRequest, ControlTypeQueryParam } from './control-type.model';
+import { ControlType, ControlTypeCreateRequest, ControlTypeQueryParam, ControlTypeUpdateRequest } from './control-type.model';
 import { Observable } from 'rxjs';
 import { ApiResponse, PaginatedResponse } from '../../api/api-response.model';
 import { map } from 'rxjs/operators';
@@ -21,6 +21,11 @@ export class ControlTypeService {
         }
         return this.apiService
             .protectedGet<PaginatedResponse<ControlType>>(`control/types?${queryParams}`)
+            .pipe(map(response => response.data));
+    }
+
+    updateControlType(id: number, data: ControlTypeUpdateRequest): Observable<ApiResponse<ControlType>> {
+        return this.apiService.protectedPut<ApiResponse<ControlType>>(`control/types/${id}`, data)
             .pipe(map(response => response.data));
     }
 
