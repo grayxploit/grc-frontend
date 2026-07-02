@@ -6,6 +6,7 @@ import { ThemeToggle } from '../../components/theme-toggle/theme-toggle'
 import { UserDropdown } from '../../components/header/user-dropdown/user-dropdown';
 import { NotificationDropdown } from '../../components/header/notification-dropdown/notification-dropdown';
 import { AuthService } from '../../../services/auth/auth.service';
+import { Logo } from '../../components/common/logo/logo';
 @Component({
   selector: 'app-header',
   imports: [
@@ -13,7 +14,8 @@ import { AuthService } from '../../../services/auth/auth.service';
     RouterModule,
     ThemeToggle,
     UserDropdown,
-    NotificationDropdown
+    NotificationDropdown,
+    Logo
   ],
   templateUrl: './header.html',
   styleUrl: './header.css',
