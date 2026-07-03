@@ -40,6 +40,15 @@ export interface CreateControl {
     type: number
 }
 
+export interface UpdateControl {
+    title?: string
+    description?: string
+
+    frameworks?: CreateControlFramework[]
+    primary_control_area?: string
+    type?: number
+}
+
 export interface CreateControlFramework {
     frameworkId?: number
     severity: ControlSeverity

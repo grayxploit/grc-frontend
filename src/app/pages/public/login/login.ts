@@ -6,6 +6,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { Logo } from '../../../shared/components/common/logo/logo';
 import { CommonModule } from '@angular/common';
 import { User } from '../../../services/user/user.service';
+import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-login',
   imports: [
@@ -25,6 +26,7 @@ export class Login {
   // private readonly loading = inject(LoadingService);
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
+  public readonly applicationName = environment.applicationName;
   public readonly demoEmail = 'demo@grayxploit.io';
   public readonly demoPassword = 'Demo1234!';
   public readonly loginForm = this.formBuilder.group({

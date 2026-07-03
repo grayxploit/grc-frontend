@@ -17,6 +17,8 @@ interface SeverityOption {
   label: string;
 }
 
+type ControlFormKind = 'create' | 'edit';
+
 @Component({
   selector: 'app-controls',
   imports: [
@@ -29,6 +31,7 @@ interface SeverityOption {
   styleUrl: './controls.css',
 })
 export class Controls implements OnInit, OnDestroy {
+  
   private readonly controlService = inject(ControlService);
   private readonly frameworkService = inject(FrameworkService);
   private readonly controlTypeService = inject(ControlTypeService);
@@ -69,6 +72,18 @@ export class Controls implements OnInit, OnDestroy {
     type: ['', Validators.required],
   });
 
+  public editForm = this.formBuilder.group({
+    id: ['', Validators.required],
+    title: ['', Validators.required],
+    description: [''],
+    frameworks: this.formBuilder.control<number[]>([], {
+      validators: [Validators.required, Validators.minLength(1)],
+      nonNullable: true,
+    }),
+    primary_control_area: [''],
+    type: ['', Validators.required],
+  });
+
   ngOnInit() {
     this.destroy$ = new Subject<void>();
     this.loadControlTypes();
@@ -97,7 +112,7 @@ export class Controls implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error(error);
-          this.errorMessage = this.extractApiErrorMessage(error) || 'Unable to load controls.';
+          this.errorMessage = this.controlService.apiService.extractApiErrorMessage(error) || 'Unable to load controls.';
           this.cdr.markForCheck();
         },
       });
@@ -120,7 +135,10 @@ export class Controls implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.frameworks = [...response.data];
-          this.syncFrameworkSeverities(this.getSelectedFrameworkIds());
+          const selectedFrameworkIds = this.isEditModalOpen
+            ? this.getSelectedFrameworkIds('edit')
+            : this.getSelectedFrameworkIds('create');
+          this.syncFrameworkSeverities(selectedFrameworkIds);
         },
         error: (error) => console.error(error),
       });
@@ -194,26 +212,26 @@ export class Controls implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isSubmitting = false;
-          this.modalErrorMessage = this.extractApiErrorMessage(error) || 'Unable to create control.';
+          this.modalErrorMessage = this.controlService.apiService.extractApiErrorMessage(error) || 'Unable to create control.';
           console.error(error);
         },
       });
   }
 
-  toggleFrameworkSelection(frameworkId: number, selected: boolean) {
-    const currentValues = this.getSelectedFrameworkIds();
+  toggleFrameworkSelection(frameworkId: number, selected: boolean, formKind: ControlFormKind = 'create') {
+    const currentValues = this.getSelectedFrameworkIds(formKind);
     const nextValues = selected
       ? Array.from(new Set([...currentValues, frameworkId]))
       : currentValues.filter((value) => value !== frameworkId);
 
-    this.createForm.controls.frameworks.setValue(nextValues);
-    this.createForm.controls.frameworks.markAsDirty();
-    this.createForm.controls.frameworks.markAsTouched();
+    this.getFrameworkControl(formKind).setValue(nextValues);
+    this.getFrameworkControl(formKind).markAsDirty();
+    this.getFrameworkControl(formKind).markAsTouched();
     this.syncFrameworkSeverities(nextValues);
   }
 
-  isFrameworkSelected(frameworkId: number): boolean {
-    return this.getSelectedFrameworkIds().includes(frameworkId);
+  isFrameworkSelected(frameworkId: number, formKind: ControlFormKind = 'create'): boolean {
+    return this.getSelectedFrameworkIds(formKind).includes(frameworkId);
   }
 
   getSelectedFrameworks(): Framework[] {
@@ -294,8 +312,12 @@ export class Controls implements OnInit, OnDestroy {
     return this.controlTypes.find((item) => item.id === type)?.name ?? `Type #${type}`;
   }
 
-  private getSelectedFrameworkIds(): number[] {
-    return (this.createForm.controls.frameworks.value ?? [])
+  private getFrameworkControl(formKind: ControlFormKind) {
+    return formKind === 'create' ? this.createForm.controls.frameworks : this.editForm.controls.frameworks;
+  }
+
+  private getSelectedFrameworkIds(formKind: ControlFormKind = 'create'): number[] {
+    return (this.getFrameworkControl(formKind).value ?? [])
       .map((value) => Number(value))
       .filter((value) => Number.isFinite(value));
   }
@@ -335,20 +357,92 @@ export class Controls implements OnInit, OnDestroy {
     return ['low', 'medium', 'high', 'critical'];
   }
 
-  private extractApiErrorMessage(error: any): string | null {
-    const detail = error?.error?.detail || error?.error;
-    if (detail?.message) {
-      return detail.message;
-    }
+  openEditModal(control : Control){
+    this.isEditModalOpen = true;
+    this.modalErrorMessage = '';
+    const selectedFrameworks = control.frameworks ?? [];
+    const selectedFrameworkIds = selectedFrameworks
+      .map((framework) => framework.framework_id)
+      .filter((frameworkId): frameworkId is number => typeof frameworkId === 'number') ?? [];
+    this.frameworkSeverities = selectedFrameworks.reduce<Record<number, ControlSeverity | ''>>((accumulator, framework) => {
+      if (typeof framework.framework_id === 'number') {
+        accumulator[framework.framework_id] = framework.severity;
+      }
 
-    if (Array.isArray(detail?.errors) && detail.errors.length > 0) {
-      return detail.errors.map((item: any) => item.message || '').filter(Boolean).join(' ');
-    }
-
-    if (Array.isArray(error?.error?.errors)) {
-      return error.error.errors.map((item: any) => item.message || '').filter(Boolean).join(' ');
-    }
-
-    return error?.error?.message || error?.message || null;
+      return accumulator;
+    }, {});
+    this.editForm.patchValue({
+      id: Number(control.id).toString(),
+      title: control.title,
+      description: control.description,
+      frameworks: selectedFrameworkIds,
+      primary_control_area: control.primary_control_area,
+      type: Number(control.control_type.id).toString(),
+    });
+    this.syncFrameworkSeverities(selectedFrameworkIds);
   }
+
+  closeEditModal() {
+    this.isEditModalOpen = false;
+    this.modalErrorMessage = '';
+    this.editForm.reset({
+      title: '',
+      description: '',
+      frameworks: [],
+      primary_control_area: '',
+      type: '',
+    });
+  }
+
+  submitEditForm(){
+     if (this.editForm.invalid) {
+      this.modalErrorMessage = 'Please fill in all required fields.';
+      this.editForm.markAllAsTouched();
+      return;
+    }
+
+    const formValue = this.editForm.getRawValue();
+    const selectedFrameworkIds = this.getSelectedFrameworkIds('edit');
+    const frameworks: CreateControlFramework[] = selectedFrameworkIds.map((frameworkId) => ({
+      frameworkId: frameworkId,
+      severity: this.frameworkSeverities[frameworkId] as ControlSeverity,
+    }));
+
+    if (frameworks.some((framework) => !framework.severity)) {
+      this.modalErrorMessage = 'Please select a severity for each framework.';
+      return;
+    }
+
+    const payload: Partial<CreateControl> = {
+      title: formValue.title ?? '',
+      description: formValue.description ?? '',
+      frameworks,
+      primary_control_area: formValue.primary_control_area ?? '',
+      type: Number(formValue.type),
+    };
+
+    this.isSubmitting = true;
+    this.modalErrorMessage = '';
+
+    const controlId = Number(formValue.id);
+    this.controlService.updateControl(controlId, payload)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updatedControl) => {
+          this.isSubmitting = false;
+          const index = this.controls.findIndex((control) => control.id === updatedControl.id);
+          if (index !== -1) {
+            this.controls[index] = updatedControl;
+          }
+          this.closeEditModal();
+          this.getAllControl();
+        },
+        error: (error) => {
+          this.isSubmitting = false;
+          this.modalErrorMessage = this.controlService.apiService.extractApiErrorMessage(error) || 'Unable to update control.';
+          console.error(error);
+        },
+      });
+  }
+  
 }

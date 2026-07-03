@@ -11,11 +11,12 @@ import { FrameworkCategory } from './pages/authenticated/framework/framework-cat
 import { Countdown } from './pages/public/countdown/countdown';
 import { ControlType } from './pages/authenticated/controls/control-type/control-type';
 import { Register } from './pages/public/register/register';
+import { environment } from '../environments/environment';
 export const routes: Routes = [
     {
         path: 'countdown',
         component: Countdown,
-        title: 'GrayviX | Enterprise GRC Platform'
+        title: `${environment.applicationName} | Enterprise GRC Platform`
     },
     {
         path: '',

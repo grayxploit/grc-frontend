@@ -4,7 +4,7 @@
 <!-- Loading Screen -->
 <div class="loading-screen" id="loader">
   <div class="text-center space-y-20">
-    <div class="text-7xl md:text-8xl font-display text-white tracking-wider">GRAYVIX</div>
+    <div class="text-7xl md:text-8xl font-display text-white tracking-wider">{{ applicationName }}</div>
     <div class="loading-line mx-auto"><div class="loading-fill" id="loadBar"></div></div>
     <p class="text-gray-600 text-xs tracking-[0.5em] uppercase" id="loadStatus">Initializing</p>
   </div>
@@ -32,7 +32,7 @@
       </div>
 
       <h1 class="text-8xl md:text-[11rem] lg:text-[13rem] font-display text-white leading-none mb-8 tracking-tight">
-        GrayviX
+        {{ applicationName }}
       </h1>
       <p class="text-xl md:text-3xl text-gray-400 max-w-4xl mx-auto mb-3 font-light tracking-wide">
         Governance, Risk & Compliance Automation
@@ -164,7 +164,7 @@
   <section class="relative z-10 py-40 px-6 max-w-4xl mx-auto text-center">
     <div class="surface-elevated p-20" style="border-color: rgba(212,168,83,0.12);">
       <div class="text-7xl font-display mb-10" style="color:var(--accent);">"</div>
-      <p class="text-3xl font-light leading-relaxed italic">GrayviX transformed our compliance operations into a strategic advantage.</p>
+      <p class="text-3xl font-light leading-relaxed italic">{{ applicationName }} transformed our compliance operations into a strategic advantage.</p>
       <div class="mt-12 text-xs tracking-[0.5em] uppercase" style="color:var(--accent);">— CISO, Fortune 100</div>
     </div>
   </section>
@@ -200,7 +200,7 @@
   <!-- Footer -->
   <footer class="relative z-10 py-16 border-t border-white/5 px-6">
     <div class="max-w-7xl mx-auto flex flex-wrap justify-between text-gray-600 text-xs tracking-[0.4em] uppercase">
-      <span style="color:var(--accent);">© 2026 GrayXploit</span>
+      <span style="color:var(--accent);">© 2026 {{ applicationName }}</span>
       <div class="flex gap-12">Platform · Frameworks · Security · Contact</div>
     </div>
   </footer>

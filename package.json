@@ -2,11 +2,17 @@
   "name": "frontend-app",
   "version": "0.0.0",
   "scripts": {
+    "sync:env": "node scripts/sync-env.mjs",
+    "prestart": "npm run sync:env",
     "ng": "ng",
     "start": "ng serve",
+    "prebuild": "npm run sync:env",
     "build": "ng build",
+    "prewatch": "npm run sync:env",
     "watch": "ng build --watch --configuration development",
+    "pretest": "npm run sync:env",
     "test": "ng test",
+    "preserve:ssr:frontend-app": "npm run sync:env",
     "serve:ssr:frontend-app": "node dist/frontend-app/server/server.mjs"
   },
   "private": true,

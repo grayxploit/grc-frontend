@@ -1,5 +1,6 @@
 import { Component, Inject, PLATFORM_ID, AfterViewInit, OnDestroy } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-countdown',
@@ -9,6 +10,7 @@ import { isPlatformBrowser, CommonModule } from '@angular/common';
   styleUrl: './countdown.css'
 })
 export class Countdown implements AfterViewInit, OnDestroy {
+  readonly applicationName = environment.applicationName;
   private countdownIntervalId: any;
   private animationFrameId: any;
   private resizeListener: any;
