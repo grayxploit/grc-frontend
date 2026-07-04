@@ -12,6 +12,7 @@ import { Countdown } from './pages/public/countdown/countdown';
 import { ControlType } from './pages/authenticated/controls/control-type/control-type';
 import { Register } from './pages/public/register/register';
 import { environment } from '../environments/environment';
+import { loginGuard } from './guards/login/login-guard';
 export const routes: Routes = [
     {
         path: 'countdown',
@@ -29,11 +30,13 @@ export const routes: Routes = [
             },
             {
                 path: 'login',
+                canActivate: [loginGuard],
                 component: Login
 
             },
             {
                 path:'register',
+                canActivate: [loginGuard],
                 component:Register
             }
         ]
