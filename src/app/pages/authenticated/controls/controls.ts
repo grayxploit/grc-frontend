@@ -11,6 +11,7 @@ import { ControlTypeService } from '../../../services/control/control-type/contr
 import { ControlType } from '../../../services/control/control-type/control-type.model';
 import { FrameworkService } from '../../../services/framework/framework.service';
 import { Framework } from '../../../services/framework/framework.model';
+import { LoaderService } from '../../../services/loader/loader.service';
 
 interface SeverityOption {
   value: ControlSeverity;
@@ -38,7 +39,7 @@ export class Controls implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly formBuilder = inject(FormBuilder);
   private destroy$ = new Subject<void>();
-
+  private readonly loaderService = inject(LoaderService);
   public readonly allSeverityOptions: SeverityOption[] = [
     { value: 'low', label: 'Low' },
     { value: 'medium', label: 'Medium' },
@@ -101,10 +102,12 @@ export class Controls implements OnInit, OnDestroy {
   }
 
   getAllControl() {
+    this.loaderService.show();
     this.controlService.getAllControl({ page: 1, limit: 10 })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
+          this.loaderService.hide();
           this.controls = [...response.data];
           this.meta = { ...response.meta };
           this.errorMessage = '';

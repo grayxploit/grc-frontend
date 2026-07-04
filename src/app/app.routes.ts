@@ -13,6 +13,7 @@ import { ControlType } from './pages/authenticated/controls/control-type/control
 import { Register } from './pages/public/register/register';
 import { environment } from '../environments/environment';
 import { loginGuard } from './guards/login/login-guard';
+import { VerifyEmail } from './pages/public/verify-email/verify-email';
 export const routes: Routes = [
     {
         path: 'countdown',
@@ -31,13 +32,22 @@ export const routes: Routes = [
             {
                 path: 'login',
                 canActivate: [loginGuard],
-                component: Login
+                component: Login,
+                title: `Login | ${environment.applicationName}`
 
             },
             {
                 path:'register',
                 canActivate: [loginGuard],
-                component:Register
+                component:Register,
+                
+                
+            },
+            {
+                path:'verify-email/:token',
+                canActivate:[loginGuard],
+                component:VerifyEmail,
+                title:`Verify Email | ${environment.applicationName}`
             }
         ]
     },
@@ -49,28 +59,28 @@ export const routes: Routes = [
             {
                 path: 'dashboard',
                 component: Dashboard,
-                data: { title: 'Dashboard', description: 'User dashboard' }
+                title: `Dashboard | ${environment.applicationName}`
             },
             {
                 path: 'controls',
                 component: Controls,
-                title: 'Controls'
+                title: `Controls | ${environment.applicationName}`
             },
            
             {
                 path: 'frameworks',
                 component: Framework,
-                title: 'Frameworks'
+                title: `Frameworks | ${environment.applicationName}`
             },
             {
                 path: 'framework-categories',
                 component: FrameworkCategory,
-                title: 'Framework Categories'
+                title: `Framework Categories | ${environment.applicationName}`
             },
             {
                 path: 'control-types',
                 component: ControlType,
-                title: 'Control Types'
+                title: `Control Types | ${environment.applicationName}`
             }
 
 

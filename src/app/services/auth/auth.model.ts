@@ -44,3 +44,15 @@ export interface RefreshTokenResponseData {
     token_type: string;
   },
 }
+
+export interface LogoutResponseData {
+  message: string;
+}
+
+export interface VerifyEmailResponseData {
+  message: string;
+}
+
+export interface VerifyEmailResponse{
+  data: VerifyEmailResponseData;
+}

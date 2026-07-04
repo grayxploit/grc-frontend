@@ -1,4 +1,4 @@
-import { Component, ElementRef, PLATFORM_ID, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, Output, PLATFORM_ID, ViewChild, inject, EventEmitter } from '@angular/core';
 import { SidebarService } from '../../../services/sidebar/sidebar.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -7,6 +7,7 @@ import { UserDropdown } from '../../components/header/user-dropdown/user-dropdow
 import { NotificationDropdown } from '../../components/header/notification-dropdown/notification-dropdown';
 import { AuthService } from '../../../services/auth/auth.service';
 import { Logo } from '../../components/common/logo/logo';
+
 @Component({
   selector: 'app-header',
   imports: [
@@ -26,6 +27,7 @@ export class Header {
   authService = inject(AuthService);
   public authUser = this.authService.authUser;
 
+  @Output() logOut = new EventEmitter();
 
   isApplicationMenuOpen = false;
   readonly isMobileOpen$;
@@ -68,4 +70,9 @@ export class Header {
       }
     }
   };
+
+
+  onLogout() {
+    this.logOut.emit();
+  }
 }

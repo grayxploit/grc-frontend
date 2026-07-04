@@ -34,7 +34,7 @@ export class Register {
   password: ['', [Validators.required, Validators.minLength(8)]],
   phone: ['', [Validators.pattern(/^\+?[1-9]\d{1,14}$/)]],
   confirm_password: ['', Validators.required],
-  is_subscriber: [false],
+  is_subscriber: [false, Validators.requiredTrue],
   is_terms_accept: [false, Validators.requiredTrue]
 }, {
   validators: this.passwordMatchValidator()
@@ -56,6 +56,7 @@ export class Register {
   }
 
   onSubmit() {
+    this.errorMessage.set('');
     if (this.registerForm.invalid) {
       this.errorMessage.set('Please fill in all fields');
       return;

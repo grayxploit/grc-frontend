@@ -21,7 +21,8 @@ export const loginGuard: CanActivateFn = () => {
         return router.parseUrl('/dashboard');
       }
 
-      return router.parseUrl('/login');
+      return true
     })
+
   );
 };

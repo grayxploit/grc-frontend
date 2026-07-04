@@ -1,6 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { EventEmitter } from '@angular/core';
 import { Dropdown } from '../../ui/dropdown/dropdown';
 import { DropdownItemTwo } from '../../ui/dropdown/dropdown-item/dropdown-item-two';
 import { AuthService } from '../../../../services/auth/auth.service';
@@ -11,6 +12,7 @@ import { AuthService } from '../../../../services/auth/auth.service';
   styleUrl: './user-dropdown.css',
 })
 export class UserDropdown implements OnInit {
+  @Output() logOut = new EventEmitter();
   private authService = inject(AuthService);
   authUser = this.authService.authUser; // live computed signal
   isOpen = false;
@@ -25,5 +27,9 @@ export class UserDropdown implements OnInit {
 
   closeDropdown() {
     this.isOpen = false;
+  }
+
+  onLogout() {
+    this.logOut.emit();
   }
 }

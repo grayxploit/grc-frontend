@@ -1,6 +1,6 @@
 import { inject, Service, signal, computed } from '@angular/core';
 import { ApiService } from '../api/api.service';
-import { LoginRequest, RegisterRequest , LoginResponseData, RefreshTokenResponseData, RegisterResponseData} from './auth.model';
+import { LoginRequest, RegisterRequest , LoginResponseData, RefreshTokenResponseData, RegisterResponseData, LogoutResponseData, VerifyEmailResponse} from './auth.model';
 import { ApiResponse } from '../api/api-response.model';
 import { catchError, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { User } from '../user/user.service';
@@ -88,13 +88,29 @@ export class AuthService {
   }
 
 
-  public logout() {
-    this.removeToken();
-    this.#authUser.set(null);
+  public logout(): Observable<ApiResponse<LogoutResponseData>> {
+
+    return this.apiService.protectedPost<ApiResponse<LogoutResponseData>>('auth/logout', {}).pipe(
+      map(response => response.data),
+      tap(() => {
+        this.removeToken();
+        this.#authUser.set(null);
+      }),
+      catchError(passthroughError)
+    );
+    
   }
 
   public register(data: RegisterRequest): Observable<ApiResponse<RegisterResponseData>> {
     return this.apiService.post<ApiResponse<RegisterResponseData>>('auth/register', data).pipe(
+      map(response => response.data),
+      catchError(passthroughError)
+    );
+  }
+
+
+  public verifyEmail(token: string): Observable<ApiResponse<VerifyEmailResponse>> {
+    return this.apiService.get<ApiResponse<VerifyEmailResponse>>(`auth/verify-email/${token}`).pipe(
       map(response => response.data),
       catchError(passthroughError)
     );

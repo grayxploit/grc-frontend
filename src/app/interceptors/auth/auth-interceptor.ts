@@ -49,7 +49,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
   const http = inject(HttpClient);
 
   // Don't modify headers for authentication endpoints
-  if (req.url.includes('auth/login') || req.url.includes('auth/refresh') || req.url.includes('auth/register')) {
+  if (req.url.includes('auth/login') || req.url.includes('auth/refresh') || req.url.includes('auth/register') || req.url.includes('auth/forgot-password') || req.url.includes('auth/reset-password') || req.url.includes('auth/verify-email')) {
     console.log('AuthInterceptor: Skipping auth endpoints');
     let headers = req.headers
       .set('Content-Type', 'application/json')

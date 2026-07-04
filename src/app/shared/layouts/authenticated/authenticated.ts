@@ -3,9 +3,10 @@ import { SidebarService } from '../../../services/sidebar/sidebar.service';
 import { Sidebar } from '../sidebar/sidebar';
 import { NavItem } from '../sidebar/sidebar';
 import { CommonModule } from "@angular/common";
-import { RouterModule } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 import { Backdrop } from '../backdrop/backdrop';
 import { Header } from '../header/header';
+import { AuthService } from '../../../services/auth/auth.service';
 @Component({
   selector: 'app-authenticated',
   imports: [
@@ -23,6 +24,8 @@ export class Authenticated {
   readonly isHovered$;
   readonly isMobileOpen$;
 
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router)
   private sidebarService = inject(SidebarService);
   constructor() {
     this.isExpanded$ = this.sidebarService.isExpanded$;
@@ -105,5 +108,15 @@ export class Authenticated {
       (this.isExpanded$ || this.isHovered$) ? 'xl:ml-[290px]' : 'xl:ml-[90px]',
       this.isMobileOpen$ ? 'ml-0' : ''
     ];
+  }
+
+  onLogout() {
+      this.authService.logout().subscribe({
+        next: (response) => {
+          this.router.navigate(['login'])
+          console.log('Logout successful:', response);
+        },
+        error: (error) => console.error(error),
+      });
   }
 }
