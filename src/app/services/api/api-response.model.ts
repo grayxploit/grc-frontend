@@ -31,6 +31,7 @@ export interface ErrorDetail {
   status: string;
   message: string;
   error_code: string;
+  errors?: Array<{ field: string; message: string }>;
 }
 
 export interface ErrorResponse {

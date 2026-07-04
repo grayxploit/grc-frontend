@@ -7,10 +7,12 @@ import { User } from '../user/user.service';
 export const ACCESS_TOKEN = 'access_token'
 export const REFRESH_ENDPOINT = 'auth/refresh-token'
 
+const passthroughError = (error: unknown) => throwError(() => error);
+
 
 @Service()
 export class AuthService {
-  private readonly apiService = inject(ApiService);
+  public readonly apiService = inject(ApiService);
 
   #authUser = signal<User | null>(null);
   authUser = computed(() => this.#authUser());
@@ -18,7 +20,7 @@ export class AuthService {
     return this.apiService.post<ApiResponse<LoginResponseData>>('auth/login', data).pipe(
       map(response => response.data),
       tap(response => this.#authUser.set(response.data.user)),
-      catchError(error => throwError(() => new Error(error.message)))
+      catchError(passthroughError)
     );
   }
 
@@ -63,7 +65,7 @@ export class AuthService {
     return this.apiService.post<ApiResponse<RefreshTokenResponseData>>(REFRESH_ENDPOINT, {}).pipe(
       map(response => response.data),
       tap(response => this.setToken(response.data.token.access_token)),
-      catchError(error => throwError(() => new Error(error.message)))
+      catchError(passthroughError)
     );
   }
 
@@ -94,7 +96,7 @@ export class AuthService {
   public register(data: RegisterRequest): Observable<ApiResponse<RegisterResponseData>> {
     return this.apiService.post<ApiResponse<RegisterResponseData>>('auth/register', data).pipe(
       map(response => response.data),
-      catchError(error => throwError(() => new Error(error.message)))
+      catchError(passthroughError)
     );
   }
 

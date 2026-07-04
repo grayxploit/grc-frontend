@@ -219,10 +219,70 @@ export class ApiService {
   }
 
   public extractApiErrorMessage(error: any): string | null {
-    return error?.error?.detail?.message
-      || error?.error?.error?.detail?.message
-      || error?.error?.message
-      || error?.message
-      || null;
+    const visited = new Set<object>();
+
+    const findMessage = (value: any): string | null => {
+      if (value == null) {
+        return null;
+      }
+
+      if (typeof value === 'string') {
+        return value.trim().length > 0 ? value : null;
+      }
+
+      if (typeof value !== 'object') {
+        return null;
+      }
+
+      if (visited.has(value)) {
+        return null;
+      }
+      visited.add(value);
+
+      if (Array.isArray(value)) {
+        for (const entry of value) {
+          const message = findMessage(entry);
+          if (message) {
+            return message;
+          }
+        }
+        return null;
+      }
+
+      if (typeof value.message === 'string' && value.message.trim().length > 0) {
+        return value.message;
+      }
+
+      if (typeof value.detail === 'string' && value.detail.trim().length > 0) {
+        return value.detail;
+      }
+
+      if (value.detail && typeof value.detail === 'object') {
+        const detailMessage = findMessage(value.detail);
+        if (detailMessage) {
+          return detailMessage;
+        }
+      }
+
+      if (Array.isArray(value.errors)) {
+        for (const entry of value.errors) {
+          const message = findMessage(entry?.message);
+          if (message) {
+            return message;
+          }
+        }
+      }
+
+      for (const nestedValue of Object.values(value)) {
+        const message = findMessage(nestedValue);
+        if (message) {
+          return message;
+        }
+      }
+
+      return null;
+    };
+
+    return findMessage(error);
   }
 }

@@ -32,30 +32,35 @@ export class Login {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
   });
-  public errorMessage = '';
-  public showPassword = false;
-  public isSubmitting = false;
+   public errorMessage = signal('');
+  public showPassword = signal(false);
+  public isSubmitting = signal(false);
 
 
 
   public onSubmit() {
     if (this.loginForm.invalid) {
-      this.errorMessage = 'Please fill in all fields';
+      this.errorMessage.set('Please fill in all fields');
+      this.isSubmitting.set(false);
       return;
     }
-    this.isSubmitting = true;
+
+    this.errorMessage.set('');
+    this.isSubmitting.set(true);
     this.authService.login({
       email: this.loginForm.value.email as string,
       password: this.loginForm.value.password as string,
     }).subscribe({
       next: (response) => {
         this.authService.setToken(response.data.token.access_token);
-        
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
-        this.errorMessage = error.message;
-        this.isSubmitting = false;
+        
+        const err = this.authService.apiService.extractApiErrorMessage(error);
+        console.error('Login error:', err);
+        this.errorMessage.set(err || 'Login failed. Please try again.');
+        this.isSubmitting.set(false);
       }
     });
   }
@@ -66,7 +71,7 @@ export class Login {
       email: this.demoEmail,
       password: this.demoPassword
     });
-    this.errorMessage = '';
+    this.errorMessage.set('');
   }
 
 
@@ -76,7 +81,7 @@ export class Login {
   }
 
   public togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+    this.showPassword.set(!this.showPassword());
   }
 
 }

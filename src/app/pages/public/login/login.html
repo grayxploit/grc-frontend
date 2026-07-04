@@ -36,16 +36,19 @@
       </p>
 
       <!-- Error message -->
-      <div
-        *ngIf="errorMessage"
+       @if (errorMessage()) {
+        <div
+        
         class="mb-5 flex items-center gap-2 rounded-md border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 font-mono dark:border-[#ff5f57]/30 dark:bg-[#ff5f57]/10 dark:text-[#ff8f89]"
         role="alert"
       >
         <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
-        {{ errorMessage }}
+        {{ errorMessage() }}
       </div>
+       }
+      
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <!-- Email Field -->
@@ -88,7 +91,7 @@
             </span>
             <input
               id="password"
-              [type]="showPassword ? 'text' : 'password'"
+              [type]="showPassword() ? 'text' : 'password'"
               name="password"
               formControlName="password"
               placeholder="••••••••"
@@ -105,7 +108,7 @@
               type="button"
               (click)="togglePasswordVisibility()"
               class="absolute inset-y-0 right-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors dark:text-[#4a5854] dark:hover:text-[#9fb0ab]"
-              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
             >
               <svg *ngIf="!showPassword" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -123,7 +126,7 @@
         <!-- Sign In Button -->
         <button
           type="submit"
-          [disabled]="isSubmitting"
+          [disabled]="isSubmitting()"
           class="relative w-full rounded-md py-3.5 font-mono text-sm font-semibold text-[#0a0e13]
                  bg-gradient-to-r from-[#ff8a3d] to-[#ffb347]
                  hover:from-[#ff9950] hover:to-[#ffc266]
@@ -133,8 +136,8 @@
                  shadow-lg shadow-[#ff8a3d]/20
                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a3d]"
         >
-          <span *ngIf="!isSubmitting">authenticate →</span>
-          <span *ngIf="isSubmitting" class="flex items-center justify-center gap-2">
+          <span *ngIf="!isSubmitting()">authenticate →</span>
+          <span *ngIf="isSubmitting()" class="flex items-center justify-center gap-2">
             <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
