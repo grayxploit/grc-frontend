@@ -34,7 +34,7 @@
         create an account for <span class="text-slate-800 dark:text-[#9fb0ab]">{{ applicationName }}</span>
       </p>
 
-      @if(errorMessage){
+      @if(errorMessage()){
         <!-- Error message -->
         <div
           class="mb-5 flex items-center gap-2 rounded-md border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 font-mono dark:border-[#ff5f57]/30 dark:bg-[#ff5f57]/10 dark:text-[#ff8f89]"
@@ -43,11 +43,11 @@
           <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
-          {{ errorMessage }}
+          {{ errorMessage() }}
         </div>
       }
 
-      @if (showSuccessMessage) {
+      @if (showSuccessMessage()) {
         
         <!-- Success message -->
         <div
@@ -57,7 +57,7 @@
           <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M5 13l4 4L19 7"/>
           </svg>
-          {{ showSuccessMessage }}
+          {{ showSuccessMessage() }}
         </div>
       }
 
@@ -113,7 +113,7 @@
           <label for="password" class="block font-mono text-[11px] uppercase tracking-widest text-slate-500 mb-2 dark:text-[#5b6b66]">passphrase</label>
           <input
             id="password"
-            [type]="showPassword ? 'text' : 'password'"
+            [type]="showPassword() ? 'text' : 'password'"
             formControlName="password"
             placeholder="••••••••"
             class="w-full rounded-md border border-slate-200 bg-white px-4 py-2.5 pr-11 font-mono text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-[#ff8a3d]/60 focus:ring-1 focus:ring-[#ff8a3d]/30 hover:border-slate-300 dark:border-[#232b2e] dark:bg-[#0e1315] dark:text-[#e8ecea] dark:placeholder-[#3f4a47] dark:hover:border-[#3a4643]"
@@ -122,15 +122,15 @@
             type="button"
             (click)="togglePasswordVisibility()"
             class="absolute right-3 top-[34px] flex items-center text-slate-400 hover:text-slate-600 transition-colors dark:text-[#4a5854] dark:hover:text-[#9fb0ab]"
-            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
           >
-            @if(!showPassword){
+            @if(!showPassword()){
               <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                 <circle cx="12" cy="12" r="3"/>
               </svg>
             }
-            @if(showPassword){
+            @if(showPassword()){
               <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
                 <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
@@ -148,7 +148,7 @@
           <label for="confirm_password" class="block font-mono text-[11px] uppercase tracking-widest text-slate-500 mb-2 dark:text-[#5b6b66]">confirm_passphrase</label>
           <input
             id="confirm_password"
-            [type]="showConfirmPassword ? 'text' : 'password'"
+            [type]="showConfirmPassword() ? 'text' : 'password'"
             formControlName="confirm_password"
             placeholder="••••••••"
             class="w-full rounded-md border border-slate-200 bg-white px-4 py-2.5 pr-11 font-mono text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-[#ff8a3d]/60 focus:ring-1 focus:ring-[#ff8a3d]/30 hover:border-slate-300 dark:border-[#232b2e] dark:bg-[#0e1315] dark:text-[#e8ecea] dark:placeholder-[#3f4a47] dark:hover:border-[#3a4643]"
@@ -157,15 +157,15 @@
             type="button"
             (click)="toggleConfirmPasswordVisibility()"
             class="absolute right-3 top-[34px] flex items-center text-slate-400 hover:text-slate-600 transition-colors dark:text-[#4a5854] dark:hover:text-[#9fb0ab]"
-            [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'"
+            [attr.aria-label]="showConfirmPassword() ? 'Hide password' : 'Show password'"
           >
-            @if(!showConfirmPassword){
+            @if(!showConfirmPassword()){
               <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                 <circle cx="12" cy="12" r="3"/>
               </svg>
             }
-            @if(showConfirmPassword){
+            @if(showConfirmPassword()){
               <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
                 <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
@@ -222,14 +222,14 @@
                  shadow-lg shadow-[#ff8a3d]/20
                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a3d]"
         >
-          @if(isSubmitting){
+          @if(isSubmitting()){
             <svg class="inline-block h-4 w-4 animate-spin mr-2" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             creating account...
           }
-          @if(!isSubmitting){
+          @if(!isSubmitting()){
           create account →
           }
         </button>

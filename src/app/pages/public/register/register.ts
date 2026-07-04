@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Logo } from '../../../shared/components/common/logo/logo';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { environment } from '../../../../environments/environment.prod';
@@ -23,11 +23,11 @@ export class Register {
 
   public readonly applicationName = environment.applicationName;
   public readonly router = inject(Router);
-  public isSubmitting = false;
-  public errorMessage = '';
-  public showPassword = false;
-  public showConfirmPassword = false;
-  public showSuccessMessage = ''
+  public isSubmitting = signal(false);
+  public errorMessage = signal('');
+  public showPassword = signal(false);
+  public showConfirmPassword = signal(false);
+  public showSuccessMessage = signal('');
   public registerForm = this.formBuilder.group({
   full_name: ['', [Validators.required, Validators.minLength(3)]],
   email: ['', [Validators.required, Validators.email]],
@@ -57,7 +57,7 @@ export class Register {
 
   onSubmit() {
     if (this.registerForm.invalid) {
-      this.errorMessage = 'Please fill in all fields';
+      this.errorMessage.set('Please fill in all fields');
       return;
     }
     // Handle form submission logic here
@@ -72,19 +72,19 @@ export class Register {
       is_terms_accept: formData.is_terms_accept as boolean
     };
 
-    this.isSubmitting = true;
+    this.isSubmitting.set(true);
     this.authService.register(payload).subscribe({
       next: (response) => {
         // Handle successful registration
-        this.isSubmitting = false;
+        this.isSubmitting.set(false);
         this.registerForm.reset();
-        this.showSuccessMessage = response.message || 'Registration successful! Please check your email for verification.';
+        this.showSuccessMessage.set(response.message || 'Registration successful! Please check your email for verification.');
       },
       error: (error) => {
         // Handle registration error
-        console.error('Registration failed:', error);
-        this.errorMessage = 'Registration failed. Please try again.';
-        this.isSubmitting = false;
+        const err = this.authService.apiService.extractApiErrorMessage(error);
+        this.errorMessage.set(err || 'Registration failed. Please try again.');
+        this.isSubmitting.set(false);
       }
     });
   }
@@ -95,10 +95,10 @@ export class Register {
   }
 
   public togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+    this.showPassword.set(!this.showPassword());
   }
   public toggleConfirmPasswordVisibility(): void {
-    this.showConfirmPassword = !this.showConfirmPassword;
+    this.showConfirmPassword.set(!this.showConfirmPassword());
   }
 
 }
