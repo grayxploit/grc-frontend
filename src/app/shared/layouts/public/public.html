@@ -1,4 +1,4 @@
-<app-blockchain-background></app-blockchain-background>
+<app-blockchain-background [theme]="(themeService.theme$ | async) ?? 'light'"></app-blockchain-background>
 <app-navbar></app-navbar>
 <main class="relative z-0 min-h-screen">
   <router-outlet></router-outlet>
