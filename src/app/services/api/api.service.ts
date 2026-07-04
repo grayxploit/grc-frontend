@@ -146,7 +146,8 @@ export class ApiService {
     return {
       data: response.body as T,
       status: response.status,
-      headers: response.headers
+      headers: response.headers,
+      message: response.body && (response.body as any).message ? (response.body as any).message : ''
     };
   }
 

@@ -50,7 +50,7 @@ export class Login {
     }).subscribe({
       next: (response) => {
         this.authService.setToken(response.data.token.access_token);
-
+        
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {

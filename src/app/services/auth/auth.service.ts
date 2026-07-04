@@ -1,26 +1,12 @@
 import { inject, Service, signal, computed } from '@angular/core';
 import { ApiService } from '../api/api.service';
-import { LoginRequest } from './auth.model';
+import { LoginRequest, RegisterRequest , LoginResponseData, RefreshTokenResponseData, RegisterResponseData} from './auth.model';
 import { ApiResponse } from '../api/api-response.model';
 import { catchError, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { User } from '../user/user.service';
 export const ACCESS_TOKEN = 'access_token'
-export const REFRESH_ENDPOINT = '/auth/refresh-token'
-interface LoginResponseData {
-  token: {
-    access_token: string;
-    token_type: string;
-  },
+export const REFRESH_ENDPOINT = 'auth/refresh-token'
 
-  user: User;
-}
-
-interface RefreshTokenResponseData {
-  token: {
-    access_token: string;
-    token_type: string;
-  },
-}
 
 @Service()
 export class AuthService {
@@ -74,7 +60,7 @@ export class AuthService {
 
   public refreshToken(): Observable<ApiResponse<RefreshTokenResponseData>> {
     // Backend reads refresh_token from httpOnly cookie, so send empty body
-    return this.apiService.post<ApiResponse<RefreshTokenResponseData>>('auth/refresh-token', {}).pipe(
+    return this.apiService.post<ApiResponse<RefreshTokenResponseData>>(REFRESH_ENDPOINT, {}).pipe(
       map(response => response.data),
       tap(response => this.setToken(response.data.token.access_token)),
       catchError(error => throwError(() => new Error(error.message)))
@@ -97,6 +83,19 @@ export class AuthService {
     console.log('Token found, validating by fetching user profile...');
     this.fetchMe();
     return of(true);
+  }
+
+
+  public logout() {
+    this.removeToken();
+    this.#authUser.set(null);
+  }
+
+  public register(data: RegisterRequest): Observable<ApiResponse<RegisterResponseData>> {
+    return this.apiService.post<ApiResponse<RegisterResponseData>>('auth/register', data).pipe(
+      map(response => response.data),
+      catchError(error => throwError(() => new Error(error.message)))
+    );
   }
 
 }

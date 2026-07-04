@@ -2,6 +2,7 @@ export interface ApiResponse<T> {
   data: T;
   status: number;
   headers: any;
+  message: string;
 }
 
 

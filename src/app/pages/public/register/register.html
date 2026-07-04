@@ -47,6 +47,20 @@
         </div>
       }
 
+      @if (showSuccessMessage) {
+        
+        <!-- Success message -->
+        <div
+          class="mb-5 flex items-center gap-2 rounded-md border border-[#4ddba0]/30 bg-[#4ddba0]/10 px-4 py-3 text-sm text-[#4ddba0] font-mono dark:border-[#4ddba0]/30 dark:bg-[#4ddba0]/10 dark:text-[#4ddba0]"
+          role="alert"
+        >
+          <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M5 13l4 4L19 7"/>
+          </svg>
+          {{ showSuccessMessage }}
+        </div>
+      }
+
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
 
         <!-- Full Name -->
@@ -76,6 +90,21 @@
           />
           @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
             <p class="mt-1.5 font-mono text-xs text-rose-600 dark:text-[#ff8f89]">error: enter a valid email address</p>
+          }
+        </div>
+        <!-- Email -->
+        <div>
+          <label for="phone" class="block font-mono text-[11px] uppercase tracking-widest text-slate-500 mb-2 dark:text-[#5b6b66]">phone</label>
+          <input
+            id="phone"
+            type="tel"
+            formControlName="phone"
+            placeholder="your phone number"
+            
+            class="w-full rounded-md border border-slate-200 bg-white px-4 py-2.5 font-mono text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-[#ff8a3d]/60 focus:ring-1 focus:ring-[#ff8a3d]/30 hover:border-slate-300 dark:border-[#232b2e] dark:bg-[#0e1315] dark:text-[#e8ecea] dark:placeholder-[#3f4a47] dark:hover:border-[#3a4643]"
+          />
+          @if (registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched) {
+            <p class="mt-1.5 font-mono text-xs text-rose-600 dark:text-[#ff8f89]">error: enter a valid phone number</p>
           }
         </div>
 
@@ -193,7 +222,16 @@
                  shadow-lg shadow-[#ff8a3d]/20
                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a3d]"
         >
+          @if(isSubmitting){
+            <svg class="inline-block h-4 w-4 animate-spin mr-2" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            creating account...
+          }
+          @if(!isSubmitting){
           create account →
+          }
         </button>
 
         <p class="text-center font-mono text-xs text-slate-500 dark:text-[#5b6b66] pt-2">
