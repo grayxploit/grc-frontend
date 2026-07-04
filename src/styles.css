@@ -175,6 +175,21 @@
   If we ever want to remove these styles, we need to add an explicit border
   color utility to any element that depends on these defaults.
 */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 @layer base {
 
     *,
@@ -191,6 +206,7 @@
     }
 
     body {
+        min-height: 100vh;
         @apply relative font-normal font-outfit z-1 bg-gray-50;
     }
 }

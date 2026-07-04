@@ -21,9 +21,8 @@ export class Login {
   private readonly formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
-  // private readonly toastr = inject(ToastrService);
-  // private readonly loading = inject(LoadingService);
+
+ 
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
   public readonly applicationName = environment.applicationName;

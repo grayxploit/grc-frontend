@@ -3,6 +3,7 @@ import { Component , HostListener} from '@angular/core';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Logo } from '../../../../components/common/logo/logo';
+import { ThemeToggle } from '../../../../components/theme-toggle/theme-toggle';
 interface NavLink {
   href: string;
   label: string;
@@ -10,7 +11,7 @@ interface NavLink {
 @Component({
   selector: 'app-navbar',
   imports: [
-    CommonModule, RouterModule, Logo
+    CommonModule, RouterModule, Logo, ThemeToggle
   ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
