@@ -116,4 +116,11 @@ export class AuthService {
     );
   }
 
+  public forgotPassword(email: string): Observable<ApiResponse<{ message: string }>> {
+    return this.apiService.post<ApiResponse<{ message: string }>>('auth/forgot-password', { email }).pipe(
+      map(response => response.data),
+      catchError(passthroughError)
+    );
+  }
+
 }

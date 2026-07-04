@@ -122,11 +122,21 @@
             </button>
           </div>
         </div>
-
+        <!-- Forgot Password Link -->
+         <!-- Forgot Password -->
+        <div class="mb-7 flex justify-end">
+          <button
+            type="button"
+            (click)="onForgotPassword()"
+            class="font-mono text-xs text-[#4ddba0] hover:text-[#6ce4b8] transition-colors"
+          >
+            forgot passphrase?
+          </button>
+        </div>
         <!-- Sign In Button -->
         <button
           type="submit"
-          [disabled]="isSubmitting()"
+          [disabled]="loginForm.invalid || isSubmitting()"
           class="relative w-full rounded-md py-3.5 font-mono text-sm font-semibold text-[#0a0e13]
                  bg-gradient-to-r from-[#ff8a3d] to-[#ffb347]
                  hover:from-[#ff9950] hover:to-[#ffc266]

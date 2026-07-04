@@ -84,4 +84,8 @@ export class Login {
     this.showPassword.set(!this.showPassword());
   }
 
+  public onForgotPassword(): void {
+    // Navigate to forgot password page
+    this.router.navigate(['/forgot-password']);
+  }
 }

@@ -14,6 +14,7 @@ import { Register } from './pages/public/register/register';
 import { environment } from '../environments/environment';
 import { loginGuard } from './guards/login/login-guard';
 import { VerifyEmail } from './pages/public/verify-email/verify-email';
+import { ForgotPassword } from './pages/public/forgot-password/forgot-password';
 export const routes: Routes = [
     {
         path: 'countdown',
@@ -48,6 +49,12 @@ export const routes: Routes = [
                 canActivate:[loginGuard],
                 component:VerifyEmail,
                 title:`Verify Email | ${environment.applicationName}`
+            },
+            {
+                path:'forgot-password',
+                canActivate:[loginGuard],
+                component:ForgotPassword,
+                title:`Forgot Password | ${environment.applicationName}`
             }
         ]
     },
