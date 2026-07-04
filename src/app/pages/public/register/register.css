@@ -1,0 +1,7 @@
+:host {
+  display: block;
+}
+
+.auth-card {
+  transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}

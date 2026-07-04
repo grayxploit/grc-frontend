@@ -4,6 +4,8 @@ import {
   ViewChild,
   AfterViewInit,
   OnDestroy,
+  OnChanges,
+  SimpleChanges,
   ChangeDetectionStrategy,
   Input,
   PLATFORM_ID,
@@ -58,7 +60,7 @@ const MAX_LINKS_PER_BLOCK = 3;
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-bgcanvas">
+    <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-bgcanvas">
       <!-- Theme-aware base wash + grid (CSS, cheap) -->
       <div class="absolute inset-0 bg-grid animate-grid-pan opacity-60 dark:opacity-40"></div>
       <div class="absolute -top-40 -left-32 h-[40rem] w-[40rem] rounded-full bg-blue-500/10 blur-[150px] animate-aurora dark:bg-blue-500/20"></div>
@@ -73,7 +75,7 @@ const MAX_LINKS_PER_BLOCK = 3;
     </div>
   `,
 })
-export class BlockchainBackgroundComponent implements AfterViewInit, OnDestroy {
+export class BlockchainBackgroundComponent implements AfterViewInit, OnDestroy, OnChanges {
   /** Optional explicit theme override. If omitted, dark mode is auto-detected. */
   @Input() theme?: 'light' | 'dark';
 
@@ -114,6 +116,12 @@ export class BlockchainBackgroundComponent implements AfterViewInit, OnDestroy {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['theme']?.currentValue) {
+      this.currentTheme = changes['theme'].currentValue;
+    }
+  }
+
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
@@ -150,16 +158,16 @@ export class BlockchainBackgroundComponent implements AfterViewInit, OnDestroy {
   // ---- Theme detection -----------------------------------------------------
 
   private setupTheme(): void {
-    if (this.theme) {
-      this.currentTheme = this.theme;
-      return;
-    }
-    const computeFromDom = () =>
-      document.documentElement.classList.contains('dark')
+    const computeFromDom = (): 'light' | 'dark' => {
+      if (this.theme) {
+        return this.theme;
+      }
+      return document.documentElement.classList.contains('dark')
         ? 'dark'
         : window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
+          ? 'dark'
+          : 'light';
+    };
 
     this.currentTheme = computeFromDom();
 
@@ -292,6 +300,8 @@ export class BlockchainBackgroundComponent implements AfterViewInit, OnDestroy {
     if (!this.reduceMotion) this.rot += dt * 0.14;
 
     ctx.clearRect(0, 0, this.width, this.height);
+    ctx.fillStyle = this.currentTheme === 'dark' ? '#030712' : '#f8fafc';
+    ctx.fillRect(0, 0, this.width, this.height);
     const c = this.palette();
 
     // Tilt the whole scene slightly for a 3D "isometric" feel

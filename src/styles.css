@@ -207,7 +207,8 @@ body {
 
     body {
         min-height: 100vh;
-        @apply relative font-normal font-outfit z-1 bg-gray-50;
+        @apply relative font-normal font-outfit z-1;
+        background: transparent;
     }
 }
 
@@ -981,4 +982,67 @@ pre[class*="language-"] {
 
 pre[class*="language-"].line-numbers {
     padding-left: 2.8em !important;
+}
+
+/* Public layout: blockchain background + auth pages */
+:root {
+    --canvas: #f8fafc;
+    --grid-color: rgba(37, 99, 235, 0.08);
+    --vignette: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.12) 100%);
+}
+
+.dark {
+    --canvas: #030712;
+    --grid-color: rgba(99, 130, 246, 0.12);
+    --vignette: radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.bg-bgcanvas {
+    background-color: var(--canvas);
+    transition: background-color 200ms ease;
+}
+
+@utility bg-grid {
+    background-image:
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 48px 48px;
+}
+
+@utility bg-vignette {
+    background: var(--vignette);
+}
+
+@keyframes grid-pan {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 48px 48px;
+    }
+}
+
+@keyframes aurora {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(30px, -20px) scale(1.05);
+    }
+}
+
+@utility animate-grid-pan {
+    animation: grid-pan 20s linear infinite;
+}
+
+@utility animate-aurora {
+    animation: aurora 18s ease-in-out infinite;
+}
+
+.auth-shell {
+    background: transparent;
 }

@@ -1,4 +1,0 @@
-/* Theme-aware backdrop base + foreground vignette for the 3D canvas */
-  .bg-bgcanvas {
-    background-color: var(--canvas);
-  }

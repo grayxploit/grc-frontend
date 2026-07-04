@@ -1,9 +1,5 @@
-<!-- app.component.html -->
-
-<app-blockchain-background [theme]="(theme | async) ?? 'light'"></app-blockchain-background>
-<router-outlet>
-  
-
-    <app-navbar></app-navbar>
-    
-</router-outlet>
+<app-blockchain-background></app-blockchain-background>
+<app-navbar></app-navbar>
+<main class="relative z-0 min-h-screen">
+  <router-outlet></router-outlet>
+</main>

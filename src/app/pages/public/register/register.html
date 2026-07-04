@@ -1,17 +1,10 @@
-<div class="relative min-h-screen flex items-center justify-center bg-[#0a0e13] overflow-hidden py-10">
-
-  <!-- Ambient grid + glow backdrop -->
-  <div class="pointer-events-none absolute inset-0 opacity-[0.07]"
-       style="background-image: linear-gradient(#4ddba0 1px, transparent 1px), linear-gradient(90deg, #4ddba0 1px, transparent 1px); background-size: 42px 42px;">
-  </div>
-  <div class="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-96 w-[36rem] rounded-full bg-[#ff8a3d]/10 blur-[120px]"></div>
-  <div class="pointer-events-none absolute bottom-0 right-0 h-72 w-72 rounded-full bg-[#4ddba0]/10 blur-[100px]"></div>
+<div class="relative min-h-screen flex items-center justify-center overflow-hidden auth-shell pt-16 py-10">
 
   <!-- Terminal-style card -->
-  <div class="relative w-full max-w-md mx-4 rounded-lg border border-[#232b2e] bg-[#12181a]/90 backdrop-blur-xl shadow-2xl shadow-black/60 overflow-hidden">
+  <div class="relative w-full max-w-md mx-4 rounded-lg border border-slate-200/70 bg-white/85 backdrop-blur-xl shadow-2xl shadow-slate-900/10 overflow-hidden dark:border-[#232b2e] dark:bg-[#0e1315]/90 dark:shadow-black/60 auth-card">
 
     <!-- Window chrome bar -->
-    <div class="flex items-center justify-between px-5 py-3 border-b border-[#232b2e] bg-[#0e1315]">
+    <div class="flex items-center justify-between px-5 py-3 border-b border-slate-200/70 dark:border-[#232b2e] auth-header-bar">
       <div class="flex items-center gap-2">
         <span class="h-2.5 w-2.5 rounded-full bg-[#ff5f57]/70"></span>
         <span class="h-2.5 w-2.5 rounded-full bg-[#febc2e]/70"></span>
@@ -33,18 +26,18 @@
       </div>
 
       <!-- Heading, terminal-prompt style -->
-      <h1 class="text-center font-mono text-xl font-semibold text-[#e8ecea] mb-1 tracking-tight">
+      <h1 class="text-center font-mono text-xl font-semibold text-slate-900 mb-1 tracking-tight dark:text-[#e8ecea]">
         <span class="text-[#4ddba0]">$</span> register
         <span class="inline-block w-[2px] h-4 bg-[#ff8a3d] align-middle ml-1 animate-[blink_1.1s_steps(1)_infinite]"></span>
       </h1>
-      <p class="text-center text-sm text-[#7c8a86] mb-8 font-mono">
-        create an account for <span class="text-[#9fb0ab]">{{ applicationName }}</span>
+      <p class="text-center text-sm text-slate-600 mb-8 font-mono dark:text-[#7c8a86]">
+        create an account for <span class="text-slate-800 dark:text-[#9fb0ab]">{{ applicationName }}</span>
       </p>
 
       @if(errorMessage){
         <!-- Error message -->
         <div
-          class="mb-5 flex items-center gap-2 rounded-md border border-[#ff5f57]/30 bg-[#ff5f57]/10 px-4 py-3 text-sm text-[#ff8f89] font-mono"
+          class="mb-5 flex items-center gap-2 rounded-md border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 font-mono dark:border-[#ff5f57]/30 dark:bg-[#ff5f57]/10 dark:text-[#ff8f89]"
           role="alert"
         >
           <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -58,48 +51,48 @@
 
         <!-- Full Name -->
         <div>
-          <label for="full_name" class="block font-mono text-[11px] uppercase tracking-widest text-[#5b6b66] mb-2">full_name</label>
+          <label for="full_name" class="block font-mono text-[11px] uppercase tracking-widest text-slate-500 mb-2 dark:text-[#5b6b66]">full_name</label>
           <input
             id="full_name"
             type="text"
             formControlName="full_name"
             placeholder="John Doe"
-            class="w-full rounded-md border border-[#232b2e] bg-[#0e1315] px-4 py-2.5 font-mono text-sm text-[#e8ecea] placeholder-[#3f4a47] outline-none transition focus:border-[#ff8a3d]/60 focus:ring-1 focus:ring-[#ff8a3d]/30 hover:border-[#3a4643]"
+            class="w-full rounded-md border border-slate-200 bg-white px-4 py-2.5 font-mono text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-[#ff8a3d]/60 focus:ring-1 focus:ring-[#ff8a3d]/30 hover:border-slate-300 dark:border-[#232b2e] dark:bg-[#0e1315] dark:text-[#e8ecea] dark:placeholder-[#3f4a47] dark:hover:border-[#3a4643]"
           />
           @if (registerForm.get('full_name')?.invalid && registerForm.get('full_name')?.touched) {
-            <p class="mt-1.5 font-mono text-xs text-[#ff8f89]">error: full name must be at least 3 characters</p>
+            <p class="mt-1.5 font-mono text-xs text-rose-600 dark:text-[#ff8f89]">error: full name must be at least 3 characters</p>
           }
         </div>
 
         <!-- Email -->
         <div>
-          <label for="email" class="block font-mono text-[11px] uppercase tracking-widest text-[#5b6b66] mb-2">user_email</label>
+          <label for="email" class="block font-mono text-[11px] uppercase tracking-widest text-slate-500 mb-2 dark:text-[#5b6b66]">user_email</label>
           <input
             id="email"
             type="email"
             formControlName="email"
             placeholder="you@example.com"
-            class="w-full rounded-md border border-[#232b2e] bg-[#0e1315] px-4 py-2.5 font-mono text-sm text-[#e8ecea] placeholder-[#3f4a47] outline-none transition focus:border-[#ff8a3d]/60 focus:ring-1 focus:ring-[#ff8a3d]/30 hover:border-[#3a4643]"
+            class="w-full rounded-md border border-slate-200 bg-white px-4 py-2.5 font-mono text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-[#ff8a3d]/60 focus:ring-1 focus:ring-[#ff8a3d]/30 hover:border-slate-300 dark:border-[#232b2e] dark:bg-[#0e1315] dark:text-[#e8ecea] dark:placeholder-[#3f4a47] dark:hover:border-[#3a4643]"
           />
           @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
-            <p class="mt-1.5 font-mono text-xs text-[#ff8f89]">error: enter a valid email address</p>
+            <p class="mt-1.5 font-mono text-xs text-rose-600 dark:text-[#ff8f89]">error: enter a valid email address</p>
           }
         </div>
 
         <!-- Password -->
         <div class="relative">
-          <label for="password" class="block font-mono text-[11px] uppercase tracking-widest text-[#5b6b66] mb-2">passphrase</label>
+          <label for="password" class="block font-mono text-[11px] uppercase tracking-widest text-slate-500 mb-2 dark:text-[#5b6b66]">passphrase</label>
           <input
             id="password"
             [type]="showPassword ? 'text' : 'password'"
             formControlName="password"
             placeholder="••••••••"
-            class="w-full rounded-md border border-[#232b2e] bg-[#0e1315] px-4 py-2.5 pr-11 font-mono text-sm text-[#e8ecea] placeholder-[#3f4a47] outline-none transition focus:border-[#ff8a3d]/60 focus:ring-1 focus:ring-[#ff8a3d]/30 hover:border-[#3a4643]"
+            class="w-full rounded-md border border-slate-200 bg-white px-4 py-2.5 pr-11 font-mono text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-[#ff8a3d]/60 focus:ring-1 focus:ring-[#ff8a3d]/30 hover:border-slate-300 dark:border-[#232b2e] dark:bg-[#0e1315] dark:text-[#e8ecea] dark:placeholder-[#3f4a47] dark:hover:border-[#3a4643]"
           />
           <button
             type="button"
             (click)="togglePasswordVisibility()"
-            class="absolute right-3 top-[34px] flex items-center text-[#4a5854] hover:text-[#9fb0ab] transition-colors"
+            class="absolute right-3 top-[34px] flex items-center text-slate-400 hover:text-slate-600 transition-colors dark:text-[#4a5854] dark:hover:text-[#9fb0ab]"
             [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
           >
             @if(!showPassword){
@@ -117,24 +110,24 @@
             }
           </button>
           @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
-            <p class="mt-1.5 font-mono text-xs text-[#ff8f89]">error: password must be at least 8 characters</p>
+            <p class="mt-1.5 font-mono text-xs text-rose-600 dark:text-[#ff8f89]">error: password must be at least 8 characters</p>
           }
         </div>
 
         <!-- Confirm Password -->
         <div class="relative">
-          <label for="confirm_password" class="block font-mono text-[11px] uppercase tracking-widest text-[#5b6b66] mb-2">confirm_passphrase</label>
+          <label for="confirm_password" class="block font-mono text-[11px] uppercase tracking-widest text-slate-500 mb-2 dark:text-[#5b6b66]">confirm_passphrase</label>
           <input
             id="confirm_password"
             [type]="showConfirmPassword ? 'text' : 'password'"
             formControlName="confirm_password"
             placeholder="••••••••"
-            class="w-full rounded-md border border-[#232b2e] bg-[#0e1315] px-4 py-2.5 pr-11 font-mono text-sm text-[#e8ecea] placeholder-[#3f4a47] outline-none transition focus:border-[#ff8a3d]/60 focus:ring-1 focus:ring-[#ff8a3d]/30 hover:border-[#3a4643]"
+            class="w-full rounded-md border border-slate-200 bg-white px-4 py-2.5 pr-11 font-mono text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-[#ff8a3d]/60 focus:ring-1 focus:ring-[#ff8a3d]/30 hover:border-slate-300 dark:border-[#232b2e] dark:bg-[#0e1315] dark:text-[#e8ecea] dark:placeholder-[#3f4a47] dark:hover:border-[#3a4643]"
           />
           <button
             type="button"
             (click)="toggleConfirmPasswordVisibility()"
-            class="absolute right-3 top-[34px] flex items-center text-[#4a5854] hover:text-[#9fb0ab] transition-colors"
+            class="absolute right-3 top-[34px] flex items-center text-slate-400 hover:text-slate-600 transition-colors dark:text-[#4a5854] dark:hover:text-[#9fb0ab]"
             [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'"
           >
             @if(!showConfirmPassword){
@@ -152,7 +145,7 @@
             }
           </button>
           @if (registerForm.hasError('passwordMismatch') && registerForm.get('confirm_password')?.touched) {
-            <p class="mt-1.5 font-mono text-xs text-[#ff8f89]">error: passphrases do not match</p>
+            <p class="mt-1.5 font-mono text-xs text-rose-600 dark:text-[#ff8f89]">error: passphrases do not match</p>
           }
         </div>
 
@@ -162,9 +155,9 @@
             id="is_subscriber"
             type="checkbox"
             formControlName="is_subscriber"
-            class="h-4 w-4 rounded border-[#2c3634] bg-[#0e1315] text-[#ff8a3d] focus:ring-1 focus:ring-[#ff8a3d]/40 focus:ring-offset-0"
+            class="h-4 w-4 rounded border-slate-300 bg-white text-[#ff8a3d] focus:ring-1 focus:ring-[#ff8a3d]/40 focus:ring-offset-0 dark:border-[#2c3634] dark:bg-[#0e1315]"
           />
-          <label for="is_subscriber" class="font-mono text-xs text-[#7c8a86]">
+          <label for="is_subscriber" class="font-mono text-xs text-slate-600 dark:text-[#7c8a86]">
             subscribe to updates and news
           </label>
         </div>
@@ -176,14 +169,14 @@
               id="is_terms_accept"
               type="checkbox"
               formControlName="is_terms_accept"
-              class="h-4 w-4 rounded border-[#2c3634] bg-[#0e1315] text-[#ff8a3d] focus:ring-1 focus:ring-[#ff8a3d]/40 focus:ring-offset-0"
+              class="h-4 w-4 rounded border-slate-300 bg-white text-[#ff8a3d] focus:ring-1 focus:ring-[#ff8a3d]/40 focus:ring-offset-0 dark:border-[#2c3634] dark:bg-[#0e1315]"
             />
-            <label for="is_terms_accept" class="font-mono text-xs text-[#7c8a86]">
+            <label for="is_terms_accept" class="font-mono text-xs text-slate-600 dark:text-[#7c8a86]">
               I agree to the <a href="#" class="text-[#4ddba0] hover:text-[#6ce4b8] underline">Terms &amp; Conditions</a>
             </label>
           </div>
           @if (registerForm.get('is_terms_accept')?.invalid && registerForm.get('is_terms_accept')?.touched) {
-            <p class="mt-1.5 font-mono text-xs text-[#ff8f89]">error: you must accept the terms to continue</p>
+            <p class="mt-1.5 font-mono text-xs text-rose-600 dark:text-[#ff8f89]">error: you must accept the terms to continue</p>
           }
         </div>
 
@@ -203,7 +196,7 @@
           create account →
         </button>
 
-        <p class="text-center font-mono text-xs text-[#5b6b66] pt-2">
+        <p class="text-center font-mono text-xs text-slate-500 dark:text-[#5b6b66] pt-2">
           already have an account?
           <button type="button" (click)="onLogin()" class="ml-1 text-[#ff8a3d] hover:text-[#ffb347] font-medium transition-colors">sign in →</button>
         </p>

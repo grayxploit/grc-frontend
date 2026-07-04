@@ -2,29 +2,6 @@
   display: block;
 }
 
-.login-shell {
-  background:
-    radial-gradient(circle at top left, rgba(77, 219, 160, 0.16), transparent 34%),
-    radial-gradient(circle at bottom right, rgba(255, 138, 61, 0.12), transparent 28%),
-    linear-gradient(135deg, #f8fbf9 0%, #eef4f2 100%);
-  transition: background 200ms ease;
-}
-
-:host-context(.dark) .login-shell {
-  background:
-    radial-gradient(circle at top left, rgba(77, 219, 160, 0.1), transparent 34%),
-    radial-gradient(circle at bottom right, rgba(255, 138, 61, 0.12), transparent 28%),
-    linear-gradient(135deg, #060b0d 0%, #0f1715 100%);
-}
-
 .login-card {
   transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
-}
-
-.login-grid {
-  opacity: 0.08;
-}
-
-:host-context(.dark) .login-grid {
-  opacity: 0.12;
 }
