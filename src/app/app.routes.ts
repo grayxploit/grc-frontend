@@ -15,6 +15,7 @@ import { environment } from '../environments/environment';
 import { loginGuard } from './guards/login/login-guard';
 import { VerifyEmail } from './pages/public/verify-email/verify-email';
 import { ForgotPassword } from './pages/public/forgot-password/forgot-password';
+import { ResetPassword } from './pages/public/reset-password/reset-password';
 export const routes: Routes = [
     {
         path: 'countdown',
@@ -55,6 +56,12 @@ export const routes: Routes = [
                 canActivate:[loginGuard],
                 component:ForgotPassword,
                 title:`Forgot Password | ${environment.applicationName}`
+            },
+            {
+                path: 'reset-password/:token',
+                canActivate: [loginGuard],
+                component: ResetPassword,
+                title: `Reset Password | ${environment.applicationName}`
             }
         ]
     },

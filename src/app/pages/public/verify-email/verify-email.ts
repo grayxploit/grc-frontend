@@ -26,7 +26,7 @@ export class VerifyEmail implements OnInit {
   
   public activeUserError = signal<string | null>(null);
   ngOnInit(){
-    console.log('VerifyEmail component initialized');
+    
     this.activatedRoute.paramMap.subscribe(params => {
       this.token.set(params.get('token'))
     });

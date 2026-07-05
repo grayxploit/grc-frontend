@@ -56,3 +56,14 @@ export interface VerifyEmailResponseData {
 export interface VerifyEmailResponse{
   data: VerifyEmailResponseData;
 }
+
+export interface ResetPasswordRequest {
+  email: string;
+  token: string;
+  new_password: string;
+  confirm_password: string;
+}
+
+export interface ResetPasswordResponse {
+  message: string;
+}
