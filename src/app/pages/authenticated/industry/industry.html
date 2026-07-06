@@ -64,11 +64,13 @@
             </div>
         </div>
         
+        @if (meta) {
         <div class="mb-4">
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
                 {{ meta.total }} {{ meta.total === 1 ? 'industry' : 'industries' }} available for creating organizations
             </p>
         </div>
+        }
         <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-white/3">
             <table class="w-full text-left text-sm rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:bg-gray-800/60 dark:text-gray-400">
@@ -117,7 +119,9 @@
             </table>
             
         </div>
+        @if (meta) {
         <app-pagination [meta]="meta" (pageChange)="onPageChange($event)"></app-pagination>
+        }
     </app-card>
 
     @if (showCreateModal()) {
