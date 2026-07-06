@@ -45,7 +45,7 @@ export const routes: Routes = [
                 path:'register',
                 canActivate: [loginGuard],
                 component:Register,
-                
+                title:`Register | ${environment.applicationName}`
                 
             },
             {
