@@ -13,14 +13,17 @@ loadEnv({ path: envPath });
 const applicationName = process.env.APPLICATION_NAME?.trim() || 'GrayviX';
 const quote = (value) => `'${value.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`;
 
-const renderEnvironment = (production) => `export const environment = {
+const renderEnvironment = (production, apiUrl) => `export const environment = {
   production: ${production},
-  apiUrl: ${quote('/api')},
+  apiUrl: ${quote(apiUrl)},
   applicationName: ${quote(applicationName)},
 };
 `;
 
-writeFileSync(browserEnvPath, renderEnvironment(false));
-writeFileSync(browserProdEnvPath, renderEnvironment(true));
+const devApiUrl = process.env.DEV_API_URL || '/api';
+const prodApiUrl = process.env.API_URL || 'https://api.grayvix.com';
+
+writeFileSync(browserEnvPath, renderEnvironment(false, devApiUrl));
+writeFileSync(browserProdEnvPath, renderEnvironment(true, prodApiUrl));
 
 console.log(`Synced environment files from ${envPath}`);

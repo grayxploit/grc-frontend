@@ -1,0 +1,29 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - nvm install 24.15.0
+        - nvm use 24.15.0
+        - node -v
+        - curl -fsSL https://bun.sh/install | bash
+        - export BUN_INSTALL="$HOME/.bun"
+        - export PATH="$BUN_INSTALL/bin:$PATH"
+        - bun --version
+        - bun install
+    build:
+      commands:
+        - bun run build
+  artifacts:
+    baseDirectory: dist/frontend-app/browser
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - ~/.bun/install/cache/**/*
+      - node_modules/**/*
+environment:
+  variables:
+    API_URL: https://api.grayvix.com
+    DEV_API_URL: http://127.0.0.1:8000
+    APPLICATION_NAME: GrayviX
