@@ -58,7 +58,7 @@ export class Login {
         const isAdminWithNoOrg = user.role?.toLowerCase() === 'admin' && (user.organization === null || user.organization === undefined);
 
         if (isAdminWithNoOrg) {
-          this.router.navigate(['/create-organization']);
+          this.router.navigate(['/organizations']);
           return;
         }
 

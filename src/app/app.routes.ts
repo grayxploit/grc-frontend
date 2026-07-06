@@ -8,7 +8,6 @@ import { Authenticated } from './shared/layouts/authenticated/authenticated';
 import { Controls } from './pages/authenticated/controls/controls';
 import { Framework } from './pages/authenticated/framework/framework';
 import { FrameworkCategory } from './pages/authenticated/framework/framework-category/framework-category';
-import { CreateOrganization } from './pages/authenticated/create-organization/create-organization';
 import { Countdown } from './pages/public/countdown/countdown';
 import { ControlType } from './pages/authenticated/controls/control-type/control-type';
 import { Register } from './pages/public/register/register';
@@ -19,6 +18,7 @@ import { ForgotPassword } from './pages/public/forgot-password/forgot-password';
 import { ResetPassword } from './pages/public/reset-password/reset-password';
 import { adminGuard, superAdminGuard, userGuard } from './guards/auth/role-guard';
 import { Industry } from './pages/authenticated/industry/industry';
+import { Organization } from './pages/authenticated/organization/organization';
 export const routes: Routes = [
     {
         path: 'countdown',
@@ -74,9 +74,9 @@ export const routes: Routes = [
         component: Authenticated,
         children: [
             {
-                path: 'create-organization',
+                path: 'organizations',
                 canActivate: [adminGuard],
-                component: CreateOrganization,
+                component: Organization,
                 title: `Create Organization | ${environment.applicationName}`
             },
             {
