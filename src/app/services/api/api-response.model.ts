@@ -74,3 +74,9 @@ export interface QueryFilter {
   [key: string]: any
 }
 
+
+export interface CreatedBy{
+  id: string;
+  name: string;
+  
+}

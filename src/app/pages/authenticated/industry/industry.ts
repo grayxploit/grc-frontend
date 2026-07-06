@@ -26,6 +26,9 @@ export class Industry {
     private readonly cdr = inject(ChangeDetectorRef);
     isLoading = false;
     filter: QueryFilter = {};
+    searchQuery = '';
+    limit = 5;
+    limitOptions = [ 5, 10, 20, 50, 100];
     industries = signal<IndustryModel[]>([]);
     meta!: PaginationMeta;
     errorMessage = signal<string | null>(null);
@@ -34,14 +37,18 @@ export class Industry {
     showEditModal = signal(false);
     modalErrorMessage = signal<string | null>(null);
     public createIndustryForm = this.formBuilder.group({
-        name: ['', [Validators.required]],
+        name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9\\s]+$')]],
         
     });
 
     public editIndustryForm = this.formBuilder.group({
-        id: [0 as number],
-        name: ['', [Validators.required]],
+        id: [''],
+        name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9\\s]+$')]],
         
+    });
+
+    public searchForm = this.formBuilder.group({
+        search: ['']
     });
   
     ngOnInit() {
@@ -51,7 +58,12 @@ export class Industry {
 
     loadIndustries() {
       const page = this.filter['page'] || 1;
-      this.industryService.getAllIndustries({ page, limit: 10 })
+      const params: any = { page, size: this.limit || 5 };
+      if (this.searchQuery) {
+        params.name = this.searchQuery;
+      }
+      console.log('Loading industries with params:', params);
+      this.industryService.getAllIndustries(params)
         .subscribe({
           next: (response) => {
             this.industries.set(response.data);
@@ -73,6 +85,8 @@ export class Industry {
         id: industry.id,
         name: industry.name
       });
+      this.editIndustryForm.markAsUntouched();
+      this.isSubmitting.set(false);
     }
 
     closeEditModal() {
@@ -80,6 +94,7 @@ export class Industry {
       this.editIndustryForm.reset();
       this.modalErrorMessage.set(null);
       this.editIndustryForm.markAllAsTouched();
+      this.isSubmitting.set(false);
     }
     
     openCreateModal() {
@@ -88,13 +103,16 @@ export class Industry {
       console.log('Create modal');
       this.modalErrorMessage.set(null);
       this.showCreateModal.set(true);
+      this.createIndustryForm.reset();
+      this.createIndustryForm.markAsUntouched();
     }
 
     closeCreateModal() {
       this.showCreateModal.set(false);
       this.createIndustryForm.reset();
       this.modalErrorMessage.set(null);
-      this.createIndustryForm.markAllAsTouched();
+      this.createIndustryForm.markAsUntouched();
+      this.isSubmitting.set(false);
     }
 
     submitCreateForm() {
@@ -125,6 +143,26 @@ export class Industry {
 
     onPageChange(page: number) {
         this.filter['page'] = page;
+        this.loadIndustries();
+    }
+
+    onSearch() {
+        this.searchQuery = this.searchForm.value.search || '';
+        this.filter['page'] = 1;
+        this.loadIndustries();
+    }
+
+    onLimitChange(event: Event) {
+        const select = event.target as HTMLSelectElement;
+        this.limit = Number(select.value);
+        this.filter['page'] = 1;
+        this.loadIndustries();
+    }
+
+    clearSearch() {
+        this.searchForm.patchValue({ search: '' });
+        this.searchQuery = '';
+        this.filter['page'] = 1;
         this.loadIndustries();
     }
 

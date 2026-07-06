@@ -1,9 +1,9 @@
-import { QueryFilter } from "../api/api-response.model";
+import { CreatedBy, QueryFilter } from "../api/api-response.model";
 
 export interface Industry {
-    id: number
+    id: string;
     name: string;
-    created_by:number;
+    created_by?: CreatedBy;
     created_at:number;
     updated_by:number;
 }
@@ -11,7 +11,8 @@ export interface Industry {
 
 export interface IndustryQueryParam {
     page: number;
-    limit: number;
+    size?: number;
+    name?: string;
     filter?: QueryFilter
 }
 

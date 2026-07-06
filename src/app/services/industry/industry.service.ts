@@ -11,10 +11,15 @@ export class IndustryService {
 
 
     public getAllIndustries(queryParam: IndustryQueryParam) : Observable<PaginatedResponse<Industry>> {
-         let queryParams = `page=${queryParam.page}&size=${queryParam.limit}`;
+        console.log('IndustryService received queryParam:', queryParam);
+         let queryParams = `page=${queryParam.page}&size=${queryParam.size || 5}`;
+                if (queryParam.name) {
+                    queryParams += `&name=${queryParam.name}`;
+                }
                 if (queryParam.filter) {
                     queryParams += this.apiService.buildFilter(queryParam.filter);
                 }
+        console.log('IndustryService built queryParams:', queryParams);
         return this.apiService.protectedGet<PaginatedResponse<Industry>>(`industries/?${queryParams}`).pipe(
             map(response => response.data),
             catchError(passthroughError)
@@ -28,7 +33,7 @@ export class IndustryService {
         )
     }
 
-    public updateIndustry(id: number, payload: IndustryCreateRequest) : Observable<Industry> {
+    public updateIndustry(id: string, payload: IndustryCreateRequest) : Observable<Industry> {
         return this.apiService.protectedPut<Industry>(`industries/${id}`, payload).pipe(
             map(response => response.data),
             catchError(passthroughError)

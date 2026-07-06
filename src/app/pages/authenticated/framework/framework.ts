@@ -96,7 +96,7 @@ export class Framework implements OnInit, OnDestroy {
   }
 
   private loadIndustries() {
-    this.industryService.getAllIndustries({ page: 1, limit: 100 })
+    this.industryService.getAllIndustries({ page: 1, size: 100 })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -303,10 +303,10 @@ onPageChange(page: number) {
         this.getAllFramework();
     }
 
-  toggleIndustry(industryId: number, formType: 'create' | 'edit') {
+  toggleIndustry(industryId: string, formType: 'create' | 'edit') {
     const form = formType === 'create' ? this.createForm : this.editForm;
     const industriesArray = form.controls['industries'] as FormArray;
-    const currentIndustries = industriesArray.value as number[];
+    const currentIndustries = industriesArray.value as string[];
     
     const index = currentIndustries.indexOf(industryId);
     if (index > -1) {
@@ -316,10 +316,10 @@ onPageChange(page: number) {
     }
   }
 
-  isIndustrySelected(industryId: number, formType: 'create' | 'edit'): boolean {
+  isIndustrySelected(industryId: string, formType: 'create' | 'edit'): boolean {
     const form = formType === 'create' ? this.createForm : this.editForm;
     const industriesArray = form.controls['industries'] as FormArray;
-    const industries = industriesArray.value as number[];
+    const industries = industriesArray.value as string[];
     return industries.includes(industryId);
   }
 }
