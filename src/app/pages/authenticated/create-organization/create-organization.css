@@ -1,0 +1,7 @@
+.dark .create-organization-page {
+  background: #081012;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}

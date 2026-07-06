@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { PageBreadcrumb } from '../../../shared/components/common/page-breadcrumb/page-breadcrumb';
 import { Card } from '../../../shared/components/common/card/card';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FrameworkCategoryService } from '../../../services/framework/framework-category/framework-category.service';
 import { FrameworkCategory } from '../../../services/framework/framework-category/framework-category.model';
 import { ApiService } from '../../../services/api/api.service';
@@ -12,6 +12,8 @@ import { FrameworkCreateRequest, Framework as FrameworkModel } from '../../../se
 import { PaginationMeta, QueryFilter } from '../../../services/api/api-response.model';
 import { ChangeDetectorRef } from '@angular/core';
 import { Pagination } from '../../../shared/components/common/pagination/pagination';
+import { IndustryService } from '../../../services/industry/industry.service';
+import { Industry } from '../../../services/industry/industry.model';
 
 @Component({
   selector: 'app-framework',
@@ -29,6 +31,7 @@ export class Framework implements OnInit, OnDestroy {
   private readonly formBuilder = inject(FormBuilder);
   private readonly frameworkService = inject(FrameworkService);
   private readonly frameworkCategoryService = inject(FrameworkCategoryService);
+  private readonly industryService = inject(IndustryService);
   private destroy$ = new Subject<void>();
   private readonly cdr = inject(ChangeDetectorRef);
   isCreateModalOpen = false;
@@ -36,6 +39,7 @@ export class Framework implements OnInit, OnDestroy {
   modalErrorMessage = '';
   categoryLoadError = '';
   frameworkCategories: FrameworkCategory[] = [];
+  industries: Industry[] = [];
   isEditModalOpen = false;
   filter: QueryFilter = {};
   frameworks: FrameworkModel[] = [];
@@ -49,6 +53,7 @@ export class Framework implements OnInit, OnDestroy {
     official_url: '',
     published_date: '',
     version: '',
+    industries: this.formBuilder.array([]),
   });
 
   public editForm = this.formBuilder.group({
@@ -60,10 +65,12 @@ export class Framework implements OnInit, OnDestroy {
     official_url: '',
     published_date: '',
     version: '',
+    industries: this.formBuilder.array([]),
   });
 
   ngOnInit() {
     this.loadFrameworkCategories();
+    this.loadIndustries();
     this.getAllFramework();
   }
 
@@ -88,6 +95,21 @@ export class Framework implements OnInit, OnDestroy {
       });
   }
 
+  private loadIndustries() {
+    this.industryService.getAllIndustries({ page: 1, limit: 100 })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.industries = [...response.data];
+        },
+        error: (error) => {
+          console.error(error);
+          this.industries = [];
+          this.categoryLoadError = 'Unable to load industries.';
+        }
+      });
+  }
+
   openCreateModal() {
     this.isCreateModalOpen = true;
     this.modalErrorMessage = '';
@@ -100,6 +122,7 @@ export class Framework implements OnInit, OnDestroy {
       published_date: '',
       version: '',
     });
+    (this.createForm.controls['industries'] as FormArray).clear();
   }
 
   closeCreateModal() {
@@ -115,6 +138,7 @@ export class Framework implements OnInit, OnDestroy {
     }
 
     const formValue = this.createForm.value;
+    const industriesArray = this.createForm.controls['industries'] as FormArray;
     const payload: FrameworkCreateRequest = {
       name: formValue.name ?? '',
       description: formValue.description ?? '',
@@ -123,6 +147,7 @@ export class Framework implements OnInit, OnDestroy {
       official_url: formValue.official_url ?? '',
       published_date: formValue.published_date ?? '',
       version: formValue.version ?? '',
+      industries: industriesArray.value.map((id: number) => ({ industry_id: id })),
     };
 
     this.isSubmitting = true;
@@ -133,8 +158,6 @@ export class Framework implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           console.log('Framework created successfully:', response);
-          this.isSubmitting = false;
-          this.closeCreateModal();
           this.isSubmitting = false;
           this.closeCreateModal();
           this.getAllFramework();
@@ -216,6 +239,14 @@ export class Framework implements OnInit, OnDestroy {
           : '',
         version: framework.version ?? '',
       });
+      
+      const industriesArray = this.editForm.controls['industries'] as FormArray;
+      industriesArray.clear();
+      if (framework.industries && Array.isArray(framework.industries)) {
+        framework.industries.forEach((i: any) => {
+          industriesArray.push(new FormControl(i.id));
+        });
+      }
 
       this.isEditModalOpen = true;
 }
@@ -233,6 +264,7 @@ submitEditForm() {
   }
 
   const value = this.editForm.value;
+  const industriesArray = this.editForm.controls['industries'] as FormArray;
 
   const payload: FrameworkCreateRequest = {
     name: value.name ?? '',
@@ -242,6 +274,7 @@ submitEditForm() {
     official_url: value.official_url ?? '',
     published_date: value.published_date ?? '',
     version: value.version ?? '',
+    industries: industriesArray.value.map((id: number) => ({ industry_id: id })),
   };
 
   this.isSubmitting = true;
@@ -269,4 +302,24 @@ onPageChange(page: number) {
         this.filter['page'] = page;
         this.getAllFramework();
     }
+
+  toggleIndustry(industryId: number, formType: 'create' | 'edit') {
+    const form = formType === 'create' ? this.createForm : this.editForm;
+    const industriesArray = form.controls['industries'] as FormArray;
+    const currentIndustries = industriesArray.value as number[];
+    
+    const index = currentIndustries.indexOf(industryId);
+    if (index > -1) {
+      industriesArray.removeAt(index);
+    } else {
+      industriesArray.push(new FormControl(industryId));
+    }
+  }
+
+  isIndustrySelected(industryId: number, formType: 'create' | 'edit'): boolean {
+    const form = formType === 'create' ? this.createForm : this.editForm;
+    const industriesArray = form.controls['industries'] as FormArray;
+    const industries = industriesArray.value as number[];
+    return industries.includes(industryId);
+  }
 }

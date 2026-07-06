@@ -26,14 +26,17 @@ export class AuthService {
 
 
   public fetchMe() {
-    return this.apiService.protectedGet<ApiResponse<User>>('profile/').subscribe({
-      next: (response) => {
-        this.#authUser.set(response.data.data);
-      },
-      error: (error) => {
+    return this.apiService.protectedGet<ApiResponse<User>>('profile/').pipe(
+      map((response) => response.data.data),
+      tap((user) => {
+        this.#authUser.set(user);
+      }),
+      catchError((error) => {
         console.error('Error fetching profile:', error);
-      }
-    });
+        this.#authUser.set(null);
+        return throwError(() => error);
+      })
+    );
   }
 
   public setToken(token: string) {
@@ -78,13 +81,16 @@ export class AuthService {
     const token = this.getToken();
     if (!token) {
       console.log('No auth token found, user needs to login');
+      this.#authUser.set(null);
       return of(false);
     }
 
     // Token exists — fetch current user profile to validate it
     console.log('Token found, validating by fetching user profile...');
-    this.fetchMe();
-    return of(true);
+    return this.fetchMe().pipe(
+      map(() => true),
+      catchError(() => of(false))
+    );
   }
 
 

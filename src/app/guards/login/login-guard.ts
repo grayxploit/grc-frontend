@@ -17,11 +17,18 @@ export const loginGuard: CanActivateFn = () => {
   return authService.initializeAuth().pipe(
     map((isAuth) => {
       console.log('AuthGuard: isAuthenticated after initialization', isAuth);
-      if (isAuth) {
-        return router.parseUrl('/dashboard');
+      if (!isAuth) {
+        return true;
       }
 
-      return true
+      const user = authService.authUser();
+      const isAdminWithNoOrg = user?.role?.toLowerCase() === 'admin' && user.organization == null;
+
+      if (isAdminWithNoOrg) {
+        return router.parseUrl('/create-organization');
+      }
+
+      return router.parseUrl('/dashboard');
     })
 
   );

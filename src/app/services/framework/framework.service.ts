@@ -1,9 +1,9 @@
 import { inject, Service } from '@angular/core';
 import { ApiService } from '../api/api.service';
-import { Framework, FrameworkCreateRequest, FrameworkQueryParam } from './framework.model';
-import { Observable } from 'rxjs';
+import { Framework, FrameworkCreateRequest, FrameworkQueryParam, FrameworkUpdateRequest } from './framework.model';
+import { Observable, catchError, map, throwError } from 'rxjs';
 import { ApiResponse, PaginatedResponse } from '../api/api-response.model';
-import { map } from 'rxjs/operators';
+const passthroughError = (error: unknown) => throwError(() => error);
 @Service()
 export class FrameworkService {
     private apiService = inject(ApiService);
@@ -12,7 +12,7 @@ export class FrameworkService {
 
     createFramework(data: FrameworkCreateRequest): Observable<ApiResponse<Framework>> {
         return this.apiService.protectedPost<ApiResponse<Framework>>('framework/', data)
-            .pipe(map(response => response.data));
+            .pipe(map(response => response.data), catchError(passthroughError));
     }
 
     getAllFramework(queryParam: FrameworkQueryParam): Observable<PaginatedResponse<Framework>> {
@@ -22,12 +22,15 @@ export class FrameworkService {
         }
         return this.apiService
             .protectedGet<PaginatedResponse<Framework>>(`framework/?${queryParams}`)
-            .pipe(map(response => response.data));
+            .pipe(map(response => response.data), catchError(passthroughError));
     }
 
-    updateFramework(id: number, data: FrameworkCreateRequest): Observable<ApiResponse<Framework>> {
-        return this.apiService.protectedPut<ApiResponse<Framework>>(`framework/${id}/`, data)
-            .pipe(map(response => response.data));
+    updateFramework(id: number, data: FrameworkUpdateRequest): Observable<ApiResponse<Framework>> {
+        return this.apiService.protectedPut<ApiResponse<Framework>>(`framework/${id}`, data)
+            .pipe(
+                map(response => response.data),
+                catchError(passthroughError)
+            );
     }
 
     // deleteFramework(id: number): Observable<void> {

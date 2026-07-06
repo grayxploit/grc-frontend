@@ -23,6 +23,12 @@ export interface FrameworkCategoryCreateRequest {
     status: string;
 }
 
+export interface FrameworkCategoryUpdateRequest {
+    name: string;
+    description: string;
+    status: string;
+}
+
 export interface ImportJobResponse {
     job_id: string;
     status: string;

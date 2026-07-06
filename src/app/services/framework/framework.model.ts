@@ -1,5 +1,6 @@
 import { QueryFilter } from "../api/api-response.model";
 import { FrameworkCategory } from './framework-category/framework-category.model'
+import { Industry } from '../industry/industry.model';
 export interface Framework {
     id: number;
     name: string;
@@ -13,6 +14,7 @@ export interface Framework {
     created_by: number;
     created_at: string;
     updated_at: string;
+    industries?: Industry[];
 }
 
 export interface FrameworkCreateRequest {
@@ -23,10 +25,22 @@ export interface FrameworkCreateRequest {
     official_url: string;
     published_date: string;
     version: string;
+    industries: { industry_id: number }[];
 }
 
 export interface FrameworkQueryParam {
     page: number;
     limit: number;
     filter?: QueryFilter
+}
+
+export interface FrameworkUpdateRequest {
+    name: string;
+    description: string;
+    status: string;
+    category: number | FrameworkCategory | undefined;
+    official_url: string;
+    published_date: string;
+    version: string;
+    industries: { industry_id: number }[];
 }

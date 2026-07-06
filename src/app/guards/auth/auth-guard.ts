@@ -16,9 +16,18 @@ export const authGuard: CanActivateFn = (route, state) => {
   return authService.initializeAuth().pipe(
     map((isAuth) => {
       console.log('AuthGuard: isAuthenticated after initialization', isAuth);
-      if (isAuth) return true;
-      // Return a UrlTree so the router handles the redirect without side-effects
-      return router.parseUrl('/login');
+      if (!isAuth) {
+        return router.parseUrl('/login');
+      }
+
+      const user = authService.authUser();
+      const isAdminWithNoOrg = user?.role?.toLowerCase() === 'admin' && user.organization == null;
+
+      if (isAdminWithNoOrg && state.url !== '/create-organization') {
+        return router.parseUrl('/create-organization');
+      }
+
+      return true;
     })
   );
 };

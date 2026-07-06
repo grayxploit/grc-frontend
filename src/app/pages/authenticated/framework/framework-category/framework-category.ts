@@ -1,6 +1,6 @@
 import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { FrameworkCategoryService } from '../../../../services/framework/framework-category/framework-category.service';
-import { FrameworkCategory as FrameworkCategoryModel, ImportProgressEvent } from '../../../../services/framework/framework-category/framework-category.model';
+import { FrameworkCategory as FrameworkCategoryModel, FrameworkCategoryUpdateRequest, ImportProgressEvent } from '../../../../services/framework/framework-category/framework-category.model';
 import { PaginationMeta, QueryFilter } from '../../../../services/api/api-response.model';
 import { Subject, takeUntil } from 'rxjs';
 import { Card } from '../../../../shared/components/common/card/card';
@@ -339,8 +339,12 @@ export class FrameworkCategory {
 
         this.isSubmitting = true;
         this.modalErrorMessage = '';
-
-        this.frameworkCategoryService.updateFrameworkCategory(this.editForm.id, this.editForm)
+        const payload: FrameworkCategoryUpdateRequest = {
+            name: this.editForm.name,
+            description: this.editForm.description,
+            status: this.editForm.status
+        };
+        this.frameworkCategoryService.updateFrameworkCategory(this.editForm.id, payload)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (response) => {
