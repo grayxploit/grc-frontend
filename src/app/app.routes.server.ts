@@ -22,7 +22,14 @@ export const serverRoutes: ServerRoute[] = [
     path: 'framework-categories',
     renderMode: RenderMode.Client
   },
-
+  {
+    path: 'verify-email/:token',
+    renderMode: RenderMode.Client
+  },
+  {
+    path: 'reset-password/:token',
+    renderMode: RenderMode.Client
+  },
   {
     path: '**',
     renderMode: RenderMode.Prerender
