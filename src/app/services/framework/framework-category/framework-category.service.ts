@@ -6,11 +6,14 @@ import { ApiResponse, PaginatedResponse } from '../../api/api-response.model';
 import { map } from 'rxjs/operators';
 @Service()
 export class FrameworkCategoryService {
-    private readonly apiService = inject(ApiService);
+    public readonly apiService = inject(ApiService);
     private readonly ngZone = inject(NgZone);
 
     getAllFrameworkCategory(queryParam: FrameworkCategoryQueryParam): Observable<PaginatedResponse<FrameworkCategory>> {
-        let queryParams = `page=${queryParam.page}&size=${queryParam.limit}`;
+        let queryParams = `page=${queryParam.page}&size=${queryParam.size || 5}`;
+        if (queryParam.name) {
+            queryParams += `&name=${queryParam.name}`;
+        }
         if (queryParam.filter) {
             queryParams += this.apiService.buildFilter(queryParam.filter);
         }

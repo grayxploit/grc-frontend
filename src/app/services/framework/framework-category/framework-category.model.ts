@@ -1,8 +1,9 @@
-import { QueryFilter } from "../../api/api-response.model";
+import { CreatedBy, QueryFilter } from "../../api/api-response.model";
 
 export interface FrameworkCategoryQueryParam {
     page: number;
-    limit: number;
+    size?: number;
+    name?: string
     filter?: QueryFilter
 }
 
@@ -12,7 +13,7 @@ export interface FrameworkCategory {
     description: string;
     status: string;
     slug: string;
-    created_by: number;
+    created_by?: CreatedBy;
     created_at: string;
     updated_at: string;
 }

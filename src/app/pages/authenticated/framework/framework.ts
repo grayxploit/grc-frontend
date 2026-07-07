@@ -80,7 +80,7 @@ export class Framework implements OnInit, OnDestroy {
   }
 
   private loadFrameworkCategories() {
-    this.frameworkCategoryService.getAllFrameworkCategory({ page: 1, limit: 100 })
+    this.frameworkCategoryService.getAllFrameworkCategory({ page: 1, size: 100 })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -218,96 +218,96 @@ export class Framework implements OnInit, OnDestroy {
 
   openEditModal(framework: FrameworkModel) {
     console.log('Opening edit modal for framework:', framework);
-  this.modalErrorMessage = '';
+    this.modalErrorMessage = '';
 
-  const selectedCategoryValue =
+    const selectedCategoryValue =
       typeof framework.category === 'object' && framework.category !== undefined
         ? String(framework.category.id)
         : framework.category !== undefined
           ? String(framework.category)
           : '';
 
-      this.editForm.patchValue({
-        id: framework.id,
-        name: framework.name,
-        description: framework.description ?? '',
-        status: framework.status,
-        category: selectedCategoryValue,
-        official_url: framework.official_url ?? '',
-        published_date: framework.published_date
-          ? framework.published_date.substring(0, 10)
-          : '',
-        version: framework.version ?? '',
+    this.editForm.patchValue({
+      id: framework.id,
+      name: framework.name,
+      description: framework.description ?? '',
+      status: framework.status,
+      category: selectedCategoryValue,
+      official_url: framework.official_url ?? '',
+      published_date: framework.published_date
+        ? framework.published_date.substring(0, 10)
+        : '',
+      version: framework.version ?? '',
+    });
+
+    const industriesArray = this.editForm.controls['industries'] as FormArray;
+    industriesArray.clear();
+    if (framework.industries && Array.isArray(framework.industries)) {
+      framework.industries.forEach((i: any) => {
+        industriesArray.push(new FormControl(i.id));
       });
-      
-      const industriesArray = this.editForm.controls['industries'] as FormArray;
-      industriesArray.clear();
-      if (framework.industries && Array.isArray(framework.industries)) {
-        framework.industries.forEach((i: any) => {
-          industriesArray.push(new FormControl(i.id));
-        });
-      }
+    }
 
-      this.isEditModalOpen = true;
-}
-
-closeEditModal() {
-  this.isEditModalOpen = false;
-  this.modalErrorMessage = '';
-}
-
-submitEditForm() {
-  if (this.editForm.invalid) {
-    this.modalErrorMessage = 'Please fill in all required fields.';
-    this.editForm.markAllAsTouched();
-    return;
+    this.isEditModalOpen = true;
   }
 
-  const value = this.editForm.value;
-  const industriesArray = this.editForm.controls['industries'] as FormArray;
+  closeEditModal() {
+    this.isEditModalOpen = false;
+    this.modalErrorMessage = '';
+  }
 
-  const payload: FrameworkCreateRequest = {
-    name: value.name ?? '',
-    description: value.description ?? '',
-    status: value.status ?? 'active',
-    category: Number(value.category),
-    official_url: value.official_url ?? '',
-    published_date: value.published_date ?? '',
-    version: value.version ?? '',
-    industries: industriesArray.value.map((id: number) => ({ industry_id: id })),
-  };
-
-  this.isSubmitting = true;
-  this.modalErrorMessage = '';
-
-  this.frameworkService
-    .updateFramework(value.id!, payload)
-    .pipe(takeUntil(this.destroy$))
-    .subscribe({
-      next: () => {
-        this.isSubmitting = false;
-        this.closeEditModal();
-        this.getAllFramework();
-      },
-      error: (error) => {
-        this.isSubmitting = false;
-        this.modalErrorMessage =
-          this.extractApiErrorMessage(error) ||
-          'Unable to update framework.';
-      },
-    });
-}
-
-onPageChange(page: number) {
-        this.filter['page'] = page;
-        this.getAllFramework();
+  submitEditForm() {
+    if (this.editForm.invalid) {
+      this.modalErrorMessage = 'Please fill in all required fields.';
+      this.editForm.markAllAsTouched();
+      return;
     }
+
+    const value = this.editForm.value;
+    const industriesArray = this.editForm.controls['industries'] as FormArray;
+
+    const payload: FrameworkCreateRequest = {
+      name: value.name ?? '',
+      description: value.description ?? '',
+      status: value.status ?? 'active',
+      category: Number(value.category),
+      official_url: value.official_url ?? '',
+      published_date: value.published_date ?? '',
+      version: value.version ?? '',
+      industries: industriesArray.value.map((id: number) => ({ industry_id: id })),
+    };
+
+    this.isSubmitting = true;
+    this.modalErrorMessage = '';
+
+    this.frameworkService
+      .updateFramework(value.id!, payload)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.isSubmitting = false;
+          this.closeEditModal();
+          this.getAllFramework();
+        },
+        error: (error) => {
+          this.isSubmitting = false;
+          this.modalErrorMessage =
+            this.extractApiErrorMessage(error) ||
+            'Unable to update framework.';
+        },
+      });
+  }
+
+  onPageChange(page: number) {
+    this.filter['page'] = page;
+    this.getAllFramework();
+  }
 
   toggleIndustry(industryId: string, formType: 'create' | 'edit') {
     const form = formType === 'create' ? this.createForm : this.editForm;
     const industriesArray = form.controls['industries'] as FormArray;
     const currentIndustries = industriesArray.value as string[];
-    
+
     const index = currentIndustries.indexOf(industryId);
     if (index > -1) {
       industriesArray.removeAt(index);

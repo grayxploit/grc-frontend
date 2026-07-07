@@ -7,23 +7,24 @@ import { Card } from '../../../../shared/components/common/card/card';
 import { PageBreadcrumb } from '../../../../shared/components/common/page-breadcrumb/page-breadcrumb';
 import { Pagination } from '../../../../shared/components/common/pagination/pagination';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 
 @Component({
-  selector: 'app-framework-category',
-  imports: [
-    CommonModule,
-    FormsModule,
-    PageBreadcrumb,
-    Card,
-    Pagination
-  ],
-  templateUrl: './framework-category.html',
-  styleUrl: './framework-category.css',
+    selector: 'app-framework-category',
+    imports: [
+        CommonModule,
+        FormsModule,
+        PageBreadcrumb,
+        Card,
+        Pagination,
+        ReactiveFormsModule
+    ],
+    templateUrl: './framework-category.html',
+    styleUrl: './framework-category.css',
 })
 export class FrameworkCategory {
     private frameworkCategoryService = inject(FrameworkCategoryService);
-
+    private formBuilder = inject(FormBuilder);
     private readonly cdr = inject(ChangeDetectorRef);
     private destroy$ = new Subject<void>();
 
@@ -40,7 +41,9 @@ export class FrameworkCategory {
     importSuccessMessage = '';
     isSubmitting = false;
     selectedFile: File | null = null;
-    
+    searchQuery = '';
+    limit = 5;
+    limitOptions = [5, 10, 20, 50, 100];
     // Import progress properties
     importJobId: string | null = null;
     importProgress: ImportProgressEvent | null = null;
@@ -57,35 +60,61 @@ export class FrameworkCategory {
         status: 'active'
     };
 
+    public searchForm = this.formBuilder.group({
+        search: ['']
+    });
+
     ngOnInit() {
-      this.destroy$ = new Subject<void>();
-      this.getAllFrameworkCategory();
+        this.destroy$ = new Subject<void>();
+        this.getAllFrameworkCategory();
     }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+    onSearch() {
+        this.searchQuery = this.searchForm.value.search || '';
+        this.filter['page'] = 1;
+        this.getAllFrameworkCategory();
+    }
 
+    clearSearch() {
+        this.searchForm.patchValue({ search: '' });
+        this.searchQuery = '';
+        this.filter['page'] = 1;
+        this.getAllFrameworkCategory();
+    }
 
-  getAllFrameworkCategory() {
-      const page = this.filter['page'] || 1;
-      this.frameworkCategoryService.getAllFrameworkCategory({ page, limit: 3 })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (response) => {
-            this.errorMessage = '';
-            this.frameworkCategories = [...response.data];
-            this.meta = { ...response.meta };
-            this.cdr.markForCheck(); // force view update after async data
-          },
-          error: (error) => {
-            this.errorMessage = error?.error?.message || 'Unable to load framework categories.';
-            this.frameworkCategories = [];
-            this.cdr.markForCheck();
-            console.error(error);
-          },
-        });
+    onLimitChange(event: Event) {
+        const select = event.target as HTMLSelectElement;
+        this.limit = Number(select.value);
+        this.filter['page'] = 1;
+        this.getAllFrameworkCategory();
+    }
+
+    getAllFrameworkCategory() {
+        const page = this.filter['page'] || 1;
+        const params: any = { page, size: this.limit || 5 };
+        if (this.searchQuery) {
+            params.name = this.searchQuery;
+        }
+        this.frameworkCategoryService.getAllFrameworkCategory(params)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: (response) => {
+                    this.errorMessage = '';
+                    this.frameworkCategories = [...response.data];
+                    this.meta = { ...response.meta };
+                    this.cdr.markForCheck(); // force view update after async data
+                },
+                error: (error) => {
+                    this.errorMessage = error?.error?.message || 'Unable to load framework categories.';
+                    this.frameworkCategories = [];
+                    this.cdr.markForCheck();
+                    console.error(error);
+                },
+            });
     }
 
     openCreateModal() {
@@ -96,6 +125,7 @@ export class FrameworkCategory {
             description: '',
             status: 'active'
         };
+
     }
 
     closeCreateModal() {
@@ -117,6 +147,12 @@ export class FrameworkCategory {
     closeEditModal() {
         this.isEditModalOpen = false;
         this.modalErrorMessage = '';
+        this.editForm = {
+            id: 0,
+            name: '',
+            description: '',
+            status: 'active'
+        };
     }
 
     openImportModal() {
@@ -235,7 +271,7 @@ export class FrameworkCategory {
 
                     this.importProgress = normalizedProgress;
                     this.cdr.markForCheck();
-                    
+
                     if (this.isImportComplete(this.importProgress)) {
                         this.completeImport(this.importProgress);
                     } else if (normalizedProgress.status === 'failed') {
@@ -354,7 +390,8 @@ export class FrameworkCategory {
                 },
                 error: (error) => {
                     this.isSubmitting = false;
-                    this.modalErrorMessage = error?.error?.message || 'Unable to update framework category.';
+                    const err = this.frameworkCategoryService.apiService.extractApiErrorMessage(error)
+                    this.modalErrorMessage = err || 'Unable to update framework category.';
                     this.cdr.markForCheck();
                     console.error(error);
                 }
@@ -380,7 +417,8 @@ export class FrameworkCategory {
                 },
                 error: (error) => {
                     this.isSubmitting = false;
-                    this.modalErrorMessage = error?.error?.message || 'Unable to create framework category.';
+                    const err = this.frameworkCategoryService.apiService.extractApiErrorMessage(error)
+                    this.modalErrorMessage = err || 'Unable to create framework category.';
                     this.cdr.markForCheck();
                     console.error(error);
                 }
@@ -390,6 +428,13 @@ export class FrameworkCategory {
     onPageChange(page: number) {
         this.filter['page'] = page;
         this.getAllFrameworkCategory();
+    }
+
+
+    getSerialNumber(index: number): number {
+        const currentPage = this.filter['page'] || 1;
+        const itemsPerPage = this.meta?.size || 2;
+        return (currentPage - 1) * itemsPerPage + index + 1;
     }
 
 }
