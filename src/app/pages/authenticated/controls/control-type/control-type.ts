@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, signal } from '@angular/core';
 import { ControlTypeService } from '../../../../services/control/control-type/control-type.service';
-import { Subject, takeUntil } from 'rxjs';
+import { single, Subject, takeUntil } from 'rxjs';
 import { ApiErrorPayload, PaginationMeta, QueryFilter } from '../../../../services/api/api-response.model';
 import { ControlTypeCreateRequest, ControlType as ControlTypeModel, ControlTypeUpdateRequest } from '../../../../services/control/control-type/control-type.model';
 import { CommonModule } from '@angular/common';
@@ -28,20 +28,23 @@ export class ControlType {
   private destroy$ = new Subject<void>(); // Subject to manage unsubscription and prevent memory leaks
 
 
-  isLoading = false; // Flag to indicate if data is being loaded
+  isLoading = signal<boolean>(false); // Flag to indicate if data is being loaded
 
   // List properties
   filter: QueryFilter = {};
-  controlTypes: ControlTypeModel[] = [];
-  meta!: PaginationMeta;
-  errorMessage = '';
+  controlTypes = signal<ControlTypeModel[]>([]);
+  meta!: PaginationMeta
+  errorMessage = signal<string>('');
 
+  searchQuery = '';
+  limit = 5;
+  limitOptions = [5, 10, 20, 50, 100];
   // Modal properties
-  isCreateModalOpen = false;
-  isEditModalOpen = false;
-  modalErrorMessage = '';
+  isCreateModalOpen = signal<boolean>(false);
+  isEditModalOpen = signal<boolean>(false);
+  modalErrorMessage = signal<string>('');
   //  Form submission properties
-  isSubmitting = false;
+  isSubmitting = signal<boolean>(false);
   private readonly formBuilder = inject(FormBuilder);
 
   public createForm = this.formBuilder.group({
@@ -52,6 +55,10 @@ export class ControlType {
     id: [0, Validators.required],
     name: ['', Validators.required],
   });
+
+  public searchForm = this.formBuilder.group({
+    search: ['']
+  });
   ngOnInit() {
     this.destroy$ = new Subject<void>();
     this.getAllControlType();
@@ -61,18 +68,36 @@ export class ControlType {
     this.destroy$.next();
     this.destroy$.complete();
   }
+  onSearch() {
+    this.searchQuery = this.searchForm.value.search || '';
+    this.filter['page'] = 1;
+    this.getAllControlType();
+  }
 
+  onLimitChange(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    this.limit = Number(select.value);
+    this.filter['page'] = 1;
+    this.getAllControlType();
+  }
+
+  clearSearch() {
+    this.searchForm.patchValue({ search: '' });
+    this.searchQuery = '';
+    this.filter['page'] = 1;
+    this.getAllControlType();
+  }
   openCreateModal() {
-    this.isCreateModalOpen = true;
-    this.modalErrorMessage = '';
+    this.isCreateModalOpen.set(true);
+    this.modalErrorMessage.set('');
     this.createForm.reset({
       name: ''
     });
   }
 
   closeCreateModal() {
-    this.isCreateModalOpen = false;
-    this.modalErrorMessage = '';
+    this.isCreateModalOpen.set(false);
+    this.modalErrorMessage.set('');
     this.createForm.reset({
       name: ''
     });
@@ -81,7 +106,7 @@ export class ControlType {
 
   submitCreateForm() {
     if (this.createForm.invalid) {
-      this.modalErrorMessage = 'Please fill in all required fields.';
+      this.modalErrorMessage.set('Please fill in all required fields.');
       this.createForm.markAllAsTouched();
       return;
     }
@@ -89,25 +114,22 @@ export class ControlType {
     const payload: ControlTypeCreateRequest = {
       name: formValue.name ?? ''
     };
-    this.isSubmitting = true;
+    this.isSubmitting.set(true);
     this.controlTypeService.createControlType(payload)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          this.isSubmitting = false;
+          this.isSubmitting.set(false);
           const createdControlType = response.data;
           if (createdControlType) {
-            this.controlTypes = [
-              { ...createdControlType, name: payload.name },
-              ...this.controlTypes
-            ];
+            this.controlTypes.set([{ ...createdControlType, name: payload.name }, ...this.controlTypes()]);
           }
           this.closeCreateModal();
           this.getAllControlType(false); // Refresh the list after successful creation
         },
         error: (error: ApiErrorPayload) => {
-          this.isSubmitting = false;
-          this.modalErrorMessage = this.apiService.extractApiErrorMessage(error) || 'An error occurred while creating the control type.';
+          this.isSubmitting.set(false);
+          this.modalErrorMessage.set(this.apiService.extractApiErrorMessage(error) || 'An error occurred while creating the control type.');
           console.error('Error creating control type:', error);
         }
       });
@@ -115,8 +137,8 @@ export class ControlType {
 
   openEditModal(controlType: ControlTypeModel) {
     console.log('Opening edit modal for control type:', controlType);
-    this.isEditModalOpen = true;
-    this.modalErrorMessage = '';
+    this.isEditModalOpen.set(true);
+    this.modalErrorMessage.set('');
 
     this.editForm.patchValue({
       id: controlType.id,
@@ -125,7 +147,7 @@ export class ControlType {
   }
   submitEditForm() {
     if (this.editForm.invalid) {
-      this.modalErrorMessage = 'Please fill in all required fields.';
+      this.modalErrorMessage.set('Please fill in all required fields.');
       this.editForm.markAllAsTouched();
       return;
     }
@@ -134,32 +156,32 @@ export class ControlType {
       name: formValue.name ?? ''
     };
     console.log('Submitting edit form with payload:', payload, 'for control type ID:', formValue.id);
-    this.isSubmitting = true;
+    this.isSubmitting.set(true);
     this.controlTypeService.updateControlType(formValue.id ?? 0, payload)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          this.isSubmitting = false;
+          this.isSubmitting.set(false);
           const updatedControlType = response.data;
-          this.controlTypes = this.controlTypes.map((controlType) =>
+          this.controlTypes.set(this.controlTypes().map((controlType) =>
             controlType.id === formValue.id
               ? { ...controlType, ...updatedControlType, name: payload.name }
               : controlType
-          );
+          ));
           this.closeEditModal();
           this.getAllControlType(false); // Refresh the list after successful update
         },
         error: (error: ApiErrorPayload) => {
-          this.isSubmitting = false;
-          this.modalErrorMessage = this.apiService.extractApiErrorMessage(error) || 'An error occurred while updating the control type.';
+          this.isSubmitting.set(false);
+          this.modalErrorMessage.set(this.apiService.extractApiErrorMessage(error) || 'An error occurred while updating the control type.');
           console.error('Error updating control type:', error);
         }
       });
   }
 
   closeEditModal() {
-    this.isEditModalOpen = false;
-    this.modalErrorMessage = '';
+    this.isEditModalOpen.set(false);
+    this.modalErrorMessage.set('');
     this.editForm.reset({
       id: 0,
       name: ''
@@ -168,35 +190,45 @@ export class ControlType {
   }
   getAllControlType(showLoading = true) {
     if (showLoading) {
-      this.isLoading = true;
+      this.isLoading.set(true);
     }
     const page = this.filter['page'] || 1;
-    this.controlTypeService.getAllControlType({ page: page, limit: 3, filter: this.filter })
+    const params: any = { page, size: this.limit || 5 };
+    if (this.searchQuery) {
+      params.name = this.searchQuery;
+    }
+    this.controlTypeService.getAllControlType(params)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           console.log('Control types fetched successfully:', response);
-          this.errorMessage = '';
-          this.controlTypes = [...response.data];
+          this.errorMessage.set('');
+          this.controlTypes.set(response.data);
           this.meta = response.meta;
-          this.isLoading = false;
+          this.isLoading.set(false);
           this.cdr.detectChanges();
         },
         error: (error: ApiErrorPayload) => {
-          this.errorMessage = this.apiService.extractApiErrorMessage(error) || 'An error occurred while fetching control types.';
+          this.errorMessage.set(this.apiService.extractApiErrorMessage(error) || 'An error occurred while fetching control types.');
           if (showLoading) {
-            this.controlTypes = [];
+            this.controlTypes.set([]);
           }
-          this.isLoading = false;
+          this.isLoading.set(false);
           this.cdr.detectChanges();
           console.error('Error fetching control types:', error);
         }
       });
   }
 
-   onPageChange(page: number) {
-        this.filter['page'] = page;
-        this.getAllControlType(false);
-    }
-  
+  onPageChange(page: number) {
+    this.filter['page'] = page;
+    this.getAllControlType(false);
+  }
+
+  getSerialNumber(index: number): number {
+    const currentPage = this.filter['page'] || 1;
+    const itemsPerPage = this.meta?.size || 2;
+    return (currentPage - 1) * itemsPerPage + index + 1;
+  }
+
 }

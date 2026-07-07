@@ -1,9 +1,9 @@
-import { QueryFilter } from "../../api/api-response.model";
+import { CreatedBy, QueryFilter } from "../../api/api-response.model";
 
 export interface ControlType {
     id: number;
     name: string;
-    created_by: number;
+    created_by?: CreatedBy;
     created_at: string;
     updated_at: string;
 }
@@ -17,6 +17,7 @@ export interface ControlTypeUpdateRequest {
 }
 export interface ControlTypeQueryParam {
     page: number;
-    limit: number;
+    size: number;
+    name?: string;
     filter?: QueryFilter
 }

@@ -15,7 +15,10 @@ export class ControlTypeService {
     }
 
     getAllControlType(queryParam: ControlTypeQueryParam): Observable<PaginatedResponse<ControlType>> {
-        let queryParams = `page=${queryParam.page}&size=${queryParam.limit}`;
+        let queryParams = `page=${queryParam.page}&size=${queryParam.size || 5}`;
+        if (queryParam.name) {
+            queryParams += `&name=${queryParam.name}`;
+        }
         if (queryParam.filter) {
             queryParams += this.apiService.buildFilter(queryParam.filter);
         }
@@ -29,5 +32,5 @@ export class ControlTypeService {
             .pipe(map(response => response.data));
     }
 
-   
+
 }

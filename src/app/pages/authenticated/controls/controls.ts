@@ -122,7 +122,7 @@ export class Controls implements OnInit, OnDestroy {
   }
 
   private loadControlTypes() {
-    this.controlTypeService.getAllControlType({ page: 1, limit: 100 })
+    this.controlTypeService.getAllControlType({ page: 1, size: 100 })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {

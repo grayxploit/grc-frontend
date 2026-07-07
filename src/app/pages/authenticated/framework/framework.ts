@@ -105,6 +105,7 @@ export class Framework implements OnInit, OnDestroy {
     this.filter['page'] = 1;
     this.getAllFramework();
   }
+
   private loadFrameworkCategories() {
     this.frameworkCategoryService.getAllFrameworkCategory({ page: 1, size: 100 })
       .pipe(takeUntil(this.destroy$))
