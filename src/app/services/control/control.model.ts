@@ -28,7 +28,7 @@ export interface Control {
 export interface FrameworkControl {
     id: number,
     severity: ControlSeverity,
-    framework_id?: number,
+    framework_id?: string,
     framework:Framework
 }
 export interface CreateControl {
@@ -50,6 +50,6 @@ export interface UpdateControl {
 }
 
 export interface CreateControlFramework {
-    frameworkId?: number
+    frameworkId?: string;
     severity: ControlSeverity
 }

@@ -25,7 +25,7 @@ export class FrameworkService {
             .pipe(map(response => response.data), catchError(passthroughError));
     }
 
-    updateFramework(id: number, data: FrameworkUpdateRequest): Observable<ApiResponse<Framework>> {
+    updateFramework(id: string, data: FrameworkUpdateRequest): Observable<ApiResponse<Framework>> {
         return this.apiService.protectedPut<ApiResponse<Framework>>(`framework/${id}`, data)
             .pipe(
                 map(response => response.data),

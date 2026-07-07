@@ -1,4 +1,4 @@
-<app-page-breadcrumb pageTitle="Framework Categories" />
+<app-page-breadcrumb pageTitle="Frameworks" />
 <div class="space-y-6">
     <app-card title="Frameworks">
         @if (errorMessage) {
@@ -14,7 +14,8 @@
 
         <div class="mb-4 flex items-center justify-between">
             <p class="text-sm text-gray-500 dark:text-gray-400">
-                {{ meta?.total ?? frameworks.length }} framework{{ (meta?.total ?? frameworks.length) === 1 ? '' : 's' }}
+                {{ meta?.total ?? frameworks.length }} framework{{ (meta?.total ?? frameworks.length) === 1 ? '' : 's'
+                }}
             </p>
             <div class="flex justify-end space-x-3">
                 <!-- <button
@@ -25,7 +26,8 @@
                 <button (click)="openCreateModal()"
                     class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors duration-150 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
                     Create Framework
                 </button>
@@ -35,28 +37,32 @@
         <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
             <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                 <!-- Table Head -->
-                <thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-500 dark:bg-gray-800/60 dark:text-gray-400">
+                <thead
+                    class="bg-gray-50 text-xs uppercase tracking-wide text-gray-500 dark:bg-gray-800/60 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3 font-semibold">ID</th>
+                        <th scope="col" class="px-6 py-3 font-semibold">S. No</th>
                         <th scope="col" class="px-6 py-3 font-semibold">Name</th>
                         <th scope="col" class="px-6 py-3 font-semibold">Acronym</th>
                         <th scope="col" class="px-6 py-3 font-semibold">Category</th>
                         <th scope="col" class="px-6 py-3 font-semibold">Industries</th>
+                        <th scope="col" class="px-6 py-3 font-semibold">Created By</th>
                         <th scope="col" class="px-6 py-3 font-semibold">Status</th>
                         <th scope="col" class="px-6 py-3 font-semibold text-right">Actions</th>
                     </tr>
                 </thead>
 
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                    @for (framework of frameworks; track framework.id) {
+                    @for (framework of frameworks; track framework.id; let i = $index) {
                     <tr class="transition-colors duration-100 hover:bg-gray-50 dark:hover:bg-gray-800/40">
-                        <td class="px-6 py-4 font-mono text-xs text-gray-400 dark:text-gray-500">{{ framework.id }}</td>
+                        <td class="px-6 py-4 font-mono text-xs text-gray-400 dark:text-gray-500">{{ getSerialNumber(i)}}
+                        </td>
                         <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-100">{{ framework.name }}</td>
                         <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ framework.acronym }}</td>
                         <td class="px-6 py-4">
                             <span
                                 class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200 dark:bg-blue-500/10 dark:text-blue-300 dark:ring-blue-500/30">
-                                {{ framework.category && typeof framework.category === 'object' ? framework.category.name : framework.category }}
+                                {{ framework.category && typeof framework.category === 'object' ?
+                                framework.category.name : framework.category }}
                             </span>
                         </td>
                         <td class="px-6 py-4">
@@ -73,6 +79,7 @@
                                 }
                             </div>
                         </td>
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ framework?.created_by?.name }}</td>
                         <td class="px-6 py-4">
                             <span
                                 class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset"
@@ -150,7 +157,8 @@
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+                        <label
+                            class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
                         <textarea formControlName="description" rows="3"
                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-shadow duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                             placeholder="Enter framework description"></textarea>
@@ -166,12 +174,13 @@
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
+                        <label
+                            class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
                         <select formControlName="category"
                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-shadow duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                             <option value="">Select category</option>
                             @for (category of frameworkCategories; track category.id) {
-                            <option value="{{ category.id }}">{{ category.name }}</option>
+                            <option [value]="category.id">{{ category.name }}</option>
                             }
                         </select>
                         @if (categoryControl?.invalid && categoryControl?.touched) {
@@ -180,7 +189,8 @@
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Official URL</label>
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Official
+                            URL</label>
                         <input type="url" formControlName="official_url"
                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-shadow duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                             placeholder="https://example.com">
@@ -188,12 +198,14 @@
 
                     <div class="grid gap-4 sm:grid-cols-2">
                         <div>
-                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Published Date</label>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Published
+                                Date</label>
                             <input type="date" formControlName="published_date"
                                 class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-shadow duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                         </div>
                         <div>
-                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Version</label>
+                            <label
+                                class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Version</label>
                             <input type="text" formControlName="version"
                                 class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-shadow duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                 placeholder="v1.0">
@@ -201,13 +213,14 @@
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Industries</label>
-                        <div class="max-h-40 space-y-1 overflow-y-auto rounded-lg border border-gray-200 p-3 dark:border-gray-600 dark:bg-gray-700/50">
+                        <label
+                            class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Industries</label>
+                        <div
+                            class="max-h-40 space-y-1 overflow-y-auto rounded-lg border border-gray-200 p-3 dark:border-gray-600 dark:bg-gray-700/50">
                             @for (industry of industries; track industry.id) {
                             <label
                                 class="flex cursor-pointer items-center rounded-md px-1.5 py-1 transition-colors duration-100 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <input type="checkbox"
-                                    [value]="industry.id"
+                                <input type="checkbox" [value]="industry.id"
                                     [checked]="isIndustrySelected(industry.id, 'create')"
                                     (change)="toggleIndustry(industry.id, 'create')"
                                     class="mr-2 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
@@ -228,8 +241,10 @@
                     class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors duration-150 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
                     @if (isSubmitting) {
                     <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
+                        </path>
                     </svg>
                     }
                     {{ isSubmitting ? 'Creating…' : 'Create' }}
@@ -254,7 +269,8 @@
                 </div>
                 }
 
-                <form id="editFrameworkForm" [formGroup]="editForm" (ngSubmit)="submitEditForm()" novalidate class="space-y-4">
+                <form id="editFrameworkForm" [formGroup]="editForm" (ngSubmit)="submitEditForm()" novalidate
+                    class="space-y-4">
                     <input type="hidden" formControlName="id">
 
                     <div>
@@ -267,7 +283,8 @@
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+                        <label
+                            class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
                         <textarea rows="3" formControlName="description"
                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-shadow duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"></textarea>
                     </div>
@@ -282,7 +299,8 @@
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
+                        <label
+                            class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
                         <select formControlName="category"
                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-shadow duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                             <option value="">Select Category</option>
@@ -296,32 +314,36 @@
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Official URL</label>
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Official
+                            URL</label>
                         <input type="url" formControlName="official_url"
                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-shadow duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                     </div>
 
                     <div class="grid gap-4 sm:grid-cols-2">
                         <div>
-                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Published Date</label>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Published
+                                Date</label>
                             <input type="date" formControlName="published_date"
                                 class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-shadow duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                         </div>
                         <div>
-                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Version</label>
+                            <label
+                                class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Version</label>
                             <input type="text" formControlName="version"
                                 class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-shadow duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                         </div>
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Industries</label>
-                        <div class="max-h-40 space-y-1 overflow-y-auto rounded-lg border border-gray-200 p-3 dark:border-gray-600 dark:bg-gray-700/50">
+                        <label
+                            class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Industries</label>
+                        <div
+                            class="max-h-40 space-y-1 overflow-y-auto rounded-lg border border-gray-200 p-3 dark:border-gray-600 dark:bg-gray-700/50">
                             @for (industry of industries; track industry.id) {
                             <label
                                 class="flex cursor-pointer items-center rounded-md px-1.5 py-1 transition-colors duration-100 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <input type="checkbox"
-                                    [value]="industry.id"
+                                <input type="checkbox" [value]="industry.id"
                                     [checked]="isIndustrySelected(industry.id, 'edit')"
                                     (change)="toggleIndustry(industry.id, 'edit')"
                                     class="mr-2 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
@@ -331,26 +353,27 @@
                         </div>
                     </div>
                     <div class="flex justify-end gap-3 border-t border-gray-100 px-6 py-4 dark:border-gray-700">
-                    <button type="button" (click)="closeEditModal()"
-                        class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-150 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
-                        Cancel
-                    </button>
-                    <button type="submit" [disabled]="isSubmitting"
-                        onclick="submitEditForm()"
-                        class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors duration-150 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
-                        @if (isSubmitting) {
-                        <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                        </svg>
-                        }
-                        {{ isSubmitting ? 'Updating…' : 'Update' }}
-                    </button>
-                </div>
+                        <button type="button" (click)="closeEditModal()"
+                            class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-150 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+                            Cancel
+                        </button>
+                        <button type="submit" [disabled]="isSubmitting" onclick="submitEditForm()"
+                            class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors duration-150 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
+                            @if (isSubmitting) {
+                            <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                            }
+                            {{ isSubmitting ? 'Updating…' : 'Update' }}
+                        </button>
+                    </div>
                 </form>
             </div>
 
-            
+
         </div>
     </div>
     }

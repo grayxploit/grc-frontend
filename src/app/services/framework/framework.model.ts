@@ -1,8 +1,8 @@
-import { QueryFilter } from "../api/api-response.model";
+import { CreatedBy, QueryFilter } from "../api/api-response.model";
 import { FrameworkCategory } from './framework-category/framework-category.model'
 import { Industry } from '../industry/industry.model';
 export interface Framework {
-    id: number;
+    id: string;
     name: string;
     description: string;
     status: string;
@@ -11,7 +11,7 @@ export interface Framework {
     official_url: string;
     published_date: string;
     version: string;
-    created_by: number;
+    created_by?: CreatedBy;
     created_at: string;
     updated_at: string;
     industries?: Industry[];
@@ -21,11 +21,11 @@ export interface FrameworkCreateRequest {
     name: string;
     description: string;
     status: string;
-    category: number | FrameworkCategory | undefined;
+    category: string;
     official_url: string;
     published_date: string;
     version: string;
-    industries: { industry_id: number }[];
+    industries: { industry_id: string }[];
 }
 
 export interface FrameworkQueryParam {
@@ -38,9 +38,9 @@ export interface FrameworkUpdateRequest {
     name: string;
     description: string;
     status: string;
-    category: number | FrameworkCategory | undefined;
+    category: string;
     official_url: string;
     published_date: string;
     version: string;
-    industries: { industry_id: number }[];
+    industries: { industry_id: string }[];
 }

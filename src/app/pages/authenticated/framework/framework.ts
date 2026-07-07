@@ -57,7 +57,7 @@ export class Framework implements OnInit, OnDestroy {
   });
 
   public editForm = this.formBuilder.group({
-    id: [0, Validators.required],
+    id: ['', Validators.required],
     name: ['', Validators.required],
     description: '',
     status: 'active',
@@ -143,13 +143,14 @@ export class Framework implements OnInit, OnDestroy {
       name: formValue.name ?? '',
       description: formValue.description ?? '',
       status: formValue.status ?? 'active',
-      category: Number(formValue.category),
+      category: formValue.category ?? '',
       official_url: formValue.official_url ?? '',
       published_date: formValue.published_date ?? '',
       version: formValue.version ?? '',
-      industries: industriesArray.value.map((id: number) => ({ industry_id: id })),
+      industries: industriesArray.value.map((id: string) => ({ industry_id: id })),
     };
 
+    console.log("Create Payload", payload)
     this.isSubmitting = true;
     this.modalErrorMessage = '';
 
@@ -270,11 +271,11 @@ export class Framework implements OnInit, OnDestroy {
       name: value.name ?? '',
       description: value.description ?? '',
       status: value.status ?? 'active',
-      category: Number(value.category),
+      category: value.category ?? '',
       official_url: value.official_url ?? '',
       published_date: value.published_date ?? '',
       version: value.version ?? '',
-      industries: industriesArray.value.map((id: number) => ({ industry_id: id })),
+      industries: industriesArray.value.map((id: string) => ({ industry_id: id })),
     };
 
     this.isSubmitting = true;
@@ -321,5 +322,12 @@ export class Framework implements OnInit, OnDestroy {
     const industriesArray = form.controls['industries'] as FormArray;
     const industries = industriesArray.value as string[];
     return industries.includes(industryId);
+  }
+
+
+  getSerialNumber(index: number): number {
+    const currentPage = this.filter['page'] || 1;
+    const itemsPerPage = this.meta?.size || 2;
+    return (currentPage - 1) * itemsPerPage + index + 1;
   }
 }

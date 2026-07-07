@@ -55,7 +55,7 @@ export class Controls implements OnInit, OnDestroy {
 
   controlTypes: ControlType[] = [];
   frameworks: Framework[] = [];
-  frameworkSeverities: Record<number, ControlSeverity | ''> = {};
+  frameworkSeverities: Record<string, ControlSeverity | ''> = {};
 
   isCreateModalOpen = false;
   isEditModalOpen = false;
@@ -65,7 +65,7 @@ export class Controls implements OnInit, OnDestroy {
   public createForm = this.formBuilder.group({
     title: ['', Validators.required],
     description: [''],
-    frameworks: this.formBuilder.control<number[]>([], {
+    frameworks: this.formBuilder.control<string[]>([], {
       validators: [Validators.required, Validators.minLength(1)],
       nonNullable: true,
     }),
@@ -77,7 +77,7 @@ export class Controls implements OnInit, OnDestroy {
     id: ['', Validators.required],
     title: ['', Validators.required],
     description: [''],
-    frameworks: this.formBuilder.control<number[]>([], {
+    frameworks: this.formBuilder.control<string[]>([], {
       validators: [Validators.required, Validators.minLength(1)],
       nonNullable: true,
     }),
@@ -221,7 +221,7 @@ export class Controls implements OnInit, OnDestroy {
       });
   }
 
-  toggleFrameworkSelection(frameworkId: number, selected: boolean, formKind: ControlFormKind = 'create') {
+  toggleFrameworkSelection(frameworkId: string, selected: boolean, formKind: ControlFormKind = 'create') {
     const currentValues = this.getSelectedFrameworkIds(formKind);
     const nextValues = selected
       ? Array.from(new Set([...currentValues, frameworkId]))
@@ -233,7 +233,7 @@ export class Controls implements OnInit, OnDestroy {
     this.syncFrameworkSeverities(nextValues);
   }
 
-  isFrameworkSelected(frameworkId: number, formKind: ControlFormKind = 'create'): boolean {
+  isFrameworkSelected(frameworkId: string, formKind: ControlFormKind = 'create'): boolean {
     return this.getSelectedFrameworkIds(formKind).includes(frameworkId);
   }
 
@@ -247,11 +247,11 @@ export class Controls implements OnInit, OnDestroy {
     return this.allSeverityOptions.filter((option) => allowedSeverities.includes(option.value));
   }
 
-  getFrameworkSeverity(frameworkId: number): ControlSeverity | '' {
+  getFrameworkSeverity(frameworkId: string): ControlSeverity | '' {
     return this.frameworkSeverities[frameworkId] ?? '';
   }
 
-  setFrameworkSeverity(frameworkId: number, severity: string) {
+  setFrameworkSeverity(frameworkId: string, severity: string) {
     this.frameworkSeverities = {
       ...this.frameworkSeverities,
       [frameworkId]: severity as ControlSeverity | '',
@@ -262,7 +262,7 @@ export class Controls implements OnInit, OnDestroy {
     return this.allSeverityOptions.find((option) => option.value === severity)?.label ?? '';
   }
 
-  getFrameworkLabel(framework: Framework | FrameworkControl | number | undefined): string {
+  getFrameworkLabel(framework: Framework | FrameworkControl | string | undefined): string {
     if (framework == null) {
       return '';
     }
@@ -319,14 +319,14 @@ export class Controls implements OnInit, OnDestroy {
     return formKind === 'create' ? this.createForm.controls.frameworks : this.editForm.controls.frameworks;
   }
 
-  private getSelectedFrameworkIds(formKind: ControlFormKind = 'create'): number[] {
+  private getSelectedFrameworkIds(formKind: ControlFormKind = 'create'): string[] {
     return (this.getFrameworkControl(formKind).value ?? [])
-      .map((value) => Number(value))
-      .filter((value) => Number.isFinite(value));
+      .map((value) => String(value))
+      .filter((value) => value.length > 0);
   }
 
-  private syncFrameworkSeverities(selectedFrameworkIds: number[]) {
-    const nextFrameworkSeverities: Record<number, ControlSeverity | ''> = {};
+  private syncFrameworkSeverities(selectedFrameworkIds: string[]) {
+    const nextFrameworkSeverities: Record<string, ControlSeverity | ''> = {};
 
     for (const frameworkId of selectedFrameworkIds) {
       const existingSeverity = this.frameworkSeverities[frameworkId];
@@ -366,9 +366,9 @@ export class Controls implements OnInit, OnDestroy {
     const selectedFrameworks = control.frameworks ?? [];
     const selectedFrameworkIds = selectedFrameworks
       .map((framework) => framework.framework_id)
-      .filter((frameworkId): frameworkId is number => typeof frameworkId === 'number') ?? [];
-    this.frameworkSeverities = selectedFrameworks.reduce<Record<number, ControlSeverity | ''>>((accumulator, framework) => {
-      if (typeof framework.framework_id === 'number') {
+      .filter((frameworkId): frameworkId is string => typeof frameworkId === 'string') ?? [];
+    this.frameworkSeverities = selectedFrameworks.reduce<Record<string, ControlSeverity | ''>>((accumulator, framework) => {
+      if (typeof framework.framework_id === 'string') {
         accumulator[framework.framework_id] = framework.severity;
       }
 
