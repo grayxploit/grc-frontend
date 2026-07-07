@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { PageBreadcrumb } from '../../../shared/components/common/page-breadcrumb/page-breadcrumb';
@@ -12,6 +12,7 @@ import { ControlType } from '../../../services/control/control-type/control-type
 import { FrameworkService } from '../../../services/framework/framework.service';
 import { Framework } from '../../../services/framework/framework.model';
 import { LoaderService } from '../../../services/loader/loader.service';
+import { Pagination } from '../../../shared/components/common/pagination/pagination';
 
 interface SeverityOption {
   value: ControlSeverity;
@@ -27,6 +28,7 @@ type ControlFormKind = 'create' | 'edit';
     PageBreadcrumb,
     Card,
     ReactiveFormsModule,
+    Pagination
   ],
   templateUrl: './controls.html',
   styleUrl: './controls.css',
@@ -49,7 +51,7 @@ export class Controls implements OnInit, OnDestroy {
 
   isLoading = false;
   filter: QueryFilter = {};
-  controls: Control[] = [];
+  controls = signal<Control[]>([]);
   meta!: PaginationMeta;
   errorMessage = '';
 
@@ -61,7 +63,10 @@ export class Controls implements OnInit, OnDestroy {
   isEditModalOpen = false;
   modalErrorMessage = '';
   isSubmitting = false;
-
+  
+  searchQuery = '';
+  limit = 5;
+  limitOptions = [5, 10, 20, 50, 100];
   public createForm = this.formBuilder.group({
     title: ['', Validators.required],
     description: [''],
@@ -85,6 +90,10 @@ export class Controls implements OnInit, OnDestroy {
     type: ['', Validators.required],
   });
 
+  public searchForm = this.formBuilder.group({
+    search: ['']
+  });
+
   ngOnInit() {
     this.destroy$ = new Subject<void>();
     this.loadControlTypes();
@@ -101,14 +110,39 @@ export class Controls implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+   onSearch() {
+    this.searchQuery = this.searchForm.value.search || '';
+    this.filter['page'] = 1;
+    this.getAllControl();
+  }
+
+  clearSearch() {
+    this.searchForm.patchValue({ search: '' });
+    this.searchQuery = '';
+    this.filter['page'] = 1;
+    this.getAllControl();
+  }
+
+  onLimitChange(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    this.limit = Number(select.value);
+    this.filter['page'] = 1;
+    this.getAllControl();
+  }
+
   getAllControl() {
     this.loaderService.show();
-    this.controlService.getAllControl({ page: 1, limit: 10 })
+     const page = this.filter['page'] || 1;
+    const params: any = { page, size: this.limit || 5 };
+    if (this.searchQuery) {
+      params.name = this.searchQuery;
+    }
+    this.controlService.getAllControl(params)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           this.loaderService.hide();
-          this.controls = [...response.data];
+          this.controls.set([...response.data]);
           this.meta = { ...response.meta };
           this.errorMessage = '';
           this.cdr.markForCheck();
@@ -198,7 +232,7 @@ export class Controls implements OnInit, OnDestroy {
       description: formValue.description ?? '',
       frameworks,
       primary_control_area: formValue.primary_control_area ?? '',
-      type: Number(formValue.type),
+      type: formValue.type ?? '',
     };
 
     this.isSubmitting = true;
@@ -209,7 +243,7 @@ export class Controls implements OnInit, OnDestroy {
       .subscribe({
         next: (createdControl) => {
           this.isSubmitting = false;
-          this.controls = [createdControl, ...this.controls];
+          // this.controls = [createdControl, ...this.controls];
           this.closeCreateModal();
           this.getAllControl();
         },
@@ -234,12 +268,12 @@ export class Controls implements OnInit, OnDestroy {
   }
 
   isFrameworkSelected(frameworkId: string, formKind: ControlFormKind = 'create'): boolean {
-    return this.getSelectedFrameworkIds(formKind).includes(frameworkId);
+    return this.getSelectedFrameworkIds(formKind).includes(String(frameworkId));
   }
 
   getSelectedFrameworks(): Framework[] {
     const selectedFrameworkIds = this.getSelectedFrameworkIds();
-    return this.frameworks.filter((framework) => selectedFrameworkIds.includes(framework.id));
+    return this.frameworks.filter((framework) => selectedFrameworkIds.includes(String(framework.id)));
   }
 
   getFrameworkSeverityOptions(framework: Framework): SeverityOption[] {
@@ -361,28 +395,29 @@ export class Controls implements OnInit, OnDestroy {
   }
 
   openEditModal(control: Control) {
+    console.log('control', control);
     this.isEditModalOpen = true;
     this.modalErrorMessage = '';
     const selectedFrameworks = control.frameworks ?? [];
     const selectedFrameworkIds = selectedFrameworks
-      .map((framework) => framework.framework_id)
+      .map((framework) => framework.framework?.id)
       .filter((frameworkId): frameworkId is string => typeof frameworkId === 'string') ?? [];
     this.frameworkSeverities = selectedFrameworks.reduce<Record<string, ControlSeverity | ''>>((accumulator, framework) => {
-      if (typeof framework.framework_id === 'string') {
-        accumulator[framework.framework_id] = framework.severity;
+      if (typeof framework.framework?.id === 'string') {
+        accumulator[framework.framework.id] = framework.severity;
       }
 
       return accumulator;
     }, {});
     this.editForm.patchValue({
-      id: Number(control.id).toString(),
+      id: control.id,
       title: control.title,
       description: control.description,
       frameworks: selectedFrameworkIds,
       primary_control_area: control.primary_control_area,
-      type: Number(control.control_type.id).toString(),
+      type: control.control_type?.id?.toString() ?? '',
     });
-    this.syncFrameworkSeverities(selectedFrameworkIds);
+    this.cdr.markForCheck();
   }
 
   closeEditModal() {
@@ -421,21 +456,23 @@ export class Controls implements OnInit, OnDestroy {
       description: formValue.description ?? '',
       frameworks,
       primary_control_area: formValue.primary_control_area ?? '',
-      type: Number(formValue.type),
+      type: formValue.type ?? '',
     };
 
     this.isSubmitting = true;
     this.modalErrorMessage = '';
 
-    const controlId = Number(formValue.id);
+    const controlId = formValue.id ?? "";
     this.controlService.updateControl(controlId, payload)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updatedControl) => {
           this.isSubmitting = false;
-          const index = this.controls.findIndex((control) => control.id === updatedControl.id);
+          const index = this.controls().findIndex((control) => control.id === updatedControl.id);
           if (index !== -1) {
-            this.controls[index] = updatedControl;
+            const updatedControls = [...this.controls()];
+            updatedControls[index] = updatedControl;
+            this.controls.set(updatedControls);
           }
           this.closeEditModal();
           this.getAllControl();
@@ -447,5 +484,17 @@ export class Controls implements OnInit, OnDestroy {
         },
       });
   }
+
+  onPageChange(page: number) {
+        this.filter['page'] = page;
+        this.getAllControl();
+    }
+
+
+    getSerialNumber(index: number): number {
+        const currentPage = this.filter['page'] || 1;
+        const itemsPerPage = this.meta?.size || 2;
+        return (currentPage - 1) * itemsPerPage + index + 1;
+    }
 
 }

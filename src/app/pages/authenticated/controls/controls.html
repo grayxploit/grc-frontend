@@ -10,11 +10,53 @@
             {{ errorMessage }}
         </div>
         }
+        <!-- Toolbar: search + count + limit + create -->
+        <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="flex flex-1 gap-2 sm:max-w-md">
+                <div class="relative flex-1">
+                    <input type="text" formControlName="search" placeholder="Search industries..."
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 transition-colors duration-150 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500">
+                    <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <button type="submit"
+                    class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Search
+                </button>
+                @if (searchQuery) {
+                <button type="button" (click)="clearSearch()"
+                    class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-150 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                    Clear
+                </button>
+                }
+            </form>
+
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <label for="limitSelect" class="text-sm font-medium text-gray-500 dark:text-gray-400">Show:</label>
+                    <select id="limitSelect" [value]="limit" (change)="onLimitChange($event)"
+                        class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-colors duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                        @for (option of limitOptions; track option) {
+                        <option [value]="option" [selected]="option === limit">{{ option }}</option>
+                        }
+                    </select>
+                </div>
+
+                <button (click)="openCreateModal()"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    Create Control Type
+                </button>
+            </div>
+        </div>
 
         <div class="mb-5 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                    {{ controls.length }} control{{ controls.length === 1 ? '' : 's' }} across your active frameworks
+                    {{ meta?.total || 0 }} control{{ controls().length === 1 ? '' : 's' }} across your active frameworks
                 </p>
             </div>
             <button
@@ -31,7 +73,7 @@
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs font-semibold uppercase tracking-wide text-gray-500 bg-gray-50 dark:bg-gray-800/60 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3.5">ID</th>
+                        <th scope="col" class="px-6 py-3.5">S. No</th>
                         <th scope="col" class="px-6 py-3.5">Title</th>
                         <th scope="col" class="px-6 py-3.5">Frameworks</th>
                         <th scope="col" class="px-6 py-3.5">Type</th>
@@ -40,7 +82,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
-                    @if (controls.length === 0) {
+                    @if (controls().length === 0) {
                     <tr>
                         <td colspan="6" class="px-6 py-16">
                             <div class="flex flex-col items-center justify-center gap-3 text-center">
@@ -55,9 +97,9 @@
                         </td>
                     </tr>
                     } @else {
-                    @for (control of controls; track control.id) {
+                    @for (control of controls(); track control.id ; let i =$index) {
                     <tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/40">
-                        <td class="px-6 py-4 font-mono text-xs text-gray-500 dark:text-gray-400">{{ control.id }}</td>
+                        <td class="px-6 py-4 font-mono text-xs text-gray-500 dark:text-gray-400">{{ getSerialNumber(i) }}</td>
                         <td class="px-6 py-4 font-medium text-gray-900 dark:text-white/90">{{ control.title }}</td>
                         <td class="px-6 py-4">
                             <div class="flex flex-wrap gap-1.5">
@@ -102,6 +144,7 @@
                 </tbody>
             </table>
         </div>
+        <app-pagination [meta]="meta" (pageChange)="onPageChange($event)"></app-pagination>
     </app-card>
 
     @if (isCreateModalOpen) {

@@ -106,15 +106,15 @@
 </div>
 
 <!-- Create Modal -->
-@if (isCreateModalOpen) {
+@if (isCreateModalOpen()) {
 <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-999999">
     <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
         <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Create Framework Category</h2>
 
-        @if (modalErrorMessage) {
+        @if (modalErrorMessage()) {
         <div
             class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300">
-            {{ modalErrorMessage }}
+            {{ modalErrorMessage() }}
         </div>
         }
 
@@ -146,9 +146,9 @@
                     class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
                     Cancel
                 </button>
-                <button type="submit" [disabled]="isSubmitting"
+                <button type="submit" [disabled]="isSubmitting()"
                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50">
-                    {{ isSubmitting ? 'Creating...' : 'Create' }}
+                    {{ isSubmitting() ? 'Creating...' : 'Create' }}
                 </button>
             </div>
         </form>
@@ -157,15 +157,15 @@
 }
 
 <!-- Import Modal -->
-@if (isImportModalOpen) {
+@if (isImportModalOpen()) {
 <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-999999">
     <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-lg">
         <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Import Framework Categories</h2>
 
-        @if (modalErrorMessage) {
+        @if (modalErrorMessage()) {
         <div
             class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300">
-            {{ modalErrorMessage }}
+            {{ modalErrorMessage() }}
         </div>
         }
 
@@ -221,9 +221,9 @@
                 class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
                 Cancel
             </button>
-            <button type="button" (click)="submitImport()" [disabled]="isSubmitting || !selectedFile"
+            <button type="button" (click)="submitImport()" [disabled]="isSubmitting() || !selectedFile"
                 class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50">
-                {{ isSubmitting ? 'Importing...' : 'Import' }}
+                {{ isSubmitting() ? 'Importing...' : 'Import' }}
             </button>
             } @else {
             <button type="button" (click)="closeImportModal()"
@@ -237,15 +237,15 @@
 }
 
 <!-- Edit Modal -->
-@if (isEditModalOpen) {
+@if (isEditModalOpen()) {
 <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-999999">
     <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
         <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Edit Framework Category</h2>
 
-        @if (modalErrorMessage) {
+        @if (modalErrorMessage()) {
         <div
             class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300">
-            {{ modalErrorMessage }}
+            {{ modalErrorMessage() }}
         </div>
         }
 
@@ -277,9 +277,9 @@
                     class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
                     Cancel
                 </button>
-                <button type="submit" [disabled]="isSubmitting"
+                <button type="submit" [disabled]="isSubmitting()"
                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50">
-                    {{ isSubmitting ? 'Updating...' : 'Update' }}
+                    {{ isSubmitting() ? 'Updating...' : 'Update' }}
                 </button>
             </div>
         </form>

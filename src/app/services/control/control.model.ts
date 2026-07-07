@@ -6,13 +6,14 @@ export type ControlSeverity = 'low' | 'medium' | 'high' | 'critical';
 
 export interface ControlQueryParam {
     page: number;
-    limit: number;
+    size: number;
+    name?: string;
     filter?: QueryFilter
 }
 
 
 export interface Control {
-    id: number,
+    id: string,
     title: string,
     description: string,
     status?: string,
@@ -37,7 +38,7 @@ export interface CreateControl {
 
     frameworks: CreateControlFramework[]
     primary_control_area: string
-    type: number
+    type: string
 }
 
 export interface UpdateControl {
@@ -46,7 +47,7 @@ export interface UpdateControl {
 
     frameworks?: CreateControlFramework[]
     primary_control_area?: string
-    type?: number
+    type?: string
 }
 
 export interface CreateControlFramework {

@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, ChangeDetectorRef, signal } from '@angular/core';
 import { FrameworkCategoryService } from '../../../../services/framework/framework-category/framework-category.service';
 import { FrameworkCategory as FrameworkCategoryModel, FrameworkCategoryUpdateRequest, ImportProgressEvent } from '../../../../services/framework/framework-category/framework-category.model';
 import { PaginationMeta, QueryFilter } from '../../../../services/api/api-response.model';
@@ -34,12 +34,12 @@ export class FrameworkCategory {
     errorMessage = '';
 
     // Modal properties
-    isCreateModalOpen = false;
-    isEditModalOpen = false;
-    isImportModalOpen = false;
-    modalErrorMessage = '';
+    isCreateModalOpen = signal<boolean>(false);
+    isEditModalOpen = signal<boolean>(false);
+    isImportModalOpen = signal<boolean>(false);
+    modalErrorMessage = signal<string>('');
     importSuccessMessage = '';
-    isSubmitting = false;
+    isSubmitting = signal<boolean>(false);
     selectedFile: File | null = null;
     searchQuery = '';
     limit = 5;
@@ -118,24 +118,23 @@ export class FrameworkCategory {
     }
 
     openCreateModal() {
-        this.isCreateModalOpen = true;
-        this.modalErrorMessage = '';
+        this.isCreateModalOpen.set(true);
+        this.modalErrorMessage.set('');
         this.createForm = {
             name: '',
             description: '',
             status: 'active'
         };
-
     }
 
     closeCreateModal() {
-        this.isCreateModalOpen = false;
-        this.modalErrorMessage = '';
+        this.isCreateModalOpen.set(false);
+        this.modalErrorMessage.set('');
     }
 
     openEditModal(frameworkCategory: FrameworkCategoryModel) {
-        this.isEditModalOpen = true;
-        this.modalErrorMessage = '';
+        this.isEditModalOpen.set(true);
+        this.modalErrorMessage.set('');
         this.editForm = {
             id: frameworkCategory.id,
             name: frameworkCategory.name,
@@ -145,8 +144,8 @@ export class FrameworkCategory {
     }
 
     closeEditModal() {
-        this.isEditModalOpen = false;
-        this.modalErrorMessage = '';
+        this.isEditModalOpen.set(false);
+        this.modalErrorMessage.set('');
         this.editForm = {
             id: 0,
             name: '',
@@ -156,8 +155,8 @@ export class FrameworkCategory {
     }
 
     openImportModal() {
-        this.isImportModalOpen = true;
-        this.modalErrorMessage = '';
+        this.isImportModalOpen.set(true);
+        this.modalErrorMessage.set('');
         this.importSuccessMessage = '';
         this.selectedFile = null;
         this.importJobId = null;
@@ -166,8 +165,8 @@ export class FrameworkCategory {
     }
 
     closeImportModal() {
-        this.isImportModalOpen = false;
-        this.modalErrorMessage = '';
+        this.isImportModalOpen.set(false);
+        this.modalErrorMessage.set('');
         this.importSuccessMessage = '';
         this.selectedFile = null;
         this.importJobId = null;
@@ -197,13 +196,13 @@ export class FrameworkCategory {
 
     submitImport() {
         if (!this.selectedFile) {
-            this.modalErrorMessage = 'Please select a CSV file.';
+            this.modalErrorMessage.set('Please select a CSV file.');
             return;
         }
 
-        this.isSubmitting = true;
+        this.isSubmitting.set(true);
         this.isImporting = true;
-        this.modalErrorMessage = '';
+        this.modalErrorMessage.set('');
         this.importSuccessMessage = '';
         this.importProgress = {
             status: 'uploading',
@@ -222,7 +221,7 @@ export class FrameworkCategory {
                 next: (response) => {
                     const importJob = response.data;
                     this.importJobId = importJob.job_id;
-                    this.isSubmitting = false;
+                    this.isSubmitting.set(false);
 
                     const normalizedStatus = this.normalizeStatus(importJob.status || 'pending');
                     if (normalizedStatus === 'completed') {
@@ -247,10 +246,10 @@ export class FrameworkCategory {
                     this.cdr.markForCheck();
                 },
                 error: (error) => {
-                    this.isSubmitting = false;
+                    this.isSubmitting.set(false);
                     this.isImporting = false;
                     this.importProgress = null;
-                    this.modalErrorMessage = error?.error?.message || 'Unable to import categories.';
+                    this.modalErrorMessage.set(error?.error?.message || 'Unable to import categories.');
                     this.cdr.markForCheck();
                     console.error(error);
                 }
@@ -276,14 +275,14 @@ export class FrameworkCategory {
                         this.completeImport(this.importProgress);
                     } else if (normalizedProgress.status === 'failed') {
                         this.isImporting = false;
-                        this.isSubmitting = false;
-                        this.modalErrorMessage = normalizedProgress.message || 'Import failed.';
+                        this.isSubmitting.set(false);
+                        this.modalErrorMessage.set(normalizedProgress.message || 'Import failed.');
                         this.cdr.markForCheck();
                     }
                 },
                 error: (error) => {
                     this.isImporting = false;
-                    this.modalErrorMessage = 'Error tracking import progress.';
+                    this.modalErrorMessage.set('Error tracking import progress.');
                     this.cdr.markForCheck();
                     console.error(error);
                 }
@@ -307,7 +306,7 @@ export class FrameworkCategory {
         };
         this.importJobId = null;
         this.isImporting = false;
-        this.isSubmitting = false;
+        this.isSubmitting.set(false);
         this.importSuccessMessage = `Successfully imported categories.`;
         this.getAllFrameworkCategory();
         this.cdr.markForCheck();
@@ -369,12 +368,12 @@ export class FrameworkCategory {
 
     submitEditForm() {
         if (!this.editForm.name || !this.editForm.status) {
-            this.modalErrorMessage = 'Name and status are required.';
+            this.modalErrorMessage.set('Name and status are required.');
             return;
         }
 
-        this.isSubmitting = true;
-        this.modalErrorMessage = '';
+        this.isSubmitting.set(true);
+        this.modalErrorMessage.set('');
         const payload: FrameworkCategoryUpdateRequest = {
             name: this.editForm.name,
             description: this.editForm.description,
@@ -384,14 +383,14 @@ export class FrameworkCategory {
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (response) => {
-                    this.isSubmitting = false;
+                    this.isSubmitting.set(false);
                     this.closeEditModal();
                     this.getAllFrameworkCategory();
                 },
                 error: (error) => {
-                    this.isSubmitting = false;
+                    this.isSubmitting.set(false);
                     const err = this.frameworkCategoryService.apiService.extractApiErrorMessage(error)
-                    this.modalErrorMessage = err || 'Unable to update framework category.';
+                    this.modalErrorMessage.set(err || 'Unable to update framework category.');
                     this.cdr.markForCheck();
                     console.error(error);
                 }
@@ -400,25 +399,25 @@ export class FrameworkCategory {
 
     submitCreateForm() {
         if (!this.createForm.name || !this.createForm.status) {
-            this.modalErrorMessage = 'Name and status are required.';
+            this.modalErrorMessage.set('Name and status are required.');
             return;
         }
 
-        this.isSubmitting = true;
-        this.modalErrorMessage = '';
+        this.isSubmitting.set(true);
+        this.modalErrorMessage.set('');
 
         this.frameworkCategoryService.createFrameworkCategory(this.createForm)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (response) => {
-                    this.isSubmitting = false;
+                    this.isSubmitting.set(false);
                     this.closeCreateModal();
                     this.getAllFrameworkCategory();
                 },
                 error: (error) => {
-                    this.isSubmitting = false;
+                    this.isSubmitting.set(false);
                     const err = this.frameworkCategoryService.apiService.extractApiErrorMessage(error)
-                    this.modalErrorMessage = err || 'Unable to create framework category.';
+                    this.modalErrorMessage.set(err || 'Unable to create framework category.');
                     this.cdr.markForCheck();
                     console.error(error);
                 }
