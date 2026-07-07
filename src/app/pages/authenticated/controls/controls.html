@@ -14,7 +14,7 @@
         <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="flex flex-1 gap-2 sm:max-w-md">
                 <div class="relative flex-1">
-                    <input type="text" formControlName="search" placeholder="Search industries..."
+                    <input type="text" formControlName="search" placeholder="Search controls..."
                         class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 transition-colors duration-150 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500">
                     <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" viewBox="0 0 20 20"
                         fill="currentColor">
@@ -45,11 +45,15 @@
                         }
                     </select>
                 </div>
-
-                <button (click)="openCreateModal()"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                    Create Control Type
-                </button>
+                <button
+                (click)="openCreateModal()"
+                class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 4a1 1 0 011 1v4h4a1 1 0 110 2h-4v4a1 1 0 11-2 0v-4H5a1 1 0 110-2h4V5a1 1 0 011-1z" />
+                </svg>
+                Create Control
+            </button>
+             
             </div>
         </div>
 
@@ -59,14 +63,7 @@
                     {{ meta?.total || 0 }} control{{ controls().length === 1 ? '' : 's' }} across your active frameworks
                 </p>
             </div>
-            <button
-                (click)="openCreateModal()"
-                class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
-                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M10 4a1 1 0 011 1v4h4a1 1 0 110 2h-4v4a1 1 0 11-2 0v-4H5a1 1 0 110-2h4V5a1 1 0 011-1z" />
-                </svg>
-                Create Control
-            </button>
+            
         </div>
 
         <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/3">
@@ -450,7 +447,7 @@
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                     </svg>
                     }
-                    {{ isSubmitting ? 'Creating...' : 'Create' }}
+                    {{ isSubmitting ? 'Updating...' : 'Update' }}
                 </button>
             </div>
         </div>
