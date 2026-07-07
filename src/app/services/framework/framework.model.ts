@@ -30,7 +30,8 @@ export interface FrameworkCreateRequest {
 
 export interface FrameworkQueryParam {
     page: number;
-    limit: number;
+    size: number;
+    name?: string;
     filter?: QueryFilter
 }
 

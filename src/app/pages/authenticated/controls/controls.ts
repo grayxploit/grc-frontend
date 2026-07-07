@@ -32,7 +32,7 @@ type ControlFormKind = 'create' | 'edit';
   styleUrl: './controls.css',
 })
 export class Controls implements OnInit, OnDestroy {
-  
+
   private readonly controlService = inject(ControlService);
   private readonly frameworkService = inject(FrameworkService);
   private readonly controlTypeService = inject(ControlTypeService);
@@ -133,7 +133,7 @@ export class Controls implements OnInit, OnDestroy {
   }
 
   private loadFrameworks() {
-    this.frameworkService.getAllFramework({ page: 1, limit: 100 })
+    this.frameworkService.getAllFramework({ page: 1, size: 100 })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -360,7 +360,7 @@ export class Controls implements OnInit, OnDestroy {
     return ['low', 'medium', 'high', 'critical'];
   }
 
-  openEditModal(control : Control){
+  openEditModal(control: Control) {
     this.isEditModalOpen = true;
     this.modalErrorMessage = '';
     const selectedFrameworks = control.frameworks ?? [];
@@ -397,8 +397,8 @@ export class Controls implements OnInit, OnDestroy {
     });
   }
 
-  submitEditForm(){
-     if (this.editForm.invalid) {
+  submitEditForm() {
+    if (this.editForm.invalid) {
       this.modalErrorMessage = 'Please fill in all required fields.';
       this.editForm.markAllAsTouched();
       return;
@@ -447,5 +447,5 @@ export class Controls implements OnInit, OnDestroy {
         },
       });
   }
-  
+
 }

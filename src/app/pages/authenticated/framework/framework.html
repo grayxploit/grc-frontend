@@ -12,17 +12,42 @@
         </div>
         }
 
-        <div class="mb-4 flex items-center justify-between">
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-                {{ meta?.total ?? frameworks.length }} framework{{ (meta?.total ?? frameworks.length) === 1 ? '' : 's'
-                }}
-            </p>
-            <div class="flex justify-end space-x-3">
-                <!-- <button
-                    (click)="openImportModal()"
-                    class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-green-700">
-                    Import Categories
-                </button> -->
+        <!-- Toolbar: search + count + limit + create -->
+        <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="flex flex-1 gap-2 sm:max-w-md">
+                <div class="relative flex-1">
+                    <input type="text" formControlName="search" placeholder="Search industries..."
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 transition-colors duration-150 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500">
+                    <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <button type="submit"
+                    class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Search
+                </button>
+                @if (searchQuery) {
+                <button type="button" (click)="clearSearch()"
+                    class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-150 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                    Clear
+                </button>
+                }
+            </form>
+
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <label for="limitSelect" class="text-sm font-medium text-gray-500 dark:text-gray-400">Show:</label>
+                    <select id="limitSelect" [value]="limit" (change)="onLimitChange($event)"
+                        class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-colors duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                        @for (option of limitOptions; track option) {
+                        <option [value]="option" [selected]="option === limit">{{ option }}</option>
+                        }
+                    </select>
+                </div>
+
                 <button (click)="openCreateModal()"
                     class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors duration-150 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -34,9 +59,22 @@
             </div>
         </div>
 
+        <!-- Result count -->
+        <div class="mb-4 flex items-center justify-between">
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                {{ meta?.total ?? frameworks.length }}
+                {{ (meta?.total ?? frameworks.length) === 1 ? 'framework ' : 'frameworks' }} available
+            </p>
+            <!-- <button
+        (click)="openImportModal()"
+        class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-green-700">
+        Import Categories
+      </button> -->
+        </div>
+
+        <!-- Table -->
         <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
             <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-                <!-- Table Head -->
                 <thead
                     class="bg-gray-50 text-xs uppercase tracking-wide text-gray-500 dark:bg-gray-800/60 dark:text-gray-400">
                     <tr>
@@ -50,12 +88,11 @@
                         <th scope="col" class="px-6 py-3 font-semibold text-right">Actions</th>
                     </tr>
                 </thead>
-
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
                     @for (framework of frameworks; track framework.id; let i = $index) {
                     <tr class="transition-colors duration-100 hover:bg-gray-50 dark:hover:bg-gray-800/40">
-                        <td class="px-6 py-4 font-mono text-xs text-gray-400 dark:text-gray-500">{{ getSerialNumber(i)}}
-                        </td>
+                        <td class="px-6 py-4 font-mono text-xs text-gray-400 dark:text-gray-500">{{ getSerialNumber(i)
+                            }}</td>
                         <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-100">{{ framework.name }}</td>
                         <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ framework.acronym }}</td>
                         <td class="px-6 py-4">
@@ -96,7 +133,7 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <button (click)="openEditModal(framework)"
+                            <button (click)="openEditModal(framework)" aria-label="Edit {{ framework.name }}"
                                 class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors duration-150 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">
                                 <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -105,14 +142,14 @@
                                 Edit
                             </button>
                             <!-- <button (click)="deleteFramework(framework.id)"
-                                class="ml-2 inline-flex items-center gap-1.5 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-150 hover:bg-red-700">
-                                Delete
-                            </button> -->
+                class="ml-2 inline-flex items-center gap-1.5 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-150 hover:bg-red-700">
+                Delete
+              </button> -->
                         </td>
                     </tr>
                     } @empty {
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-sm text-gray-400 dark:text-gray-500">
+                        <td colspan="8" class="px-6 py-12 text-center text-sm text-gray-400 dark:text-gray-500">
                             No frameworks yet. Create one to get started.
                         </td>
                     </tr>
@@ -120,10 +157,12 @@
                 </tbody>
             </table>
         </div>
+
         <app-pagination [meta]="meta" (pageChange)="onPageChange($event)"></app-pagination>
     </app-card>
 
-    @if (isCreateModalOpen) {
+    <!-- Create Modal -->
+    @if (isCreateModalOpen()) {
     <div class="fixed inset-0 z-999999 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4">
         <div class="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl bg-white shadow-xl dark:bg-gray-800">
             <div class="border-b border-gray-100 px-6 py-4 dark:border-gray-700">
@@ -131,13 +170,12 @@
             </div>
 
             <div class="overflow-y-auto px-6 py-4">
-                @if (modalErrorMessage) {
+                @if (modalErrorMessage()) {
                 <div
                     class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300">
-                    {{ modalErrorMessage }}
+                    {{ modalErrorMessage() }}
                 </div>
                 }
-
                 @if (categoryLoadError) {
                 <div
                     class="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-700 dark:border-yellow-900/50 dark:bg-yellow-900/20 dark:text-yellow-300">
@@ -145,7 +183,8 @@
                 </div>
                 }
 
-                <form [formGroup]="createForm" (ngSubmit)="submitCreateForm()" novalidate class="space-y-4">
+                <form id="createFrameworkForm" [formGroup]="createForm" (ngSubmit)="submitCreateForm()" novalidate
+                    class="space-y-4">
                     <div>
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
                         <input type="text" formControlName="name"
@@ -237,9 +276,9 @@
                     class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-150 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
                     Cancel
                 </button>
-                <button type="submit" [disabled]="isSubmitting" (click)="submitCreateForm()"
+                <button type="submit" form="createFrameworkForm" [disabled]="isSubmitting()"
                     class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors duration-150 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
-                    @if (isSubmitting) {
+                    @if (isSubmitting()) {
                     <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
                         </circle>
@@ -247,14 +286,15 @@
                         </path>
                     </svg>
                     }
-                    {{ isSubmitting ? 'Creating…' : 'Create' }}
+                    {{ isSubmitting() ? 'Creating…' : 'Create' }}
                 </button>
             </div>
         </div>
     </div>
     }
 
-    @if (isEditModalOpen) {
+    <!-- Edit Modal -->
+    @if (isEditModalOpen()) {
     <div class="fixed inset-0 z-999999 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4">
         <div class="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl bg-white shadow-xl dark:bg-gray-800">
             <div class="border-b border-gray-100 px-6 py-4 dark:border-gray-700">
@@ -262,10 +302,10 @@
             </div>
 
             <div class="overflow-y-auto px-6 py-4">
-                @if (modalErrorMessage) {
+                @if (modalErrorMessage()) {
                 <div
                     class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300">
-                    {{ modalErrorMessage }}
+                    {{ modalErrorMessage() }}
                 </div>
                 }
 
@@ -352,28 +392,27 @@
                             }
                         </div>
                     </div>
-                    <div class="flex justify-end gap-3 border-t border-gray-100 px-6 py-4 dark:border-gray-700">
-                        <button type="button" (click)="closeEditModal()"
-                            class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-150 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
-                            Cancel
-                        </button>
-                        <button type="submit" [disabled]="isSubmitting" onclick="submitEditForm()"
-                            class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors duration-150 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
-                            @if (isSubmitting) {
-                            <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                    stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                            </svg>
-                            }
-                            {{ isSubmitting ? 'Updating…' : 'Update' }}
-                        </button>
-                    </div>
                 </form>
             </div>
 
-
+            <div class="flex justify-end gap-3 border-t border-gray-100 px-6 py-4 dark:border-gray-700">
+                <button type="button" (click)="closeEditModal()"
+                    class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-150 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+                    Cancel
+                </button>
+                <button type="submit" form="editFrameworkForm" [disabled]="isSubmitting()"
+                    class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors duration-150 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
+                    @if (isSubmitting()) {
+                    <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
+                        </path>
+                    </svg>
+                    }
+                    {{ isSubmitting() ? 'Updating…' : 'Update' }}
+                </button>
+            </div>
         </div>
     </div>
     }

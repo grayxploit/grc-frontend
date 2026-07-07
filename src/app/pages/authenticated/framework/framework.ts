@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { PageBreadcrumb } from '../../../shared/components/common/page-breadcrumb/page-breadcrumb';
 import { Card } from '../../../shared/components/common/card/card';
 import { CommonModule } from '@angular/common';
@@ -34,17 +34,21 @@ export class Framework implements OnInit, OnDestroy {
   private readonly industryService = inject(IndustryService);
   private destroy$ = new Subject<void>();
   private readonly cdr = inject(ChangeDetectorRef);
-  isCreateModalOpen = false;
-  isSubmitting = false;
-  modalErrorMessage = '';
+  isCreateModalOpen = signal<boolean>(false);
+  isSubmitting = signal<boolean>(false);
+  modalErrorMessage = signal<string>('');
   categoryLoadError = '';
   frameworkCategories: FrameworkCategory[] = [];
   industries: Industry[] = [];
-  isEditModalOpen = false;
+  isEditModalOpen = signal<boolean>(false);
   filter: QueryFilter = {};
   frameworks: FrameworkModel[] = [];
   meta!: PaginationMeta;
   errorMessage = ''
+
+  searchQuery = '';
+  limit = 5;
+  limitOptions = [5, 10, 20, 50, 100];
   public createForm = this.formBuilder.group({
     name: ['', Validators.required],
     description: '',
@@ -68,6 +72,10 @@ export class Framework implements OnInit, OnDestroy {
     industries: this.formBuilder.array([]),
   });
 
+  public searchForm = this.formBuilder.group({
+    search: ['']
+  });
+
   ngOnInit() {
     this.loadFrameworkCategories();
     this.loadIndustries();
@@ -79,6 +87,24 @@ export class Framework implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  onSearch() {
+    this.searchQuery = this.searchForm.value.search || '';
+    this.filter['page'] = 1;
+    this.getAllFramework();
+  }
+
+  clearSearch() {
+    this.searchForm.patchValue({ search: '' });
+    this.searchQuery = '';
+    this.filter['page'] = 1;
+    this.getAllFramework();
+  }
+  onLimitChange(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    this.limit = Number(select.value);
+    this.filter['page'] = 1;
+    this.getAllFramework();
+  }
   private loadFrameworkCategories() {
     this.frameworkCategoryService.getAllFrameworkCategory({ page: 1, size: 100 })
       .pipe(takeUntil(this.destroy$))
@@ -111,8 +137,8 @@ export class Framework implements OnInit, OnDestroy {
   }
 
   openCreateModal() {
-    this.isCreateModalOpen = true;
-    this.modalErrorMessage = '';
+    this.isCreateModalOpen.set(true);
+    this.modalErrorMessage.set('');
     this.createForm.reset({
       name: '',
       description: '',
@@ -126,13 +152,13 @@ export class Framework implements OnInit, OnDestroy {
   }
 
   closeCreateModal() {
-    this.isCreateModalOpen = false;
-    this.modalErrorMessage = '';
+    this.isCreateModalOpen.set(false);
+    this.modalErrorMessage.set('');
   }
 
   submitCreateForm() {
     if (this.createForm.invalid) {
-      this.modalErrorMessage = 'Please fill in all required fields.';
+      this.modalErrorMessage.set('Please fill in all required fields.');
       this.createForm.markAllAsTouched();
       return;
     }
@@ -151,21 +177,23 @@ export class Framework implements OnInit, OnDestroy {
     };
 
     console.log("Create Payload", payload)
-    this.isSubmitting = true;
-    this.modalErrorMessage = '';
+    this.isSubmitting.set(true);
+    this.modalErrorMessage.set('');
 
     this.frameworkService.createFramework(payload)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           console.log('Framework created successfully:', response);
-          this.isSubmitting = false;
+          this.isSubmitting.set(false);
           this.closeCreateModal();
           this.getAllFramework();
         },
         error: (error) => {
-          this.isSubmitting = false;
-          this.modalErrorMessage = this.extractApiErrorMessage(error) || 'Unable to create framework.';
+          this.isSubmitting.set(false);
+          const err = this.frameworkService.apiService.extractApiErrorMessage(error);
+
+          this.modalErrorMessage.set(err || 'Unable to create framework.');
           console.error(error);
         }
       });
@@ -199,7 +227,11 @@ export class Framework implements OnInit, OnDestroy {
 
   getAllFramework() {
     const page = this.filter['page'] || 1;
-    this.frameworkService.getAllFramework({ page, limit: 3 })
+    const params: any = { page, size: this.limit || 5 };
+    if (this.searchQuery) {
+      params.name = this.searchQuery;
+    }
+    this.frameworkService.getAllFramework(params)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -209,7 +241,8 @@ export class Framework implements OnInit, OnDestroy {
           this.cdr.markForCheck(); // force view update after async data
         },
         error: (error) => {
-          this.errorMessage = error?.error?.message || 'Unable to load framework categories.';
+          const err = this.frameworkService.apiService.extractApiErrorMessage(error);
+          this.errorMessage = err || 'Unable to load framework categories.';
           this.frameworks = [];
           this.cdr.markForCheck();
           console.error(error);
@@ -219,7 +252,7 @@ export class Framework implements OnInit, OnDestroy {
 
   openEditModal(framework: FrameworkModel) {
     console.log('Opening edit modal for framework:', framework);
-    this.modalErrorMessage = '';
+    this.modalErrorMessage.set('');
 
     const selectedCategoryValue =
       typeof framework.category === 'object' && framework.category !== undefined
@@ -249,17 +282,17 @@ export class Framework implements OnInit, OnDestroy {
       });
     }
 
-    this.isEditModalOpen = true;
+    this.isEditModalOpen.set(true);
   }
 
   closeEditModal() {
-    this.isEditModalOpen = false;
-    this.modalErrorMessage = '';
+    this.isEditModalOpen.set(false);
+    this.modalErrorMessage.set('')
   }
 
   submitEditForm() {
     if (this.editForm.invalid) {
-      this.modalErrorMessage = 'Please fill in all required fields.';
+      this.modalErrorMessage.set('Please fill in all required fields.');
       this.editForm.markAllAsTouched();
       return;
     }
@@ -278,23 +311,24 @@ export class Framework implements OnInit, OnDestroy {
       industries: industriesArray.value.map((id: string) => ({ industry_id: id })),
     };
 
-    this.isSubmitting = true;
-    this.modalErrorMessage = '';
+    this.isSubmitting.set(true);
+    this.modalErrorMessage.set('')
 
     this.frameworkService
       .updateFramework(value.id!, payload)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          this.isSubmitting = false;
-          this.closeEditModal();
+          this.isSubmitting.set(false);
+          this.isEditModalOpen.set(false);
           this.getAllFramework();
+
         },
         error: (error) => {
-          this.isSubmitting = false;
-          this.modalErrorMessage =
-            this.extractApiErrorMessage(error) ||
-            'Unable to update framework.';
+          const err = this.frameworkService.apiService.extractApiErrorMessage(error);
+          this.isSubmitting.set(false);
+          this.modalErrorMessage.set(
+            err || 'Unable to update framework.');
         },
       });
   }

@@ -6,7 +6,7 @@ import { ApiResponse, PaginatedResponse } from '../api/api-response.model';
 const passthroughError = (error: unknown) => throwError(() => error);
 @Service()
 export class FrameworkService {
-    private apiService = inject(ApiService);
+    public apiService = inject(ApiService);
 
 
 
@@ -16,7 +16,13 @@ export class FrameworkService {
     }
 
     getAllFramework(queryParam: FrameworkQueryParam): Observable<PaginatedResponse<Framework>> {
-        let queryParams = `page=${queryParam.page}&size=${queryParam.limit}`;
+        let queryParams = `page=${queryParam.page}&size=${queryParam.size || 5}`;
+        if (queryParam.name) {
+            queryParams += `&name=${queryParam.name}`;
+        }
+        if (queryParam.filter) {
+            queryParams += this.apiService.buildFilter(queryParam.filter);
+        }
         if (queryParam.filter) {
             queryParams += this.apiService.buildFilter(queryParam.filter);
         }
