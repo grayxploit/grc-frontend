@@ -1,8 +1,8 @@
 import { inject, Service } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { catchError, map, Observable, throwError } from "rxjs";
-import { IndustryQueryParam, Industry, IndustryCreateRequest } from './industry.model';
-import { PaginatedResponse } from '../api/api-response.model';
+import { IndustryQueryParam, Industry, IndustryCreateRequest, IndustryDropdownResponse } from './industry.model';
+import { ApiResponse, PaginatedResponse } from '../api/api-response.model';
 
 const passthroughError = (error: unknown) => throwError(() => error);
 @Service()
@@ -35,6 +35,13 @@ export class IndustryService {
 
     public updateIndustry(id: string, payload: IndustryCreateRequest) : Observable<Industry> {
         return this.apiService.protectedPut<Industry>(`industries/${id}`, payload).pipe(
+            map(response => response.data),
+            catchError(passthroughError)
+        )
+    }
+
+    public getAllIndustriesForDropdown() : Observable<PaginatedResponse<IndustryDropdownResponse>> {
+        return this.apiService.protectedGet<PaginatedResponse<IndustryDropdownResponse>>('vendors/industries/').pipe(
             map(response => response.data),
             catchError(passthroughError)
         )

@@ -15,7 +15,268 @@
                 
             </div>
             <div class="overflow-y-auto px-6 py-5">
-                
+                @if(modalErrormessage() !== ''){
+                    <div class="mb-4 rounded-lg bg-red-100 px-4 py-3 text-sm text-red-700 dark:bg-red-200 dark:text-red-800" role="alert">
+                        <span class="font-medium">Error:</span> {{ modalErrormessage() }}
+                    </div>
+                }
+                <form [formGroup]="organizationForm" (ngSubmit)="createOrganization()" class="space-y-5">
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-white">Organization Details</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Provide the organization information for your account.</p>
+                        </div>
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+                                <input
+                                    type="text"
+                                    formControlName="name"
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                    placeholder="Enter organization name">
+                                @if (organizationForm.get('name')?.hasError('required') && organizationForm.get('name')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name is required.</p>
+                                }
+                                @if (organizationForm.get('name')?.hasError('pattern') && organizationForm.get('name')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name is not valid text.</p>
+                                }
+                                @if (organizationForm.get('name')?.hasError('minlength') && organizationForm.get('name')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name must be at least 3 characters long.</p>
+                                }
+                                @if (organizationForm.get('name')?.hasError('maxlength') && organizationForm.get('name')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name must be no more than 50 characters long.</p>
+                                }
+                            </div>
+
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                                <input
+                                    type="email"
+                                    formControlName="email"
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                    placeholder="Enter email address">
+                                @if (organizationForm.get('email')?.hasError('required') && organizationForm.get('email')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Email is required.</p>
+                                }
+                                @if (organizationForm.get('email')?.hasError('email') && organizationForm.get('email')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid email address.</p>
+                                }
+                            </div>
+
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Phone</label>
+                                <input
+                                    type="tel"
+                                    formControlName="phone"
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                    placeholder="Enter phone number">
+                                @if (organizationForm.get('phone')?.hasError('required') && organizationForm.get('phone')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Phone is required.</p>
+                                }
+                                @if (organizationForm.get('phone')?.hasError('pattern') && organizationForm.get('phone')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid phone number.</p>
+                                }
+                            </div>
+
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Industry</label>
+                                <select
+                                    formControlName="industry"
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                    <option value="" disabled selected>Select industry</option>
+                                    @if (industriesLoading()) {
+                                        <option value="" disabled>Loading industries...</option>
+                                    } @else if (industriesError()) {
+                                        <option value="" disabled>{{ industriesError() }}</option>
+                                    } @else {
+                                        @for (industry of industries(); track industry.id) {
+                                            <option [value]="industry.name">{{ industry.name }}</option>
+                                        }
+                                    }
+                                </select>
+                                @if (organizationForm.get('industry')?.hasError('required') && organizationForm.get('industry')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Industry is required.</p>
+                                }
+                                @if (organizationForm.get('industry')?.hasError('invalidIndustry') && organizationForm.get('industry')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please select a valid industry from the list.</p>
+                                }
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Address</label>
+                            <input
+                                type="text"
+                                formControlName="address"
+                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                placeholder="Enter address">
+                            @if (organizationForm.get('address')?.hasError('required') && organizationForm.get('address')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address is required.</p>
+                            }
+                            @if (organizationForm.get('address')?.hasError('minlength') && organizationForm.get('address')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address must be at least 10 characters long.</p>
+                            }
+                            @if (organizationForm.get('address')?.hasError('maxlength') && organizationForm.get('address')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address must be no more than 100 characters long.</p>
+                            }
+                        </div>
+
+                        <div class="grid gap-4 md:grid-cols-3">
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">City</label>
+                                <input
+                                    type="text"
+                                    formControlName="city"
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                    placeholder="Enter city">
+                                @if (organizationForm.get('city')?.hasError('required') && organizationForm.get('city')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City is required.</p>
+                                }
+                                @if (organizationForm.get('city')?.hasError('minlength') && organizationForm.get('city')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City must be at least 2 characters long.</p>
+                                }
+                                @if (organizationForm.get('city')?.hasError('maxlength') && organizationForm.get('city')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City must be no more than 50 characters long.</p>
+                                }
+                            </div>
+
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">State</label>
+                                <input
+                                    type="text"
+                                    formControlName="state"
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                    placeholder="Enter state">
+                                @if (organizationForm.get('state')?.hasError('required') && organizationForm.get('state')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State is required.</p>
+                                }
+                                @if (organizationForm.get('state')?.hasError('minlength') && organizationForm.get('state')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State must be at least 2 characters long.</p>
+                                }
+                                @if (organizationForm.get('state')?.hasError('maxlength') && organizationForm.get('state')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State must be no more than 50 characters long.</p>
+                                }
+                            </div>
+
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Country</label>
+                                <input
+                                    type="text"
+                                    formControlName="country"
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                    placeholder="Enter country">
+                                @if (organizationForm.get('country')?.hasError('required') && organizationForm.get('country')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country is required.</p>
+                                }
+                                @if (organizationForm.get('country')?.hasError('minlength') && organizationForm.get('country')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country must be at least 2 characters long.</p>
+                                }
+                                @if (organizationForm.get('country')?.hasError('maxlength') && organizationForm.get('country')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country must be no more than 50 characters long.</p>
+                                }
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">ZIP Code</label>
+                            <input
+                                type="text"
+                                formControlName="zipcode"
+                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                placeholder="Enter ZIP code">
+                            @if (organizationForm.get('zipcode')?.hasError('required') && organizationForm.get('zipcode')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">ZIP code is required.</p>
+                            }
+                            @if (organizationForm.get('zipcode')?.hasError('pattern') && organizationForm.get('zipcode')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">ZIP code must contain only digits.</p>
+                            }
+                            @if (organizationForm.get('zipcode')?.hasError('minlength') && organizationForm.get('zipcode')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">ZIP code must be 6 digits long.</p>
+                            }
+                            @if (organizationForm.get('zipcode')?.hasError('maxlength') && organizationForm.get('zipcode')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">ZIP code must be 6 digits long.</p>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 border-t border-gray-200 pt-4 dark:border-gray-700">
+                        <div>
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-white">Product Details</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Add your first project or product information.</p>
+                        </div>
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Product Name</label>
+                                <input
+                                    type="text"
+                                    formControlName="product_name"
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                    placeholder="Enter product name">
+                                @if (organizationForm.get('product_name')?.hasError('required') && organizationForm.get('product_name')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product name is required.</p>
+                                }
+                                @if (organizationForm.get('product_name')?.hasError('pattern') && organizationForm.get('product_name')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product name should only contain letters, numbers, and spaces.</p>
+                                }
+                                @if (organizationForm.get('product_name')?.hasError('minlength') && organizationForm.get('product_name')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product name must be at least 3 characters long.</p>
+                                }
+                                @if (organizationForm.get('product_name')?.hasError('maxlength') && organizationForm.get('product_name')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product name must be no more than 50 characters long.</p>
+                                }
+                            </div>
+
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Product Type</label>
+                                <input
+                                    type="text"
+                                    formControlName="product_type"
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                    placeholder="Enter product type">
+                                @if (organizationForm.get('product_type')?.hasError('required') && organizationForm.get('product_type')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product type is required.</p>
+                                }
+                                @if (organizationForm.get('product_type')?.hasError('pattern') && organizationForm.get('product_type')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product type should only contain letters, numbers, and spaces.</p>
+                                }
+                                @if (organizationForm.get('product_type')?.hasError('minlength') && organizationForm.get('product_type')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product type must be at least 3 characters long.</p>
+                                }
+                                @if (organizationForm.get('product_type')?.hasError('maxlength') && organizationForm.get('product_type')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product type must be no more than 50 characters long.</p>
+                                }
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Product Description</label>
+                            <textarea
+                                formControlName="product_description"
+                                rows="4"
+                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                placeholder="Describe your product or project"></textarea>
+                            @if (organizationForm.get('product_description')?.hasError('required') && organizationForm.get('product_description')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product description is required.</p>
+                            }
+                            @if (organizationForm.get('product_description')?.hasError('minlength') && organizationForm.get('product_description')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product description must be at least 10 characters long.</p>
+                            }
+                            @if (organizationForm.get('product_description')?.hasError('maxlength') && organizationForm.get('product_description')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product description must be no more than 200 characters long.</p>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3 border-t border-gray-200 pt-4 dark:border-gray-700">
+                        <button
+                            type="submit"
+                            class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700">
+                            Create Organization
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

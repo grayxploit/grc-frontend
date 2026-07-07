@@ -1,0 +1,21 @@
+import { inject, Service } from '@angular/core';
+import { ApiService } from '../api/api.service';
+import { catchError, map, Observable, throwError } from 'rxjs';
+import { ApiResponse } from '../api/api-response.model';
+import { Organization } from './organization.model';
+import { CreateOrganizationRequest } from './organization.model';
+
+
+const passthroughError = (error: unknown) => throwError(() => error);
+@Service()
+export class OrganizationService {
+    public readonly apiService = inject(ApiService);
+
+
+    createOrganization(organizationData: CreateOrganizationRequest) : Observable<ApiResponse<Organization>> {
+        return this.apiService.protectedPost<ApiResponse<Organization>>('/organizations', organizationData).pipe(
+                    map(response => response.data),
+                    catchError(passthroughError)
+        )
+    }
+}
