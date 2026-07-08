@@ -19,6 +19,7 @@ import { ResetPassword } from './pages/public/reset-password/reset-password';
 import { adminGuard, superAdminGuard, userGuard } from './guards/auth/role-guard';
 import { Industry } from './pages/authenticated/industry/industry';
 import { Organization } from './pages/authenticated/organization/organization';
+import { Profile } from './pages/authenticated/profile/profile';
 export const routes: Routes = [
     {
         path: 'countdown',
@@ -133,6 +134,11 @@ export const routes: Routes = [
                 canActivate: [superAdminGuard],
                 component: Industry,
                 title: `Industries | ${environment.applicationName}`
+            },
+            {
+                path:'profile',
+                component:Profile,
+                title:`Profile | ${environment.applicationName}`
             }
 
 
