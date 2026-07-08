@@ -1,19 +1,30 @@
 import { CreatedBy, UpdatedBy } from "../api/api-response.model";
 
-export interface CreateOrganizationRequest {
-	name: string;
-	email: string;
-	phone: string;
-	address: string;
-	city: string;
-	state: string;
-	country: string;
-	zipcode: string;
-	industry: string;
-	website: string;
+
+
+export interface OrganizationRequest {
+    name: string;
+    description: string;
+    industry: string;
+    phone: string;
+    email: string;
+    city: string;
+    state: string;
+    country: string;
+    zip_code: string;
+    website: string;
+    address: string;
+}
+
+export interface CreateOrganizationRequest extends OrganizationRequest {
+	
 	product_name: string;
 	product_description: string;
 	product_type: string;
+}
+
+export interface UpdateOrganizationRequest extends OrganizationRequest {
+	
 }
 
 interface Industry {

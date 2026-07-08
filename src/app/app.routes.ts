@@ -77,7 +77,7 @@ export const routes: Routes = [
                 path: 'organizations',
                 canActivate: [adminGuard],
                 component: Organization,
-                title: `Create Organization | ${environment.applicationName}`
+                title: `Organization | ${environment.applicationName}`
             },
             {
                 path: 'dashboard',

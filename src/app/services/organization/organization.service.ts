@@ -2,8 +2,7 @@ import { inject, Service } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { ApiResponse } from '../api/api-response.model';
-import { GetOrganizationResponse, Organization } from './organization.model';
-import { CreateOrganizationRequest } from './organization.model';
+import { CreateOrganizationRequest, GetOrganizationResponse, Organization, UpdateOrganizationRequest } from './organization.model';
 
 
 const passthroughError = (error: unknown) => throwError(() => error);
@@ -21,6 +20,13 @@ export class OrganizationService {
 
     getOrganization() : Observable<ApiResponse<GetOrganizationResponse>> {
         return this.apiService.protectedGet<ApiResponse<GetOrganizationResponse>>(`vendors/organizations/get`).pipe(
+            map(response => response.data),
+            catchError(passthroughError)
+        )
+    }
+
+    updateOrganization(data: UpdateOrganizationRequest) : Observable<ApiResponse<Organization>> {
+        return this.apiService.protectedPut<ApiResponse<Organization>>(`vendors/organizations/`, data).pipe(
             map(response => response.data),
             catchError(passthroughError)
         )

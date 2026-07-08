@@ -7,7 +7,7 @@
                 {{ errorMessage() }}
             </div>
         }
-        <form [formGroup]="editOrganizationForm" (ngSubmit)="createOrganization()" class="space-y-6">
+        <form [formGroup]="editOrganizationForm" (ngSubmit)="editOrganization()" class="space-y-6">
             <div class="space-y-5">
                 <div class="flex items-center gap-2.5">
                     <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
@@ -568,12 +568,15 @@
                                 <label for="new-product-type" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Product type <span class="text-red-500">*</span>
                                 </label>
-                                <input
+                                <select
                                     id="new-product-type"
-                                    type="text"
                                     formControlName="product_type"
-                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                                    placeholder="Enter product type">
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500">
+                                    <option value="">Select product type</option>
+                                    @for (productType of productTypes(); track productType.key) {
+                                        <option [value]="productType.key">{{ productType.value }}</option>
+                                    }
+                                </select>
                                 @if (organizationForm.get('product_type')?.hasError('required') && organizationForm.get('product_type')?.touched) {
                                     <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product type is required.</p>
                                 }

@@ -7,7 +7,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IndustryService } from '../../../services/industry/industry.service';
 import { IndustryDropdownResponse } from '../../../services/industry/industry.model';
 import { OrganizationService } from '../../../services/organization/organization.service';
-import { CreateOrganizationRequest, GetOrganizationResponse } from '../../../services/organization/organization.model';
+import { CreateOrganizationRequest, GetOrganizationResponse, UpdateOrganizationRequest } from '../../../services/organization/organization.model';
 import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
@@ -35,7 +35,13 @@ export class Organization {
     createOrganizationShow = signal<boolean>(true);
     modalErrormessage = signal<string>('');
     isSubmitting = signal<boolean>(false);
-
+    productTypes = signal([
+        { key: 'web', value: 'Web Application' },
+        { key: 'network', value: 'Network' },
+        { key: 'software', value: 'Software' },
+        { key: 'mobile', value: 'Mobile Application' },
+    ]);
+  
     public organizationForm = this.formBuilder.group({
         name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9\s\-\.]+$/)]],
         email: ['', [Validators.required, Validators.email]],
@@ -50,7 +56,7 @@ export class Organization {
 
         product_name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s\-\.]+$/)]],
         product_description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
-        product_type: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9\s\-\.]+$/)]],
+        product_type: ['', [Validators.required]],
     });
 
 
@@ -164,8 +170,46 @@ export class Organization {
 
 
     onLogout() {
-        this.authService.logout();
-        this.router.navigate(['/login']);
+        this.authService.logout().subscribe({
+            next: () => {
+                this.router.navigate(['/login']);
+                this.createOrganizationShow.set(false);
+            },
+            error: (error) => {
+                console.error('Logout failed:', error);
+                this.router.navigate(['/login']);
+            }
+        });
     }
 
+
+    editOrganization() {
+        if (!this.editOrganizationForm.valid) {
+            this.modalErrormessage.set('Please fill all required fields correctly.');
+            return;
+        }
+
+        this.isSubmitting.set(true);
+        this.modalErrormessage.set('');
+
+        const organizationData = this.editOrganizationForm.value as UpdateOrganizationRequest;
+
+        this.organizationService.updateOrganization(organizationData).subscribe({
+            next: (response) => {
+                this.isSubmitting.set(false);
+                this.getOrganization();
+                this.createOrganizationShow.set(false);
+            },
+            error: (error) => {
+                const err = this.organizationService.apiService.extractApiErrorMessage(error);
+                this.modalErrormessage.set(err || 'Failed to update organization. Please try again.');
+                this.isSubmitting.set(false);
+            },
+            complete: () => {
+                this.isSubmitting.set(false);
+            }
+        });
+    }
+
+         
 }
