@@ -11,15 +11,15 @@ import { CreateOrganizationRequest, GetOrganizationResponse, UpdateOrganizationR
 import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
-  selector: 'app-organization',
-  imports: [
-    CommonModule,
-    PageBreadcrumb,
-    Card,
-    ReactiveFormsModule
-  ],
-  templateUrl: './organization.html',
-  styleUrl: './organization.css',
+    selector: 'app-organization',
+    imports: [
+        CommonModule,
+        PageBreadcrumb,
+        Card,
+        ReactiveFormsModule
+    ],
+    templateUrl: './organization.html',
+    styleUrl: './organization.css',
 })
 export class Organization {
     private readonly formBuilder = inject(FormBuilder);
@@ -41,7 +41,7 @@ export class Organization {
         { key: 'software', value: 'Software' },
         { key: 'mobile', value: 'Mobile Application' },
     ]);
-  
+
     public organizationForm = this.formBuilder.group({
         name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9\s\-\.]+$/)]],
         email: ['', [Validators.required, Validators.email]],
@@ -72,7 +72,7 @@ export class Organization {
         industry: ['', [Validators.required, this.validIndustry.bind(this)]],
         website: ['', [Validators.required, Validators.pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)]],
 
-        
+
     });
 
     createOrganization() {
@@ -101,7 +101,9 @@ export class Organization {
     }
 
     ngOnInit() {
-
+        if (this.authService.authUser()?.organization !== '') {
+            this.createOrganizationShow.set(false);
+        }
         // Load industries for dropdown
         this.getAllIndustries();
         this.getOrganization();
@@ -118,20 +120,20 @@ export class Organization {
 
     getAllIndustries() {
         this.industriesLoading.set(true);
-       this.industryService.getAllIndustriesForDropdown().subscribe({
-        next: (response) => {
-            this.industries.set(response.data);
-            this.industriesError.set('');
-            this.industriesLoading.set(false);
-        },
-        error: (error) => {
-            this.industriesError.set('Failed to load industries');
-            this.industriesLoading.set(false);
-        },
-        complete: () => {
-            this.industriesLoading.set(false);
-        }
-       });
+        this.industryService.getAllIndustriesForDropdown().subscribe({
+            next: (response) => {
+                this.industries.set(response.data);
+                this.industriesError.set('');
+                this.industriesLoading.set(false);
+            },
+            error: (error) => {
+                this.industriesError.set('Failed to load industries');
+                this.industriesLoading.set(false);
+            },
+            complete: () => {
+                this.industriesLoading.set(false);
+            }
+        });
     }
 
     getOrganization() {
@@ -154,12 +156,12 @@ export class Organization {
                     address: response.data.address,
                     industry: response.data.industry.id,
                     website: response.data.website,
-                    
+
                 });
             },
             error: (error) => {
                 const err = this.organizationService.apiService.extractApiErrorMessage(error);
-                this.errorMessage.set(err || 'Failed to load organization');
+                // this.errorMessage.set(err || 'Failed to load organization');
                 this.isSubmitting.set(false);
             },
             complete: () => {
@@ -211,5 +213,5 @@ export class Organization {
         });
     }
 
-         
+
 }

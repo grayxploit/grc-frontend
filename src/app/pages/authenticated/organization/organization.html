@@ -3,144 +3,166 @@
 <div class="space-y-6">
     <app-card title="Organization">
         @if(errorMessage()){
-            <div class="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-400" role="alert">
-                {{ errorMessage() }}
-            </div>
+        <div class="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-400"
+            role="alert">
+            {{ errorMessage() }}
+        </div>
         }
         <form [formGroup]="editOrganizationForm" (ngSubmit)="editOrganization()" class="space-y-6">
             <div class="space-y-5">
                 <div class="flex items-center gap-2.5">
-                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
-                        <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-                            <path d="M3 21h18M6 21V6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v15M18 21V10a1 1 0 0 0-1-1h-3M9 8h.01M9 11h.01M9 14h.01M9 17h.01" stroke-linecap="round" stroke-linejoin="round"/>
+                    <span
+                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                        <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.75">
+                            <path
+                                d="M3 21h18M6 21V6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v15M18 21V10a1 1 0 0 0-1-1h-3M9 8h.01M9 11h.01M9 14h.01M9 17h.01"
+                                stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </span>
                     <div>
                         <h3 class="text-base font-semibold text-gray-900 dark:text-white">Organization details</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Provide the organization information for your account.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Provide the organization information for
+                            your account.</p>
                     </div>
                 </div>
 
                 <div class="grid gap-5 md:grid-cols-2">
                     <div>
-                        <label for="edit-name" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label for="edit-name"
+                            class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Name <span class="text-red-500">*</span>
                         </label>
-                        <input
-                            id="edit-name"
-                            type="text"
-                            formControlName="name"
+                        <input id="edit-name" type="text" formControlName="name"
                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
                             [class.border-red-400]="editOrganizationForm.get('name')?.invalid && editOrganizationForm.get('name')?.touched"
                             placeholder="Enter organization name">
-                        @if (editOrganizationForm.get('name')?.hasError('required') && editOrganizationForm.get('name')?.touched) {
-                            <p class="mt-1.5 flex items-center gap-1 text-sm text-red-600 dark:text-red-400">
-                                <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" opacity=".15"/><path d="M12 7v6m0 3.5h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
-                                Name is required.
-                            </p>
+                        @if (editOrganizationForm.get('name')?.hasError('required') &&
+                        editOrganizationForm.get('name')?.touched) {
+                        <p class="mt-1.5 flex items-center gap-1 text-sm text-red-600 dark:text-red-400">
+                            <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="12" cy="12" r="10" opacity=".15" />
+                                <path d="M12 7v6m0 3.5h.01" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" fill="none" />
+                            </svg>
+                            Name is required.
+                        </p>
                         }
-                        @if (editOrganizationForm.get('name')?.hasError('pattern') && editOrganizationForm.get('name')?.touched) {
-                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name is not valid text.</p>
+                        @if (editOrganizationForm.get('name')?.hasError('pattern') &&
+                        editOrganizationForm.get('name')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name is not valid text.</p>
                         }
-                        @if (editOrganizationForm.get('name')?.hasError('minlength') && editOrganizationForm.get('name')?.touched) {
-                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name must be at least 3 characters long.</p>
+                        @if (editOrganizationForm.get('name')?.hasError('minlength') &&
+                        editOrganizationForm.get('name')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name must be at least 3 characters
+                            long.</p>
                         }
-                        @if (editOrganizationForm.get('name')?.hasError('maxlength') && editOrganizationForm.get('name')?.touched) {
-                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name must be no more than 50 characters long.</p>
+                        @if (editOrganizationForm.get('name')?.hasError('maxlength') &&
+                        editOrganizationForm.get('name')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name must be no more than 50 characters
+                            long.</p>
                         }
                     </div>
 
                     <div>
-                        <label for="edit-email" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label for="edit-email"
+                            class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Email <span class="text-red-500">*</span>
                         </label>
-                        <input
-                            id="edit-email"
-                            type="email"
-                            formControlName="email"
+                        <input id="edit-email" type="email" formControlName="email"
                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
                             placeholder="name@company.com">
-                        @if (editOrganizationForm.get('email')?.hasError('required') && editOrganizationForm.get('email')?.touched) {
-                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Email is required.</p>
+                        @if (editOrganizationForm.get('email')?.hasError('required') &&
+                        editOrganizationForm.get('email')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Email is required.</p>
                         }
-                        @if (editOrganizationForm.get('email')?.hasError('email') && editOrganizationForm.get('email')?.touched) {
-                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid email address.</p>
+                        @if (editOrganizationForm.get('email')?.hasError('email') &&
+                        editOrganizationForm.get('email')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid email address.</p>
                         }
                     </div>
 
                     <div>
-                        <label for="edit-phone" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label for="edit-phone"
+                            class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Phone <span class="text-red-500">*</span>
                         </label>
-                        <input
-                            id="edit-phone"
-                            type="tel"
-                            formControlName="phone"
+                        <input id="edit-phone" type="tel" formControlName="phone"
                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
                             placeholder="+1 (555) 000-0000">
-                        @if (editOrganizationForm.get('phone')?.hasError('required') && editOrganizationForm.get('phone')?.touched) {
-                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Phone is required.</p>
+                        @if (editOrganizationForm.get('phone')?.hasError('required') &&
+                        editOrganizationForm.get('phone')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Phone is required.</p>
                         }
-                        @if (editOrganizationForm.get('phone')?.hasError('pattern') && editOrganizationForm.get('phone')?.touched) {
-                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid phone number.</p>
+                        @if (editOrganizationForm.get('phone')?.hasError('pattern') &&
+                        editOrganizationForm.get('phone')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid phone number.</p>
                         }
                     </div>
 
                     <div>
-                        <label for="edit-industry" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label for="edit-industry"
+                            class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Industry <span class="text-red-500">*</span>
                         </label>
                         <div class="relative">
-                            <select
-                                id="edit-industry"
-                                formControlName="industry"
+                            <select id="edit-industry" formControlName="industry"
                                 class="w-full appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2 pr-9 text-sm text-gray-900 shadow-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                                 <option value="" disabled selected>Select industry</option>
                                 @if (industriesLoading()) {
-                                    <option value="" disabled>Loading industries…</option>
+                                <option value="" disabled>Loading industries…</option>
                                 } @else if (industriesError()) {
-                                    <option value="" disabled>{{ industriesError() }}</option>
+                                <option value="" disabled>{{ industriesError() }}</option>
                                 } @else {
-                                    @for (industry of industries(); track industry.id) {
-                                        <option [value]="industry.id">{{ industry.name }}</option>
-                                    }
+                                @for (industry of industries(); track industry.id) {
+                                <option [value]="industry.id">{{ industry.name }}</option>
+                                }
                                 }
                             </select>
-                            <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
                         </div>
-                        @if (editOrganizationForm.get('industry')?.hasError('required') && editOrganizationForm.get('industry')?.touched) {
-                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Industry is required.</p>
+                        @if (editOrganizationForm.get('industry')?.hasError('required') &&
+                        editOrganizationForm.get('industry')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Industry is required.</p>
                         }
-                        @if (editOrganizationForm.get('industry')?.hasError('invalidIndustry') && editOrganizationForm.get('industry')?.touched) {
-                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please select a valid industry from the list.</p>
+                        @if (editOrganizationForm.get('industry')?.hasError('invalidIndustry') &&
+                        editOrganizationForm.get('industry')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please select a valid industry from the
+                            list.</p>
                         }
                     </div>
 
                     <div class="md:col-span-2">
-                        <label for="edit-website" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label for="edit-website"
+                            class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Website <span class="text-red-500">*</span>
                         </label>
-                        <input
-                            id="edit-website"
-                            type="url"
-                            formControlName="website"
+                        <input id="edit-website" type="url" formControlName="website"
                             class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
                             placeholder="https://example.com">
-                        @if (editOrganizationForm.get('website')?.hasError('required') && editOrganizationForm.get('website')?.touched) {
-                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Website is required.</p>
+                        @if (editOrganizationForm.get('website')?.hasError('required') &&
+                        editOrganizationForm.get('website')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Website is required.</p>
                         }
-                        @if (editOrganizationForm.get('website')?.hasError('pattern') && editOrganizationForm.get('website')?.touched) {
-                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid website URL.</p>
+                        @if (editOrganizationForm.get('website')?.hasError('pattern') &&
+                        editOrganizationForm.get('website')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid website URL.</p>
                         }
                     </div>
                 </div>
 
                 <div class="border-t border-gray-100 pt-5 dark:border-gray-700/60">
                     <div class="mb-4 flex items-center gap-2.5">
-                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
-                            <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-                                <path d="M12 21c-4.5-2.5-8-6-8-10.5A8 8 0 0 1 12 3a8 8 0 0 1 8 7.5c0 4.5-3.5 8-8 10.5Z" stroke-linecap="round" stroke-linejoin="round"/>
-                                <circle cx="12" cy="10.5" r="2.5"/>
+                        <span
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                            <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.75">
+                                <path d="M12 21c-4.5-2.5-8-6-8-10.5A8 8 0 0 1 12 3a8 8 0 0 1 8 7.5c0 4.5-3.5 8-8 10.5Z"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <circle cx="12" cy="10.5" r="2.5" />
                             </svg>
                         </span>
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Location</h3>
@@ -148,106 +170,119 @@
 
                     <div class="space-y-5">
                         <div>
-                            <label for="edit-address" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <label for="edit-address"
+                                class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Address <span class="text-red-500">*</span>
                             </label>
-                            <input
-                                id="edit-address"
-                                type="text"
-                                formControlName="address"
+                            <input id="edit-address" type="text" formControlName="address"
                                 class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
                                 placeholder="Street address">
-                            @if (editOrganizationForm.get('address')?.hasError('required') && editOrganizationForm.get('address')?.touched) {
-                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address is required.</p>
+                            @if (editOrganizationForm.get('address')?.hasError('required') &&
+                            editOrganizationForm.get('address')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address is required.</p>
                             }
-                            @if (editOrganizationForm.get('address')?.hasError('minlength') && editOrganizationForm.get('address')?.touched) {
-                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address must be at least 5 characters long.</p>
+                            @if (editOrganizationForm.get('address')?.hasError('minlength') &&
+                            editOrganizationForm.get('address')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address must be at least 5
+                                characters long.</p>
                             }
-                            @if (editOrganizationForm.get('address')?.hasError('maxlength') && editOrganizationForm.get('address')?.touched) {
-                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address must be no more than 200 characters long.</p>
+                            @if (editOrganizationForm.get('address')?.hasError('maxlength') &&
+                            editOrganizationForm.get('address')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address must be no more than 200
+                                characters long.</p>
                             }
                         </div>
 
                         <div class="grid gap-5 md:grid-cols-3">
                             <div>
-                                <label for="edit-city" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label for="edit-city"
+                                    class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     City <span class="text-red-500">*</span>
                                 </label>
-                                <input
-                                    id="edit-city"
-                                    type="text"
-                                    formControlName="city"
+                                <input id="edit-city" type="text" formControlName="city"
                                     class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
                                     placeholder="City">
-                                @if (editOrganizationForm.get('city')?.hasError('required') && editOrganizationForm.get('city')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City is required.</p>
+                                @if (editOrganizationForm.get('city')?.hasError('required') &&
+                                editOrganizationForm.get('city')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City is required.</p>
                                 }
-                                @if (editOrganizationForm.get('city')?.hasError('minlength') && editOrganizationForm.get('city')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City must be at least 2 characters long.</p>
+                                @if (editOrganizationForm.get('city')?.hasError('minlength') &&
+                                editOrganizationForm.get('city')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City must be at least 2
+                                    characters long.</p>
                                 }
-                                @if (editOrganizationForm.get('city')?.hasError('maxlength') && editOrganizationForm.get('city')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City must be no more than 50 characters long.</p>
+                                @if (editOrganizationForm.get('city')?.hasError('maxlength') &&
+                                editOrganizationForm.get('city')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City must be no more than 50
+                                    characters long.</p>
                                 }
                             </div>
 
                             <div>
-                                <label for="edit-state" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label for="edit-state"
+                                    class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     State <span class="text-red-500">*</span>
                                 </label>
-                                <input
-                                    id="edit-state"
-                                    type="text"
-                                    formControlName="state"
+                                <input id="edit-state" type="text" formControlName="state"
                                     class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
                                     placeholder="State">
-                                @if (editOrganizationForm.get('state')?.hasError('required') && editOrganizationForm.get('state')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State is required.</p>
+                                @if (editOrganizationForm.get('state')?.hasError('required') &&
+                                editOrganizationForm.get('state')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State is required.</p>
                                 }
-                                @if (editOrganizationForm.get('state')?.hasError('minlength') && editOrganizationForm.get('state')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State must be at least 2 characters long.</p>
+                                @if (editOrganizationForm.get('state')?.hasError('minlength') &&
+                                editOrganizationForm.get('state')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State must be at least 2
+                                    characters long.</p>
                                 }
-                                @if (editOrganizationForm.get('state')?.hasError('maxlength') && editOrganizationForm.get('state')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State must be no more than 50 characters long.</p>
+                                @if (editOrganizationForm.get('state')?.hasError('maxlength') &&
+                                editOrganizationForm.get('state')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State must be no more than 50
+                                    characters long.</p>
                                 }
                             </div>
 
                             <div>
-                                <label for="edit-country" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label for="edit-country"
+                                    class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Country <span class="text-red-500">*</span>
                                 </label>
-                                <input
-                                    id="edit-country"
-                                    type="text"
-                                    formControlName="country"
+                                <input id="edit-country" type="text" formControlName="country"
                                     class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
                                     placeholder="Country">
-                                @if (editOrganizationForm.get('country')?.hasError('required') && editOrganizationForm.get('country')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country is required.</p>
+                                @if (editOrganizationForm.get('country')?.hasError('required') &&
+                                editOrganizationForm.get('country')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country is required.</p>
                                 }
-                                @if (editOrganizationForm.get('country')?.hasError('minlength') && editOrganizationForm.get('country')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country must be at least 2 characters long.</p>
+                                @if (editOrganizationForm.get('country')?.hasError('minlength') &&
+                                editOrganizationForm.get('country')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country must be at least 2
+                                    characters long.</p>
                                 }
-                                @if (editOrganizationForm.get('country')?.hasError('maxlength') && editOrganizationForm.get('country')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country must be no more than 50 characters long.</p>
+                                @if (editOrganizationForm.get('country')?.hasError('maxlength') &&
+                                editOrganizationForm.get('country')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country must be no more than 50
+                                    characters long.</p>
                                 }
                             </div>
                         </div>
 
                         <div class="md:w-1/3">
-                            <label for="edit-zipcode" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <label for="edit-zipcode"
+                                class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 ZIP code <span class="text-red-500">*</span>
                             </label>
-                            <input
-                                id="edit-zipcode"
-                                type="text"
-                                formControlName="zipcode"
+                            <input id="edit-zipcode" type="text" formControlName="zipcode"
                                 class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
                                 placeholder="ZIP code">
-                            @if (editOrganizationForm.get('zipcode')?.hasError('required') && editOrganizationForm.get('zipcode')?.touched) {
-                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">ZIP code is required.</p>
+                            @if (editOrganizationForm.get('zipcode')?.hasError('required') &&
+                            editOrganizationForm.get('zipcode')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">ZIP code is required.</p>
                             }
-                            @if (editOrganizationForm.get('zipcode')?.hasError('pattern') && editOrganizationForm.get('zipcode')?.touched) {
-                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">ZIP code must be 3-10 characters (letters, numbers, hyphens, spaces).</p>
+                            @if (editOrganizationForm.get('zipcode')?.hasError('pattern') &&
+                            editOrganizationForm.get('zipcode')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">ZIP code must be 3-10 characters
+                                (letters, numbers, hyphens, spaces).</p>
                             }
                         </div>
                     </div>
@@ -255,15 +290,16 @@
             </div>
 
             <div class="flex justify-end gap-3 border-t border-gray-200 pt-5 dark:border-gray-700">
-                <button
-                    type="submit"
-                    [disabled]="isSubmitting()"
+                <button type="submit" [disabled]="isSubmitting()"
                     class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-50">
                     @if (isSubmitting()) {
-                        <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4Z"/></svg>
-                        Creating…
+                    <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4Z" />
+                    </svg>
+                    Updating...
                     } @else {
-                        Create organization
+                    Update organization
                     }
                 </button>
             </div>
@@ -272,371 +308,436 @@
 </div>
 
 @if (createOrganizationShow()) {
-    <div class="fixed inset-0 z-[999999] flex items-center justify-center bg-gray-900/60 p-4 backdrop-blur-sm">
-        <div class="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 dark:bg-gray-800">
-            <div class="flex items-start justify-between gap-4 border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                <div>
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Create organization &amp; first project</h2>
-                    <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">Fill in the details below to set up your organization and add your first project.</p>
-                </div>
-                
+<div class="fixed inset-0 z-[999999] flex items-center justify-center bg-gray-900/60 p-4 backdrop-blur-sm">
+    <div
+        class="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 dark:bg-gray-800">
+        <div class="flex items-start justify-between gap-4 border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Create organization &amp; first project
+                </h2>
+                <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">Fill in the details below to set up your
+                    organization and add your first project.</p>
             </div>
 
-            <div class="overflow-y-auto px-6 py-5">
-                @if (modalErrormessage() !== '') {
-                    <div class="mb-4 flex items-start gap-2 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-400" role="alert">
-                        <svg class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3.5h.01" stroke-linecap="round"/></svg>
-                        <span><span class="font-medium">Error:</span> {{ modalErrormessage() }}</span>
-                    </div>
-                }
+        </div>
 
-                <form [formGroup]="organizationForm" (ngSubmit)="createOrganization()" class="space-y-6">
-                    <div class="space-y-5">
-                        <div class="flex items-center gap-2.5">
-                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
-                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 21h18M6 21V6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v15M18 21V10a1 1 0 0 0-1-1h-3M9 8h.01M9 11h.01M9 14h.01M9 17h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </span>
-                            <div>
-                                <h3 class="text-base font-semibold text-gray-900 dark:text-white">Organization details</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Provide the organization information for your account.</p>
-                            </div>
-                        </div>
+        <div class="overflow-y-auto px-6 py-5">
+            @if (modalErrormessage() !== '') {
+            <div class="mb-4 flex items-start gap-2 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-400"
+                role="alert">
+                <svg class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 8v5m0 3.5h.01" stroke-linecap="round" />
+                </svg>
+                <span><span class="font-medium">Error:</span> {{ modalErrormessage() }}</span>
+            </div>
+            }
 
-                        <div class="grid gap-5 md:grid-cols-2">
-                            <div>
-                                <label for="new-name" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Name <span class="text-red-500">*</span>
-                                </label>
-                                <input
-                                    id="new-name"
-                                    type="text"
-                                    formControlName="name"
-                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                                    placeholder="Enter organization name">
-                                @if (organizationForm.get('name')?.hasError('required') && organizationForm.get('name')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name is required.</p>
-                                }
-                                @if (organizationForm.get('name')?.hasError('pattern') && organizationForm.get('name')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name is not valid text.</p>
-                                }
-                                @if (organizationForm.get('name')?.hasError('minlength') && organizationForm.get('name')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name must be at least 3 characters long.</p>
-                                }
-                                @if (organizationForm.get('name')?.hasError('maxlength') && organizationForm.get('name')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name must be no more than 50 characters long.</p>
-                                }
-                            </div>
-
-                            <div>
-                                <label for="new-email" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Email <span class="text-red-500">*</span>
-                                </label>
-                                <input
-                                    id="new-email"
-                                    type="email"
-                                    formControlName="email"
-                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                                    placeholder="name@company.com">
-                                @if (organizationForm.get('email')?.hasError('required') && organizationForm.get('email')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Email is required.</p>
-                                }
-                                @if (organizationForm.get('email')?.hasError('email') && organizationForm.get('email')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid email address.</p>
-                                }
-                            </div>
-
-                            <div>
-                                <label for="new-phone" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Phone <span class="text-red-500">*</span>
-                                </label>
-                                <input
-                                    id="new-phone"
-                                    type="tel"
-                                    formControlName="phone"
-                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                                    placeholder="+1 (555) 000-0000">
-                                @if (organizationForm.get('phone')?.hasError('required') && organizationForm.get('phone')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Phone is required.</p>
-                                }
-                                @if (organizationForm.get('phone')?.hasError('pattern') && organizationForm.get('phone')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid phone number.</p>
-                                }
-                            </div>
-
-                            <div>
-                                <label for="new-industry" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Industry <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <select
-                                        id="new-industry"
-                                        formControlName="industry"
-                                        class="w-full appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2 pr-9 text-sm text-gray-900 shadow-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                                        <option value="" disabled selected>Select industry</option>
-                                        @if (industriesLoading()) {
-                                            <option value="" disabled>Loading industries…</option>
-                                        } @else if (industriesError()) {
-                                            <option value="" disabled>{{ industriesError() }}</option>
-                                        } @else {
-                                            @for (industry of industries(); track industry.id) {
-                                                <option [value]="industry.id">{{ industry.name }}</option>
-                                            }
-                                        }
-                                    </select>
-                                    <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </div>
-                                @if (organizationForm.get('industry')?.hasError('required') && organizationForm.get('industry')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Industry is required.</p>
-                                }
-                                @if (organizationForm.get('industry')?.hasError('invalidIndustry') && organizationForm.get('industry')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please select a valid industry from the list.</p>
-                                }
-                            </div>
-
-                            <div class="md:col-span-2">
-                                <label for="new-website" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Website <span class="text-red-500">*</span>
-                                </label>
-                                <input
-                                    id="new-website"
-                                    type="url"
-                                    formControlName="website"
-                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                                    placeholder="https://example.com">
-                                @if (organizationForm.get('website')?.hasError('required') && organizationForm.get('website')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Website is required.</p>
-                                }
-                                @if (organizationForm.get('website')?.hasError('pattern') && organizationForm.get('website')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid website URL.</p>
-                                }
-                            </div>
-                        </div>
-
-                        <div class="border-t border-gray-100 pt-5 dark:border-gray-700/60">
-                            <div class="mb-4 flex items-center gap-2.5">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
-                                    <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 21c-4.5-2.5-8-6-8-10.5A8 8 0 0 1 12 3a8 8 0 0 1 8 7.5c0 4.5-3.5 8-8 10.5Z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10.5" r="2.5"/></svg>
-                                </span>
-                                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Location</h3>
-                            </div>
-
-                            <div class="space-y-5">
-                                <div>
-                                    <label for="new-address" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        Address <span class="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        id="new-address"
-                                        type="text"
-                                        formControlName="address"
-                                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                                        placeholder="Street address">
-                                    @if (organizationForm.get('address')?.hasError('required') && organizationForm.get('address')?.touched) {
-                                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address is required.</p>
-                                    }
-                                    @if (organizationForm.get('address')?.hasError('minlength') && organizationForm.get('address')?.touched) {
-                                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address must be at least 5 characters long.</p>
-                                    }
-                                    @if (organizationForm.get('address')?.hasError('maxlength') && organizationForm.get('address')?.touched) {
-                                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address must be no more than 200 characters long.</p>
-                                    }
-                                </div>
-
-                                <div class="grid gap-5 md:grid-cols-3">
-                                    <div>
-                                        <label for="new-city" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            City <span class="text-red-500">*</span>
-                                        </label>
-                                        <input
-                                            id="new-city"
-                                            type="text"
-                                            formControlName="city"
-                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                                            placeholder="City">
-                                        @if (organizationForm.get('city')?.hasError('required') && organizationForm.get('city')?.touched) {
-                                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City is required.</p>
-                                        }
-                                        @if (organizationForm.get('city')?.hasError('minlength') && organizationForm.get('city')?.touched) {
-                                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City must be at least 2 characters long.</p>
-                                        }
-                                        @if (organizationForm.get('city')?.hasError('maxlength') && organizationForm.get('city')?.touched) {
-                                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City must be no more than 50 characters long.</p>
-                                        }
-                                    </div>
-
-                                    <div>
-                                        <label for="new-state" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            State <span class="text-red-500">*</span>
-                                        </label>
-                                        <input
-                                            id="new-state"
-                                            type="text"
-                                            formControlName="state"
-                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                                            placeholder="State">
-                                        @if (organizationForm.get('state')?.hasError('required') && organizationForm.get('state')?.touched) {
-                                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State is required.</p>
-                                        }
-                                        @if (organizationForm.get('state')?.hasError('minlength') && organizationForm.get('state')?.touched) {
-                                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State must be at least 2 characters long.</p>
-                                        }
-                                        @if (organizationForm.get('state')?.hasError('maxlength') && organizationForm.get('state')?.touched) {
-                                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State must be no more than 50 characters long.</p>
-                                        }
-                                    </div>
-
-                                    <div>
-                                        <label for="new-country" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            Country <span class="text-red-500">*</span>
-                                        </label>
-                                        <input
-                                            id="new-country"
-                                            type="text"
-                                            formControlName="country"
-                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                                            placeholder="Country">
-                                        @if (organizationForm.get('country')?.hasError('required') && organizationForm.get('country')?.touched) {
-                                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country is required.</p>
-                                        }
-                                        @if (organizationForm.get('country')?.hasError('minlength') && organizationForm.get('country')?.touched) {
-                                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country must be at least 2 characters long.</p>
-                                        }
-                                        @if (organizationForm.get('country')?.hasError('maxlength') && organizationForm.get('country')?.touched) {
-                                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country must be no more than 50 characters long.</p>
-                                        }
-                                    </div>
-                                </div>
-
-                                <div class="md:w-1/3">
-                                    <label for="new-zipcode" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        ZIP code <span class="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        id="new-zipcode"
-                                        type="text"
-                                        formControlName="zipcode"
-                                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                                        placeholder="ZIP code">
-                                    @if (organizationForm.get('zipcode')?.hasError('required') && organizationForm.get('zipcode')?.touched) {
-                                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">ZIP code is required.</p>
-                                    }
-                                    @if (organizationForm.get('zipcode')?.hasError('pattern') && organizationForm.get('zipcode')?.touched) {
-                                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">ZIP code must be 3-10 characters (letters, numbers, hyphens, spaces).</p>
-                                    }
-                                </div>
-                            </div>
+            <form [formGroup]="organizationForm" (ngSubmit)="createOrganization()" class="space-y-6">
+                <div class="space-y-5">
+                    <div class="flex items-center gap-2.5">
+                        <span
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                            <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.75">
+                                <path
+                                    d="M3 21h18M6 21V6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v15M18 21V10a1 1 0 0 0-1-1h-3M9 8h.01M9 11h.01M9 14h.01M9 17h.01"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                        <div>
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-white">Organization details</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Provide the organization information for
+                                your account.</p>
                         </div>
                     </div>
 
-                    <div class="space-y-5 border-t border-gray-200 pt-5 dark:border-gray-700">
-                        <div class="flex items-center gap-2.5">
-                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
-                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20 7 12 3 4 7m16 0-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </span>
-                            <div>
-                                <h3 class="text-base font-semibold text-gray-900 dark:text-white">Product details</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Add your first project or product information.</p>
-                            </div>
-                        </div>
-
-                        <div class="grid gap-5 md:grid-cols-2">
-                            <div>
-                                <label for="new-product-name" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Product name <span class="text-red-500">*</span>
-                                </label>
-                                <input
-                                    id="new-product-name"
-                                    type="text"
-                                    formControlName="product_name"
-                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                                    placeholder="Enter product name">
-                                @if (organizationForm.get('product_name')?.hasError('required') && organizationForm.get('product_name')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product name is required.</p>
-                                }
-                                @if (organizationForm.get('product_name')?.hasError('pattern') && organizationForm.get('product_name')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product name should only contain letters, numbers, and spaces.</p>
-                                }
-                                @if (organizationForm.get('product_name')?.hasError('minlength') && organizationForm.get('product_name')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product name must be at least 3 characters long.</p>
-                                }
-                                @if (organizationForm.get('product_name')?.hasError('maxlength') && organizationForm.get('product_name')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product name must be no more than 100 characters long.</p>
-                                }
-                            </div>
-
-                            <div>
-                                <label for="new-product-type" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Product type <span class="text-red-500">*</span>
-                                </label>
-                                <select
-                                    id="new-product-type"
-                                    formControlName="product_type"
-                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500">
-                                    <option value="">Select product type</option>
-                                    @for (productType of productTypes(); track productType.key) {
-                                        <option [value]="productType.key">{{ productType.value }}</option>
-                                    }
-                                </select>
-                                @if (organizationForm.get('product_type')?.hasError('required') && organizationForm.get('product_type')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product type is required.</p>
-                                }
-                                @if (organizationForm.get('product_type')?.hasError('pattern') && organizationForm.get('product_type')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product type should only contain letters, numbers, and spaces.</p>
-                                }
-                                @if (organizationForm.get('product_type')?.hasError('minlength') && organizationForm.get('product_type')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product type must be at least 3 characters long.</p>
-                                }
-                                @if (organizationForm.get('product_type')?.hasError('maxlength') && organizationForm.get('product_type')?.touched) {
-                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product type must be no more than 50 characters long.</p>
-                                }
-                            </div>
+                    <div class="grid gap-5 md:grid-cols-2">
+                        <div>
+                            <label for="new-name"
+                                class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Name <span class="text-red-500">*</span>
+                            </label>
+                            <input id="new-name" type="text" formControlName="name"
+                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                                placeholder="Enter organization name">
+                            @if (organizationForm.get('name')?.hasError('required') &&
+                            organizationForm.get('name')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name is required.</p>
+                            }
+                            @if (organizationForm.get('name')?.hasError('pattern') &&
+                            organizationForm.get('name')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name is not valid text.</p>
+                            }
+                            @if (organizationForm.get('name')?.hasError('minlength') &&
+                            organizationForm.get('name')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name must be at least 3 characters
+                                long.</p>
+                            }
+                            @if (organizationForm.get('name')?.hasError('maxlength') &&
+                            organizationForm.get('name')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Name must be no more than 50
+                                characters long.</p>
+                            }
                         </div>
 
                         <div>
-                            <label for="new-product-description" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Product description <span class="text-red-500">*</span>
+                            <label for="new-email"
+                                class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Email <span class="text-red-500">*</span>
                             </label>
-                            <textarea
-                                id="new-product-description"
-                                formControlName="product_description"
-                                rows="4"
-                                class="w-full resize-none rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                                placeholder="Describe your product or project"></textarea>
-                            @if (organizationForm.get('product_description')?.hasError('required') && organizationForm.get('product_description')?.touched) {
-                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product description is required.</p>
+                            <input id="new-email" type="email" formControlName="email"
+                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                                placeholder="name@company.com">
+                            @if (organizationForm.get('email')?.hasError('required') &&
+                            organizationForm.get('email')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Email is required.</p>
                             }
-                            @if (organizationForm.get('product_description')?.hasError('minlength') && organizationForm.get('product_description')?.touched) {
-                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product description must be at least 10 characters long.</p>
+                            @if (organizationForm.get('email')?.hasError('email') &&
+                            organizationForm.get('email')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid email address.
+                            </p>
                             }
-                            @if (organizationForm.get('product_description')?.hasError('maxlength') && organizationForm.get('product_description')?.touched) {
-                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product description must be no more than 500 characters long.</p>
+                        </div>
+
+                        <div>
+                            <label for="new-phone"
+                                class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Phone <span class="text-red-500">*</span>
+                            </label>
+                            <input id="new-phone" type="tel" formControlName="phone"
+                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                                placeholder="+1 (555) 000-0000">
+                            @if (organizationForm.get('phone')?.hasError('required') &&
+                            organizationForm.get('phone')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Phone is required.</p>
+                            }
+                            @if (organizationForm.get('phone')?.hasError('pattern') &&
+                            organizationForm.get('phone')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid phone number.
+                            </p>
+                            }
+                        </div>
+
+                        <div>
+                            <label for="new-industry"
+                                class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Industry <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <select id="new-industry" formControlName="industry"
+                                    class="w-full appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2 pr-9 text-sm text-gray-900 shadow-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                    <option value="" disabled selected>Select industry</option>
+                                    @if (industriesLoading()) {
+                                    <option value="" disabled>Loading industries…</option>
+                                    } @else if (industriesError()) {
+                                    <option value="" disabled>{{ industriesError() }}</option>
+                                    } @else {
+                                    @for (industry of industries(); track industry.id) {
+                                    <option [value]="industry.id">{{ industry.name }}</option>
+                                    }
+                                    }
+                                </select>
+                                <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            @if (organizationForm.get('industry')?.hasError('required') &&
+                            organizationForm.get('industry')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Industry is required.</p>
+                            }
+                            @if (organizationForm.get('industry')?.hasError('invalidIndustry') &&
+                            organizationForm.get('industry')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please select a valid industry from
+                                the list.</p>
+                            }
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label for="new-website"
+                                class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Website <span class="text-red-500">*</span>
+                            </label>
+                            <input id="new-website" type="url" formControlName="website"
+                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                                placeholder="https://example.com">
+                            @if (organizationForm.get('website')?.hasError('required') &&
+                            organizationForm.get('website')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Website is required.</p>
+                            }
+                            @if (organizationForm.get('website')?.hasError('pattern') &&
+                            organizationForm.get('website')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Please enter a valid website URL.
+                            </p>
                             }
                         </div>
                     </div>
-                </form>
-            </div>
 
-            <div class="flex justify-end gap-3 border-t border-gray-200 bg-gray-50/60 px-6 py-4 dark:border-gray-700 dark:bg-gray-900/20">
-                <button
-                    type="button"
-                    (click)="onLogout()"
-                    class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
-                    Logout
-                </button>
-                <button
-                    type="submit"
-                    form="organizationForm"
-                    (click)="createOrganization()"
-                    [disabled]="isSubmitting()"
-                    class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-50">
-                    @if (isSubmitting()) {
-                        <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4Z"/></svg>
-                        Creating…
-                    } @else {
-                        Create organization
-                    }
-                </button>
-            </div>
+                    <div class="border-t border-gray-100 pt-5 dark:border-gray-700/60">
+                        <div class="mb-4 flex items-center gap-2.5">
+                            <span
+                                class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.75">
+                                    <path
+                                        d="M12 21c-4.5-2.5-8-6-8-10.5A8 8 0 0 1 12 3a8 8 0 0 1 8 7.5c0 4.5-3.5 8-8 10.5Z"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <circle cx="12" cy="10.5" r="2.5" />
+                                </svg>
+                            </span>
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Location</h3>
+                        </div>
+
+                        <div class="space-y-5">
+                            <div>
+                                <label for="new-address"
+                                    class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Address <span class="text-red-500">*</span>
+                                </label>
+                                <input id="new-address" type="text" formControlName="address"
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                                    placeholder="Street address">
+                                @if (organizationForm.get('address')?.hasError('required') &&
+                                organizationForm.get('address')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address is required.</p>
+                                }
+                                @if (organizationForm.get('address')?.hasError('minlength') &&
+                                organizationForm.get('address')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address must be at least 5
+                                    characters long.</p>
+                                }
+                                @if (organizationForm.get('address')?.hasError('maxlength') &&
+                                organizationForm.get('address')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Address must be no more than
+                                    200 characters long.</p>
+                                }
+                            </div>
+
+                            <div class="grid gap-5 md:grid-cols-3">
+                                <div>
+                                    <label for="new-city"
+                                        class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        City <span class="text-red-500">*</span>
+                                    </label>
+                                    <input id="new-city" type="text" formControlName="city"
+                                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                                        placeholder="City">
+                                    @if (organizationForm.get('city')?.hasError('required') &&
+                                    organizationForm.get('city')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City is required.</p>
+                                    }
+                                    @if (organizationForm.get('city')?.hasError('minlength') &&
+                                    organizationForm.get('city')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City must be at least 2
+                                        characters long.</p>
+                                    }
+                                    @if (organizationForm.get('city')?.hasError('maxlength') &&
+                                    organizationForm.get('city')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">City must be no more than
+                                        50 characters long.</p>
+                                    }
+                                </div>
+
+                                <div>
+                                    <label for="new-state"
+                                        class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        State <span class="text-red-500">*</span>
+                                    </label>
+                                    <input id="new-state" type="text" formControlName="state"
+                                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                                        placeholder="State">
+                                    @if (organizationForm.get('state')?.hasError('required') &&
+                                    organizationForm.get('state')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State is required.</p>
+                                    }
+                                    @if (organizationForm.get('state')?.hasError('minlength') &&
+                                    organizationForm.get('state')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State must be at least 2
+                                        characters long.</p>
+                                    }
+                                    @if (organizationForm.get('state')?.hasError('maxlength') &&
+                                    organizationForm.get('state')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">State must be no more than
+                                        50 characters long.</p>
+                                    }
+                                </div>
+
+                                <div>
+                                    <label for="new-country"
+                                        class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Country <span class="text-red-500">*</span>
+                                    </label>
+                                    <input id="new-country" type="text" formControlName="country"
+                                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                                        placeholder="Country">
+                                    @if (organizationForm.get('country')?.hasError('required') &&
+                                    organizationForm.get('country')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country is required.</p>
+                                    }
+                                    @if (organizationForm.get('country')?.hasError('minlength') &&
+                                    organizationForm.get('country')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country must be at least 2
+                                        characters long.</p>
+                                    }
+                                    @if (organizationForm.get('country')?.hasError('maxlength') &&
+                                    organizationForm.get('country')?.touched) {
+                                    <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Country must be no more
+                                        than 50 characters long.</p>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="md:w-1/3">
+                                <label for="new-zipcode"
+                                    class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    ZIP code <span class="text-red-500">*</span>
+                                </label>
+                                <input id="new-zipcode" type="text" formControlName="zipcode"
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                                    placeholder="ZIP code">
+                                @if (organizationForm.get('zipcode')?.hasError('required') &&
+                                organizationForm.get('zipcode')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">ZIP code is required.</p>
+                                }
+                                @if (organizationForm.get('zipcode')?.hasError('pattern') &&
+                                organizationForm.get('zipcode')?.touched) {
+                                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">ZIP code must be 3-10
+                                    characters (letters, numbers, hyphens, spaces).</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-5 border-t border-gray-200 pt-5 dark:border-gray-700">
+                    <div class="flex items-center gap-2.5">
+                        <span
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
+                            <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.75">
+                                <path d="M20 7 12 3 4 7m16 0-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                        <div>
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-white">Product details</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Add your first project or product
+                                information.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid gap-5 md:grid-cols-2">
+                        <div>
+                            <label for="new-product-name"
+                                class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Product name <span class="text-red-500">*</span>
+                            </label>
+                            <input id="new-product-name" type="text" formControlName="product_name"
+                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                                placeholder="Enter product name">
+                            @if (organizationForm.get('product_name')?.hasError('required') &&
+                            organizationForm.get('product_name')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product name is required.</p>
+                            }
+                            @if (organizationForm.get('product_name')?.hasError('pattern') &&
+                            organizationForm.get('product_name')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product name should only contain
+                                letters, numbers, and spaces.</p>
+                            }
+                            @if (organizationForm.get('product_name')?.hasError('minlength') &&
+                            organizationForm.get('product_name')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product name must be at least 3
+                                characters long.</p>
+                            }
+                            @if (organizationForm.get('product_name')?.hasError('maxlength') &&
+                            organizationForm.get('product_name')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product name must be no more than
+                                100 characters long.</p>
+                            }
+                        </div>
+
+                        <div>
+                            <label for="new-product-type"
+                                class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Product type <span class="text-red-500">*</span>
+                            </label>
+                            <select id="new-product-type" formControlName="product_type"
+                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500">
+                                <option value="">Select product type</option>
+                                @for (productType of productTypes(); track productType.key) {
+                                <option [value]="productType.key">{{ productType.value }}</option>
+                                }
+                            </select>
+                            @if (organizationForm.get('product_type')?.hasError('required') &&
+                            organizationForm.get('product_type')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product type is required.</p>
+                            }
+                            @if (organizationForm.get('product_type')?.hasError('pattern') &&
+                            organizationForm.get('product_type')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product type should only contain
+                                letters, numbers, and spaces.</p>
+                            }
+                            @if (organizationForm.get('product_type')?.hasError('minlength') &&
+                            organizationForm.get('product_type')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product type must be at least 3
+                                characters long.</p>
+                            }
+                            @if (organizationForm.get('product_type')?.hasError('maxlength') &&
+                            organizationForm.get('product_type')?.touched) {
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product type must be no more than
+                                50 characters long.</p>
+                            }
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="new-product-description"
+                            class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Product description <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="new-product-description" formControlName="product_description" rows="4"
+                            class="w-full resize-none rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                            placeholder="Describe your product or project"></textarea>
+                        @if (organizationForm.get('product_description')?.hasError('required') &&
+                        organizationForm.get('product_description')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product description is required.</p>
+                        }
+                        @if (organizationForm.get('product_description')?.hasError('minlength') &&
+                        organizationForm.get('product_description')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product description must be at least 10
+                            characters long.</p>
+                        }
+                        @if (organizationForm.get('product_description')?.hasError('maxlength') &&
+                        organizationForm.get('product_description')?.touched) {
+                        <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">Product description must be no more
+                            than 500 characters long.</p>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div
+            class="flex justify-end gap-3 border-t border-gray-200 bg-gray-50/60 px-6 py-4 dark:border-gray-700 dark:bg-gray-900/20">
+            <button type="button" (click)="onLogout()"
+                class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                Logout
+            </button>
+            <button type="submit" form="organizationForm" (click)="createOrganization()" [disabled]="isSubmitting()"
+                class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-50">
+                @if (isSubmitting()) {
+                <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4Z" />
+                </svg>
+                Creating…
+                } @else {
+                Create organization
+                }
+            </button>
         </div>
     </div>
+</div>
 }
