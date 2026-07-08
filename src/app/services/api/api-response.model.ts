@@ -80,3 +80,9 @@ export interface CreatedBy{
   name: string;
   
 }
+
+export interface UpdatedBy{
+  id: string;
+  name: string;
+  
+}

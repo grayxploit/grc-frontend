@@ -21,6 +21,7 @@ export const authGuard: CanActivateFn = (route, state) => {
       }
 
       const user = authService.authUser();
+      console.log(user)
       const isAdminWithNoOrg = user?.role?.toLowerCase() === 'admin' && user.organization == null;
 
       if (isAdminWithNoOrg && state.url !== '/organizations') {

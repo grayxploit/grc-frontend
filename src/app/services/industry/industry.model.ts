@@ -21,3 +21,8 @@ export interface IndustryCreateRequest {
     
 }
 
+export interface IndustryDropdownResponse {
+    id: string;
+    name: string;
+}
+

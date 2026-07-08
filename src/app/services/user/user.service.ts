@@ -6,7 +6,7 @@ export interface User {
     phone: string;
     status: string;
     role: string;
-    organization: number | null;
+    organization: string
 }
 @Service()
 export class UserService {

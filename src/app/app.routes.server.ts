@@ -23,6 +23,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client
   },
   {
+    path: 'organizations',
+    renderMode: RenderMode.Client
+  },
+  {
     path: 'verify-email/:token',
     renderMode: RenderMode.Client
   },

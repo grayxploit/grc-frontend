@@ -42,23 +42,23 @@ export const routes: Routes = [
 
             },
             {
-                path:'register',
+                path: 'register',
                 canActivate: [loginGuard],
-                component:Register,
-                title:`Register | ${environment.applicationName}`
-                
+                component: Register,
+                title: `Register | ${environment.applicationName}`
+
             },
             {
-                path:'verify-email/:token',
-                canActivate:[loginGuard],
-                component:VerifyEmail,
-                title:`Verify Email | ${environment.applicationName}`
+                path: 'verify-email/:token',
+                canActivate: [loginGuard],
+                component: VerifyEmail,
+                title: `Verify Email | ${environment.applicationName}`
             },
             {
-                path:'forgot-password',
-                canActivate:[loginGuard],
-                component:ForgotPassword,
-                title:`Forgot Password | ${environment.applicationName}`
+                path: 'forgot-password',
+                canActivate: [loginGuard],
+                component: ForgotPassword,
+                title: `Forgot Password | ${environment.applicationName}`
             },
             {
                 path: 'reset-password/:token',
@@ -77,7 +77,7 @@ export const routes: Routes = [
                 path: 'organizations',
                 canActivate: [adminGuard],
                 component: Organization,
-                title: `Create Organization | ${environment.applicationName}`
+                title: `Organization | ${environment.applicationName}`
             },
             {
                 path: 'dashboard',
@@ -108,7 +108,7 @@ export const routes: Routes = [
                 component: Controls,
                 title: `Controls | ${environment.applicationName}`
             },
-           
+
             {
                 path: 'frameworks',
                 canActivate: [superAdminGuard],

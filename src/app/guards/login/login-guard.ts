@@ -25,7 +25,7 @@ export const loginGuard: CanActivateFn = () => {
       const isAdminWithNoOrg = user?.role?.toLowerCase() === 'admin' && user.organization == null;
 
       if (isAdminWithNoOrg) {
-        return router.parseUrl('/create-organization');
+        return router.parseUrl('/organizations');
       }
 
       return router.parseUrl('/dashboard');
