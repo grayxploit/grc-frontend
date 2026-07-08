@@ -2,7 +2,7 @@ import { inject, Service } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { ApiResponse } from '../api/api-response.model';
-import { Organization } from './organization.model';
+import { GetOrganizationResponse, Organization } from './organization.model';
 import { CreateOrganizationRequest } from './organization.model';
 
 
@@ -13,9 +13,16 @@ export class OrganizationService {
 
 
     createOrganization(organizationData: CreateOrganizationRequest) : Observable<ApiResponse<Organization>> {
-        return this.apiService.protectedPost<ApiResponse<Organization>>('/organizations', organizationData).pipe(
+        return this.apiService.protectedPost<ApiResponse<Organization>>('vendors/organizations/', organizationData).pipe(
                     map(response => response.data),
                     catchError(passthroughError)
+        )
+    }
+
+    getOrganization() : Observable<ApiResponse<GetOrganizationResponse>> {
+        return this.apiService.protectedGet<ApiResponse<GetOrganizationResponse>>(`vendors/organizations/get`).pipe(
+            map(response => response.data),
+            catchError(passthroughError)
         )
     }
 }
