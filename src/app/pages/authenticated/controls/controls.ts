@@ -13,6 +13,7 @@ import { FrameworkService } from '../../../services/framework/framework.service'
 import { Framework } from '../../../services/framework/framework.model';
 import { LoaderService } from '../../../services/loader/loader.service';
 import { Pagination } from '../../../shared/components/common/pagination/pagination';
+import { Modal } from '../../../shared/components/ui/modal/modal';
 
 interface SeverityOption {
   value: ControlSeverity;
@@ -28,7 +29,8 @@ type ControlFormKind = 'create' | 'edit';
     PageBreadcrumb,
     Card,
     ReactiveFormsModule,
-    Pagination
+    Pagination,
+    Modal
   ],
   templateUrl: './controls.html',
   styleUrl: './controls.css',

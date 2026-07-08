@@ -9,6 +9,7 @@ import { PageBreadcrumb } from '../../../../shared/components/common/page-breadc
 import { Card } from '../../../../shared/components/common/card/card';
 import { ApiService } from '../../../../services/api/api.service';
 import { Pagination } from '../../../../shared/components/common/pagination/pagination';
+import { Modal } from '../../../../shared/components/ui/modal/modal';
 @Component({
   selector: 'app-control-type',
   imports: [
@@ -16,7 +17,8 @@ import { Pagination } from '../../../../shared/components/common/pagination/pagi
     PageBreadcrumb,
     Card,
     ReactiveFormsModule,
-    Pagination
+    Pagination,
+    Modal
   ],
   templateUrl: './control-type.html',
   styleUrl: './control-type.css',

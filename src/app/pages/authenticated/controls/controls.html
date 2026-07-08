@@ -143,25 +143,19 @@
         </div>
         <app-pagination [meta]="meta" (pageChange)="onPageChange($event)"></app-pagination>
     </app-card>
-
-    @if (isCreateModalOpen) {
-    <div class="fixed inset-0 z-999999 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4">
-        <div class="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl bg-white shadow-xl dark:bg-gray-800">
-
-            <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+    <!-- Modal -->
+  <app-modal
+    [isOpen]="isCreateModalOpen"
+    (close)="closeCreateModal()"
+    className="max-w-[700px] m-4"
+  >
+    <div class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+         <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
                 <div>
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Create Control</h2>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Define a new control and map it to one or more frameworks.</p>
                 </div>
-                <button
-                    type="button"
-                    (click)="closeCreateModal()"
-                    class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-200"
-                    aria-label="Close">
-                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                    </svg>
-                </button>
+                
             </div>
 
             <div class="overflow-y-auto px-6 py-5">
@@ -295,28 +289,22 @@
                     {{ isSubmitting ? 'Creating...' : 'Create' }}
                 </button>
             </div>
-        </div>
     </div>
-    }
-
-    @if(isEditModalOpen){
-        <div class="fixed inset-0 z-999999 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4">
-        <div class="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl bg-white shadow-xl dark:bg-gray-800">
-
-            <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+    
+</app-modal>
+<!-- Modal -->
+  <app-modal
+    [isOpen]="isEditModalOpen"
+    (close)="closeEditModal()"
+    className="max-w-[700px] m-4"
+  >
+    <div class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
                 <div>
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Control</h2>
                     <p class="text-sm text-gray-500 dark:text-gray-400">To edit a control, please fill in the details below.</p>
                 </div>
-                <button
-                    type="button"
-                    (click)="closeEditModal()"
-                    class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-200"
-                    aria-label="Close">
-                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                    </svg>
-                </button>
+                
             </div>
 
             <div class="overflow-y-auto px-6 py-5">
@@ -450,7 +438,8 @@
                     {{ isSubmitting ? 'Updating...' : 'Update' }}
                 </button>
             </div>
-        </div>
     </div>
-    }
+        </app-modal>
+
+    
 </div>
