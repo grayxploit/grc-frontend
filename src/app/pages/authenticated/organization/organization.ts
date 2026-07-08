@@ -32,7 +32,7 @@ export class Organization {
     public industriesError = signal<string>('');
     public organization = signal<GetOrganizationResponse | null>(null);
     public errorMessage = signal<string>('');
-    createOrganizationShow = signal<boolean>(true);
+    createOrganizationShow = signal<boolean>(false);
     modalErrormessage = signal<string>('');
     isSubmitting = signal<boolean>(false);
     productTypes = signal([
@@ -101,8 +101,8 @@ export class Organization {
     }
 
     ngOnInit() {
-        if (this.authService.authUser()?.organization !== '') {
-            this.createOrganizationShow.set(false);
+        if (this.authService.authUser()?.organization == null) {
+            this.createOrganizationShow.set(true);
         }
         // Load industries for dropdown
         this.getAllIndustries();

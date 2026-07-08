@@ -81,7 +81,6 @@ export const routes: Routes = [
             },
             {
                 path: 'dashboard',
-                canActivate: [superAdminGuard, adminGuard],
                 component: Dashboard,
                 title: `Dashboard | ${environment.applicationName}`
             },

@@ -26,6 +26,7 @@ export interface RegisterResponseData {
     created_at: string;
     updated_at: string;
     id: number;
+    
 }
 
 
