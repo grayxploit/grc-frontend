@@ -160,11 +160,15 @@
 
         <app-pagination [meta]="meta" (pageChange)="onPageChange($event)"></app-pagination>
     </app-card>
+    <!-- Modal -->
+  <app-modal
+    [isOpen]="isCreateModalOpen()"
+    (close)="closeCreateModal()"
+    className="max-w-[700px] m-4"
+  >
 
-    <!-- Create Modal -->
-    @if (isCreateModalOpen()) {
-    <div class="fixed inset-0 z-999999 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4">
-        <div class="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl bg-white shadow-xl dark:bg-gray-800">
+    <div class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+  
             <div class="border-b border-gray-100 px-6 py-4 dark:border-gray-700">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Create Framework</h2>
             </div>
@@ -290,13 +294,17 @@
                 </button>
             </div>
         </div>
-    </div>
-    }
+        
+  </app-modal>
+  
+    <app-modal
+    [isOpen]="isEditModalOpen()"
+    (close)="closeEditModal()"
+    className="max-w-[700px] m-4"
+  >
 
-    <!-- Edit Modal -->
-    @if (isEditModalOpen()) {
-    <div class="fixed inset-0 z-999999 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4">
-        <div class="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl bg-white shadow-xl dark:bg-gray-800">
+    <div class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+  
             <div class="border-b border-gray-100 px-6 py-4 dark:border-gray-700">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Framework</h2>
             </div>
@@ -414,6 +422,5 @@
                 </button>
             </div>
         </div>
-    </div>
-    }
-</div>
+        
+</app-modal>

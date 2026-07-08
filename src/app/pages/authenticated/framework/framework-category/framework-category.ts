@@ -8,6 +8,7 @@ import { PageBreadcrumb } from '../../../../shared/components/common/page-breadc
 import { Pagination } from '../../../../shared/components/common/pagination/pagination';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { Modal } from '../../../../shared/components/ui/modal/modal';
 
 @Component({
     selector: 'app-framework-category',
@@ -17,7 +18,8 @@ import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
         PageBreadcrumb,
         Card,
         Pagination,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        Modal
     ],
     templateUrl: './framework-category.html',
     styleUrl: './framework-category.css',
@@ -29,7 +31,7 @@ export class FrameworkCategory {
     private destroy$ = new Subject<void>();
 
     filter: QueryFilter = {};
-    frameworkCategories: FrameworkCategoryModel[] = [];
+    frameworkCategories = signal<FrameworkCategoryModel[]>([])
     meta!: PaginationMeta;
     errorMessage = '';
 
@@ -104,13 +106,13 @@ export class FrameworkCategory {
             .subscribe({
                 next: (response) => {
                     this.errorMessage = '';
-                    this.frameworkCategories = [...response.data];
+                    this.frameworkCategories.set(response.data)
                     this.meta = { ...response.meta };
                     this.cdr.markForCheck(); // force view update after async data
                 },
                 error: (error) => {
                     this.errorMessage = error?.error?.message || 'Unable to load framework categories.';
-                    this.frameworkCategories = [];
+                    this.frameworkCategories.set([]);
                     this.cdr.markForCheck();
                     console.error(error);
                 },

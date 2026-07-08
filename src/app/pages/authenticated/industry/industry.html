@@ -123,12 +123,13 @@
         <app-pagination [meta]="meta" (pageChange)="onPageChange($event)"></app-pagination>
         }
     </app-card>
-
-    @if (showCreateModal()) {
-        <div class="fixed inset-0 z-999999 flex items-center justify-center bg-gray-900/60 p-4 backdrop-blur-sm">
-            <div class="animate-in fade-in zoom-in-95 flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 duration-200 dark:bg-gray-800 dark:ring-white/10">
-
-                <!-- Header (fixed) -->
+      <!-- Modal -->
+  <app-modal
+    [isOpen]="showCreateModal()"
+    (close)="closeCreateModal()"
+    className="max-w-[700px] m-4"
+  >
+   <!-- Header (fixed) -->
                 <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
                     <div>
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Add Industry</h2>
@@ -193,14 +194,13 @@
                         {{ isSubmitting() ? 'Creating...' : 'Create' }}
                     </button>
                 </div>
-            </div>
-        </div>
-    }
-    @if (showEditModal()) {
-        <div class="fixed inset-0 z-999999 flex items-center justify-center bg-gray-900/60 p-4 backdrop-blur-sm">
-            <div class="animate-in fade-in zoom-in-95 flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 duration-200 dark:bg-gray-800 dark:ring-white/10">
-
-                <!-- Header (fixed) -->
+  </app-modal>
+  <app-modal
+    [isOpen]="showEditModal()"
+    (close)="closeEditModal()"
+    className="max-w-[700px] m-4"
+  >
+   <!-- Header (fixed) -->
                 <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
                     <div>
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Update Industry</h2>
@@ -265,7 +265,6 @@
                         {{ isSubmitting() ? 'Updating...' : 'Update' }}
                     </button>
                 </div>
-            </div>
-        </div>
-    }
+  </app-modal>
+   
 </div>

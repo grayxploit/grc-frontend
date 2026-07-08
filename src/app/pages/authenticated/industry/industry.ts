@@ -8,6 +8,7 @@ import { IndustryCreateRequest, Industry  as IndustryModel} from '../../../servi
 import { IndustryService } from '../../../services/industry/industry.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Pagination } from '../../../shared/components/common/pagination/pagination';
+import { Modal } from '../../../shared/components/ui/modal/modal';
 @Component({
   selector: 'app-industry',
   imports: [
@@ -15,7 +16,8 @@ import { Pagination } from '../../../shared/components/common/pagination/paginat
     PageBreadcrumb,
     Card,
     ReactiveFormsModule,
-    Pagination
+    Pagination,
+    Modal
   ],
   templateUrl: './industry.html',
   styleUrl: './industry.css',

@@ -76,14 +76,14 @@
                 </thead>
                 <!-- Table Body -->
                 <tbody>
-                    @if (frameworkCategories.length === 0) {
+                    @if (frameworkCategories().length === 0) {
                     <tr>
                         <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                             No framework categories found.
                         </td>
                     </tr>
                     } @else {
-                    @for (frameworkCategory of frameworkCategories; track frameworkCategory.id; let i =$index) {
+                    @for (frameworkCategory of frameworkCategories(); track frameworkCategory.id; let i =$index) {
                     <tr class="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50">
                         <td class="px-6 py-4 text-gray-900 dark:text-white/90">{{ getSerialNumber(i) }}</td>
                         <td class="px-6 py-4 text-gray-900 dark:text-white/90">{{ frameworkCategory.name }}</td>
@@ -104,11 +104,13 @@
         <app-pagination [meta]="meta" (pageChange)="onPageChange($event)"></app-pagination>
     </app-card>
 </div>
-
-<!-- Create Modal -->
-@if (isCreateModalOpen()) {
-<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-999999">
-    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
+  <!-- Modal -->
+  <app-modal
+    [isOpen]="isCreateModalOpen()"
+    (close)="closeCreateModal()"
+    className="max-w-[700px] m-4"
+  >
+  <div class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
         <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Create Framework Category</h2>
 
         @if (modalErrorMessage()) {
@@ -153,8 +155,61 @@
             </div>
         </form>
     </div>
-</div>
-}
+  </app-modal>
+<!-- Modal -->
+  <app-modal
+    [isOpen]="isEditModalOpen()"
+    (close)="closeEditModal()"
+    className="max-w-[700px] m-4"
+  >
+  <div class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+    
+        <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Edit Framework Category</h2>
+
+        @if (modalErrorMessage()) {
+        <div
+            class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300">
+            {{ modalErrorMessage() }}
+        </div>
+        }
+
+        <form (ngSubmit)="submitEditForm()">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
+                <input type="text" [(ngModel)]="editForm.name" name="name" required
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+                <textarea [(ngModel)]="editForm.description" name="description" rows="3"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
+                <select [(ngModel)]="editForm.status" name="status" required
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <button type="button" (click)="closeEditModal()"
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
+                    Cancel
+                </button>
+                <button type="submit" [disabled]="isSubmitting()"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50">
+                    {{ isSubmitting() ? 'Updating...' : 'Update' }}
+                </button>
+            </div>
+        </form>
+    </div>
+
+  </app-modal>
 
 <!-- Import Modal -->
 @if (isImportModalOpen()) {
@@ -232,57 +287,6 @@
             </button>
             }
         </div>
-    </div>
-</div>
-}
-
-<!-- Edit Modal -->
-@if (isEditModalOpen()) {
-<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-999999">
-    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
-        <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Edit Framework Category</h2>
-
-        @if (modalErrorMessage()) {
-        <div
-            class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300">
-            {{ modalErrorMessage() }}
-        </div>
-        }
-
-        <form (ngSubmit)="submitEditForm()">
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
-                <input type="text" [(ngModel)]="editForm.name" name="name" required
-                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
-                <textarea [(ngModel)]="editForm.description" name="description" rows="3"
-                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                </textarea>
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
-                <select [(ngModel)]="editForm.status" name="status" required
-                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-            </div>
-
-            <div class="flex justify-end space-x-3">
-                <button type="button" (click)="closeEditModal()"
-                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
-                    Cancel
-                </button>
-                <button type="submit" [disabled]="isSubmitting()"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50">
-                    {{ isSubmitting() ? 'Updating...' : 'Update' }}
-                </button>
-            </div>
-        </form>
     </div>
 </div>
 }

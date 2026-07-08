@@ -14,6 +14,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { Pagination } from '../../../shared/components/common/pagination/pagination';
 import { IndustryService } from '../../../services/industry/industry.service';
 import { Industry } from '../../../services/industry/industry.model';
+import { Modal } from '../../../shared/components/ui/modal/modal';
 
 @Component({
   selector: 'app-framework',
@@ -22,7 +23,8 @@ import { Industry } from '../../../services/industry/industry.model';
     PageBreadcrumb,
     Card,
     ReactiveFormsModule,
-    Pagination
+    Pagination,
+    Modal
   ],
   templateUrl: './framework.html',
   styleUrl: './framework.css',
