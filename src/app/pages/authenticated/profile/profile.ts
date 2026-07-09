@@ -7,6 +7,7 @@ import { InfoCard } from '../../../shared/components/user-profile/info-card/info
 import { AuthService } from '../../../services/auth/auth.service';
 import { UpdateProfileRequest, User } from '../../../services/user/user.model';
 import { UserService } from '../../../services/user/user.service';
+import { AddressCard } from '../../../shared/components/user-profile/address-card/address-card';
 @Component({
   selector: 'app-profile',
   imports: [
@@ -14,7 +15,8 @@ import { UserService } from '../../../services/user/user.service';
     PageBreadcrumb,
     Card,
     MetaCard,
-    InfoCard
+    InfoCard,
+    AddressCard
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
@@ -25,6 +27,7 @@ export class Profile {
   public user = signal<User | null>(this.authService.authUser())
   @ViewChild(MetaCard) private readonly metaCard?: MetaCard;
   @ViewChild(InfoCard) private readonly infoCard?: InfoCard;
+  @ViewChild(AddressCard) private readonly addressCard?: AddressCard;
   ngOnInit() {
     this.userService.getFullUserProfile().subscribe({
       next: (response) => {
@@ -41,12 +44,14 @@ export class Profile {
       next: (response) => {
         this.user.set(response.data);
         this.metaCard?.onClose();
-         this.infoCard?.onClose();
+        this.infoCard?.onClose();
+        this.addressCard?.onClose();
       },
       error: (error) => {
         console.error(error);
         this.metaCard?.isSubmitting.set(false);
         this.infoCard?.isSubmitting.set(false);
+        this.addressCard?.isSubmitting.set(false);
       },
     })
   }

@@ -11,5 +11,9 @@
         @if (user(); as currentUser) {
             <app-info-card [user]="currentUser" (save)="onProfileSave($event)"></app-info-card>
         }
+
+         @if (user(); as currentUser) {
+            <app-address-card [user]="currentUser" (save)="onProfileSave($event)"></app-address-card>
+        }
     </app-card>
 </div>
