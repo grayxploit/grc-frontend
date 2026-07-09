@@ -39,6 +39,17 @@ export class UserService {
     )
   }
 
+  uploadAvatar(file: File): Observable<ApiResponse<User>> {
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    return this.apiService.protectedUpload<ApiResponse<User>>('profile/avatar/', formData).pipe(
+      map(response => response.data),
+      tap(response => this.#userData.set(response.data)),
+      catchError(passthroughError)
+    );
+  }
+
 
   getInitials(name?: string): string {
     if (!name) return '?';

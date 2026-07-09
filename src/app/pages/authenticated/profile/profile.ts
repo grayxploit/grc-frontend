@@ -55,4 +55,17 @@ export class Profile {
       },
     })
   }
+
+
+  uploadAvatar(file: File) {
+    console.log('Uploading avatar: parent', file);
+    this.userService.uploadAvatar(file).subscribe({
+      next: (response) => {
+        this.user.set(response.data);
+      },
+      error: (error) => {
+        console.error('Error uploading avatar:', error);
+      }
+    });
+  }
 }

@@ -25,7 +25,7 @@ export class MetaCard implements OnInit {
 
   @Input() user: User | null = null;
   @Output() save = new EventEmitter<UpdateProfileRequest>();
-  
+  @Output() avatarUpload = new EventEmitter<File>();
   showModal = signal<boolean>(false)
   isSubmitting = signal<boolean>(false)
 
@@ -138,4 +138,10 @@ export class MetaCard implements OnInit {
     if (control.errors['pattern']) return `Enter a valid ${name.toLowerCase()}.`;
     return `${name} is invalid.`;
   }
+  uploadAvatar(file: File) {
+   
+    this.avatarUpload.emit(file);
+  }
+    
+    
 }

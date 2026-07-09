@@ -1,4 +1,4 @@
-import { Component, Input, computed, signal } from '@angular/core';
+import { Component, Input, computed, signal, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -14,6 +14,11 @@ export class Avatar {
   @Input() size = 40;
   @Input() rounded = true;
   @Input() online = false;
+
+  @Input() uploadable = false;
+
+  @Output() imageUpload = new EventEmitter<File>();
+
  
   // Text/value mode (e.g. "75%", "3+")
   @Input() value?: string;
@@ -198,5 +203,24 @@ export class Avatar {
     }
  
     return [a0, b0, c0, d0].map(toHex).join('');
+  }
+
+   onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+    this.imageUpload.emit(file);
+
+    // Optional preview immediately
+    this.src = URL.createObjectURL(file);
+    this.imageError.set(false);
+
+    input.value = '';
+  }
+
+  triggerFileInput(fileInput: HTMLInputElement) {
+    fileInput.click();
   }
 }

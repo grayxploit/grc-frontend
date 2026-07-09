@@ -24,7 +24,6 @@
     font-weight: 600;
     line-height: 1;
     text-transform: uppercase;
-    font-family: system-ui, -apple-system, sans-serif;
   }
 
   .status-dot {
@@ -34,5 +33,23 @@
     background: #4caf50;
     border-radius: 50%;
     border: 2px solid #fff;
+    z-index: 2;
+  }
+.upload-btn {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    z-index: 10;
+
+    /* background: #2563eb; */
+    color: white;
+}
+
+  .upload-btn:hover {
+    transform: scale(1.1);
   }
 }
