@@ -5,9 +5,10 @@ import { EventEmitter } from '@angular/core';
 import { Dropdown } from '../../ui/dropdown/dropdown';
 import { DropdownItemTwo } from '../../ui/dropdown/dropdown-item/dropdown-item-two';
 import { AuthService } from '../../../../services/auth/auth.service';
+import { Avatar } from '../../user-profile/avatar/avatar';
 @Component({
   selector: 'app-user-dropdown',
-  imports: [CommonModule, RouterModule, Dropdown, DropdownItemTwo],
+  imports: [CommonModule, RouterModule, Dropdown, DropdownItemTwo,  Avatar],
   templateUrl: './user-dropdown.html',
   styleUrl: './user-dropdown.css',
 })
