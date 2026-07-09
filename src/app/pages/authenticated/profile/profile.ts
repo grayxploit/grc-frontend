@@ -46,6 +46,7 @@ export class Profile {
         this.metaCard?.onClose();
         this.infoCard?.onClose();
         this.addressCard?.onClose();
+        this.authService.updateAuthUser(response.data);
       },
       error: (error) => {
         console.error(error);
@@ -62,6 +63,7 @@ export class Profile {
     this.userService.uploadAvatar(file).subscribe({
       next: (response) => {
         this.user.set(response.data);
+        this.authService.updateAuthUser(response.data);
       },
       error: (error) => {
         console.error('Error uploading avatar:', error);

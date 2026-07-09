@@ -26,6 +26,10 @@ export class AuthService {
   }
 
 
+  updateAuthUser(user: User) {
+    this.#authUser.set(user);
+  }
+
   public fetchMe() {
     return this.userService.getUserProfile().pipe(
       map((response) => response.data),
