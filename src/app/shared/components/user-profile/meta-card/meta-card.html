@@ -18,10 +18,10 @@
           <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ user ? userService.getRole(user.role) : 'Guest' }}
           </p>
-          @if (user?.organization) {
+          @if (user?.addresses && user.addresses.length > 0) {
           <div class="hidden h-3.5 w-px bg-gray-300 dark:bg-gray-700 xl:block"></div>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            {{ user?.organization }}
+            {{ user?.addresses[0]?.city }} ,  {{ user?.addresses[0]?.state }} , {{ user?.addresses[0]?.country }}
           </p>
           }
         </div>
