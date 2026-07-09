@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { Logo } from '../../../shared/components/common/logo/logo';
 import { CommonModule } from '@angular/common';
-import { User } from '../../../services/user/user.service';
+import { User } from '../../../services/user/user.model';
 import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-login',

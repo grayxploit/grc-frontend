@@ -2,6 +2,8 @@
 
 <div class="space-y-6">
     <app-card title="Profile">
-        
+        @if (user(); as currentUser) {
+            <app-meta-card [user]="currentUser"></app-meta-card>
+        }
     </app-card>
 </div>

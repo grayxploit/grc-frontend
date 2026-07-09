@@ -1,0 +1,34 @@
+<div
+  class="avatar"
+  [class.rounded]="rounded"
+  [class.online]="online"
+  [style.width.px]="size"
+  [style.height.px]="size"
+  [style.backgroundColor]="(!imageSrc() || imageError()) ? backgroundColor() : null"
+>
+    @if(imageSrc() && !imageError()){
+        <img
+    
+        [src]="imageSrc()"
+        [alt]="name || 'avatar'"
+        (error)="onImageError()"
+    />
+    }
+    
+
+    @if(!imageSrc() || imageError()){
+        <span
+           
+            class="avatar-text"
+            [style.fontSize.px]="size / 2.5"
+        >
+            {{ displayText() }}
+        </span>
+    }
+  
+
+    @if(online){
+        <span  class="status-dot" [style.width.px]="size / 4" [style.height.px]="size / 4"></span>
+    }
+  
+</div>

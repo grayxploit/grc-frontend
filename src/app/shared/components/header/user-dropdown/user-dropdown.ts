@@ -33,14 +33,8 @@ export class UserDropdown implements OnInit {
     this.logOut.emit();
   }
 
-  getInitials(name?: string): string {
-  if (!name) return '?';
-
-  return name
-    .trim()
-    .split(' ')
-    .slice(0, 2)
-    .map(part => part[0].toUpperCase())
-    .join('');
-}
+  getInitials(name: string){
+    return this.authService.userService.getInitials(name)
+  }
+  
 }

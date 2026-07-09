@@ -1,9 +1,10 @@
 import { inject, Service, signal, computed } from '@angular/core';
 import { ApiService } from '../api/api.service';
-import { LoginRequest, RegisterRequest , LoginResponseData, RefreshTokenResponseData, RegisterResponseData, LogoutResponseData, VerifyEmailResponse, ResetPasswordResponse, ResetPasswordRequest} from './auth.model';
+import { LoginRequest, RegisterRequest, LoginResponseData, RefreshTokenResponseData, RegisterResponseData, LogoutResponseData, VerifyEmailResponse, ResetPasswordResponse, ResetPasswordRequest } from './auth.model';
 import { ApiResponse } from '../api/api-response.model';
 import { catchError, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
-import { User } from '../user/user.service';
+import { User } from '../user/user.model';
+import { UserService } from '../user/user.service';
 export const ACCESS_TOKEN = 'access_token'
 export const REFRESH_ENDPOINT = 'auth/refresh-token'
 
@@ -13,7 +14,7 @@ const passthroughError = (error: unknown) => throwError(() => error);
 @Service()
 export class AuthService {
   public readonly apiService = inject(ApiService);
-
+  public readonly userService = inject(UserService);
   #authUser = signal<User | null>(null);
   authUser = computed(() => this.#authUser());
   public login(data: LoginRequest): Observable<ApiResponse<LoginResponseData>> {
@@ -26,8 +27,8 @@ export class AuthService {
 
 
   public fetchMe() {
-    return this.apiService.protectedGet<ApiResponse<User>>('profile/').pipe(
-      map((response) => response.data.data),
+    return this.userService.getUserProfile().pipe(
+      map((response) => response.data),
       tap((user) => {
         this.#authUser.set(user);
       }),
@@ -104,7 +105,7 @@ export class AuthService {
       }),
       catchError(passthroughError)
     );
-    
+
   }
 
   public register(data: RegisterRequest): Observable<ApiResponse<RegisterResponseData>> {
