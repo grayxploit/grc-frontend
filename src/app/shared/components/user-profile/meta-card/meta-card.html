@@ -4,15 +4,11 @@
 <div class="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
   <div class="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
     <div class="flex flex-col items-center w-full gap-6 xl:flex-row">
-     <div class="w-20 h-20 border border-gray-200 rounded-full dark:border-gray-800">
-    <app-avatar
-        [name]="user?.full_name || 'User'"
-        [size]="80"
-        [rounded]="true"
-        [uploadable]="true"
-        (imageUpload)="uploadAvatar($event)">
-    </app-avatar>
-</div>
+      <div class="w-20 h-20 border border-gray-200 rounded-full dark:border-gray-800">
+        <app-avatar [name]="user?.full_name || 'User'" [size]="80" [rounded]="true"
+          [src]=" this.profileData()?.profile_image_url || ''" [uploadable]="true" (imageUpload)="uploadAvatar($event)">
+        </app-avatar>
+      </div>
 
       <div class="order-3 xl:order-2">
         <h4 class="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
@@ -33,7 +29,8 @@
 
       <div class="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end">
         @if (user?.social_media?.find((social) => social.name === 'facebook')?.link) {
-        <a [href]="user?.social_media?.find((social) => social.name === 'facebook')?.link" target="_blank" rel="noopener" aria-label="Facebook profile"
+        <a [href]="user?.social_media?.find((social) => social.name === 'facebook')?.link" target="_blank"
+          rel="noopener" aria-label="Facebook profile"
           class="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs transition-colors hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
           <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none"
             xmlns="http://www.w3.org/2000/svg">
@@ -45,7 +42,8 @@
         }
 
         @if (user?.social_media?.find((social) => social.name === 'x')?.link) {
-        <a [href]="user?.social_media?.find((social) => social.name === 'x')?.link" target="_blank" rel="noopener" aria-label="X (Twitter) profile"
+        <a [href]="user?.social_media?.find((social) => social.name === 'x')?.link" target="_blank" rel="noopener"
+          aria-label="X (Twitter) profile"
           class="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs transition-colors hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
           <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none"
             xmlns="http://www.w3.org/2000/svg">
@@ -57,7 +55,8 @@
         }
 
         @if (user?.social_media?.find((social) => social.name === 'linkedin')?.link) {
-        <a [href]="user?.social_media?.find((social) => social.name === 'linkedin')?.link" target="_blank" rel="noopener" aria-label="LinkedIn profile"
+        <a [href]="user?.social_media?.find((social) => social.name === 'linkedin')?.link" target="_blank"
+          rel="noopener" aria-label="LinkedIn profile"
           class="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs transition-colors hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
           <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none"
             xmlns="http://www.w3.org/2000/svg">
@@ -69,7 +68,8 @@
         }
 
         @if (user?.social_media?.find((social) => social.name === 'instagram')?.link) {
-        <a [href]="user?.social_media?.find((social) => social.name === 'instagram')?.link" target="_blank" rel="noopener" aria-label="Instagram profile"
+        <a [href]="user?.social_media?.find((social) => social.name === 'instagram')?.link" target="_blank"
+          rel="noopener" aria-label="Instagram profile"
           class="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs transition-colors hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
           <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none"
             xmlns="http://www.w3.org/2000/svg">

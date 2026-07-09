@@ -9,8 +9,16 @@ import { CommonModule } from '@angular/common';
 })
 export class Avatar {
   // Core
-  @Input() name = '';
-  @Input() src?: string;
+  #name = signal<string>('');
+  @Input()
+  get name(): string { return this.#name(); }
+  set name(val: string) { this.#name.set(val); }
+
+  #src = signal<string | undefined>(undefined);
+  @Input()
+  get src(): string | undefined { return this.#src(); }
+  set src(val: string | undefined) { this.#src.set(val); }
+
   @Input() size = 40;
   @Input() rounded = true;
   @Input() online = false;
@@ -21,15 +29,35 @@ export class Avatar {
 
  
   // Text/value mode (e.g. "75%", "3+")
-  @Input() value?: string;
+  #value = signal<string | undefined>(undefined);
+  @Input()
+  get value(): string | undefined { return this.#value(); }
+  set value(val: string | undefined) { this.#value.set(val); }
  
   // Social media sources (checked in this priority order, after `src`)
-  @Input() facebookId?: string;
-  @Input() googleId?: string;
-  @Input() twitterId?: string;
-  @Input() instagramId?: string;
-  @Input() skypeId?: string;
-  @Input() gravatarId?: string; // email address or existing md5 hash
+  #facebookId = signal<string | undefined>(undefined);
+  @Input() get facebookId() { return this.#facebookId(); }
+  set facebookId(val: string | undefined) { this.#facebookId.set(val); }
+
+  #googleId = signal<string | undefined>(undefined);
+  @Input() get googleId() { return this.#googleId(); }
+  set googleId(val: string | undefined) { this.#googleId.set(val); }
+
+  #twitterId = signal<string | undefined>(undefined);
+  @Input() get twitterId() { return this.#twitterId(); }
+  set twitterId(val: string | undefined) { this.#twitterId.set(val); }
+
+  #instagramId = signal<string | undefined>(undefined);
+  @Input() get instagramId() { return this.#instagramId(); }
+  set instagramId(val: string | undefined) { this.#instagramId.set(val); }
+
+  #skypeId = signal<string | undefined>(undefined);
+  @Input() get skypeId() { return this.#skypeId(); }
+  set skypeId(val: string | undefined) { this.#skypeId.set(val); }
+
+  #gravatarId = signal<string | undefined>(undefined);
+  @Input() get gravatarId() { return this.#gravatarId(); }
+  set gravatarId(val: string | undefined) { this.#gravatarId.set(val); }
  
   readonly colors = [
     '#F44336',

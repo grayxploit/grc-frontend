@@ -29,9 +29,9 @@ export class MetaCard implements OnInit {
   showModal = signal<boolean>(false)
   isSubmitting = signal<boolean>(false)
 
-  
+
   public readonly userService = inject(UserService)
-  public readonly profileData : () => User | null = this.userService.userData
+  public readonly profileData: () => User | null = this.userService.userData
   private readonly urlPattern =
     /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/\S*)?$/i;
 
@@ -48,7 +48,7 @@ export class MetaCard implements OnInit {
   constructor() {
     effect(() => {
       const profile = this.profileData();
-      console.log('Profile data changed:', profile);
+      console.log('Profile data changed:', profile?.profile_image_url);
       if (profile) {
         this.userProfileForm.patchValue({
           full_name: profile.full_name,
@@ -139,9 +139,9 @@ export class MetaCard implements OnInit {
     return `${name} is invalid.`;
   }
   uploadAvatar(file: File) {
-   
+
     this.avatarUpload.emit(file);
   }
-    
-    
+
+
 }

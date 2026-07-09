@@ -10,6 +10,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client
   },
   {
+    path: 'profile',
+    renderMode: RenderMode.Client
+  },
+  {
     path: 'control-types',
     renderMode: RenderMode.Client
   },

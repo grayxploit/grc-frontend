@@ -42,6 +42,7 @@ export interface User {
     status: string;
     role: string;
     organization: string | null;
+    profile_image_url?: string;
     addresses?: Address[];
     social_media?: SocialMedia[];
     user_organizations?: UserOrganization;
