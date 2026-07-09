@@ -1,27 +1,22 @@
-import { Component, inject, Input, OnInit, Output, signal, EventEmitter, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
-
+import { Component, inject, Input, Output, EventEmitter, signal, effect, OnInit } from '@angular/core';
 import { UpdateProfileRequest, User } from '../../../../services/user/user.model';
 import { UserService } from '../../../../services/user/user.service';
-import { Avatar } from '../avatar/avatar';
-import { Modal } from '../../ui/modal/modal';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-
+import { CommonModule } from '@angular/common';
+import { Modal } from '../../ui/modal/modal';
 @Component({
-  selector: 'app-meta-card',
-  standalone: true,
+  selector: 'app-info-card',
   imports: [
     CommonModule,
-    Avatar,
-    Modal,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    Modal
   ],
-  templateUrl: './meta-card.html',
-  styleUrls: ['./meta-card.css'],
+  templateUrl: './info-card.html',
+  styleUrl: './info-card.css',
 })
-export class MetaCard implements OnInit {
+export class InfoCard implements OnInit {
 
-  private readonly formBuilder = inject(FormBuilder)
+ private readonly formBuilder = inject(FormBuilder)
 
   @Input() user: User | null = null;
   @Output() save = new EventEmitter<UpdateProfileRequest>();

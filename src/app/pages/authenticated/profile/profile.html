@@ -3,7 +3,13 @@
 <div class="space-y-6">
     <app-card title="Profile">
         @if (user(); as currentUser) {
-            <app-meta-card [user]="currentUser"></app-meta-card>
+            
+            <app-meta-card [user]="currentUser" (save)="onProfileSave($event)"></app-meta-card>
+           
+        }
+
+        @if (user(); as currentUser) {
+            <app-info-card [user]="currentUser" (save)="onProfileSave($event)"></app-info-card>
         }
     </app-card>
 </div>
