@@ -1,0 +1,69 @@
+<app-page-breadcrumb pageTitle="Login Logs" />
+<div class="space-y-6">
+    <app-card title="Login Logs">
+
+        <!-- Toolbar: search + count + limit + create -->
+        <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex flex-1 gap-2 sm:max-w-md">
+
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <label for="limitSelect" class="text-sm font-medium text-gray-500 dark:text-gray-400">Show:</label>
+                    <select id="limitSelect" [value]="limit" (change)="onLimitChange($event)"
+                        class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-colors duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                        @for (option of limitOptions; track option) {
+                        <option [value]="option" [selected]="option === limit">{{ option }}</option>
+                        }
+                    </select>
+                </div>
+
+                
+            </div>
+        </div>
+          <!-- Result count -->
+        <div class="mb-4 flex items-center justify-between">
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                {{ meta?.total ?? loginLogs.length }}
+                {{ (meta?.total ?? loginLogs.length) === 1 ? 'login log' : 'login logs' }} available
+            </p>
+       
+        </div>
+        <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
+            <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                <thead
+                    class="bg-gray-50 text-xs uppercase tracking-wide text-gray-500 dark:bg-gray-800/60 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 font-semibold">S. No</th>
+                        <th scope="col" class="px-6 py-3 font-semibold">IP Address</th>
+                        <th scope="col" class="px-6 py-3 font-semibold">City</th>
+                        <th scope="col" class="px-6 py-3 font-semibold">Country</th>
+                        <th scope="col" class="px-6 py-3 font-semibold">User Agent</th>
+                        
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                    @for (loginLog of loginLogs(); track loginLog.ip_address; let i = $index) {
+                    <tr class="transition-colors duration-100 hover:bg-gray-50 dark:hover:bg-gray-800/40">
+                        <td class="px-6 py-4 font-mono text-xs text-gray-400 dark:text-gray-500">{{ getSerialNumber(i)
+                            }}</td>
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-100">{{ loginLog.ip_address }}</td>
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ loginLog.city }}</td>
+                        
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ loginLog.country }}</td>
+                       <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ loginLog.user_agent }}</td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center text-sm text-gray-400 dark:text-gray-500">
+                            No frameworks yet. Create one to get started.
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <app-pagination [meta]="meta" (pageChange)="onPageChange($event)"></app-pagination>
+    </app-card>
+    </div>

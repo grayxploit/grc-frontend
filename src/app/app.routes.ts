@@ -20,6 +20,7 @@ import { adminGuard, superAdminGuard, userGuard } from './guards/auth/role-guard
 import { Industry } from './pages/authenticated/industry/industry';
 import { Organization } from './pages/authenticated/organization/organization';
 import { Profile } from './pages/authenticated/profile/profile';
+import { LoginLog } from './pages/authenticated/profile/login-log/login-log';
 export const routes: Routes = [
     {
         path: 'countdown',
@@ -104,41 +105,46 @@ export const routes: Routes = [
                 title: `User | ${environment.applicationName}`
             },
             {
-                path: 'controls',
+                path: 'controls-management',
                 canActivate: [superAdminGuard],
                 component: Controls,
-                title: `Controls | ${environment.applicationName}`
+                title: `Controls Management | ${environment.applicationName}`
             },
 
             {
-                path: 'frameworks',
+                path: 'frameworks-management',
                 canActivate: [superAdminGuard],
                 component: Framework,
 
-                title: `Frameworks | ${environment.applicationName}`
+                title: `Frameworks Management | ${environment.applicationName}`
             },
             {
-                path: 'framework-categories',
+                path: 'framework-categories-management',
                 canActivate: [superAdminGuard],
                 component: FrameworkCategory,
-                title: `Framework Categories | ${environment.applicationName}`
+                title: `Framework Categories Management | ${environment.applicationName}`
             },
             {
-                path: 'control-types',
+                path: 'control-types-management',
                 canActivate: [superAdminGuard],
                 component: ControlType,
-                title: `Control Types | ${environment.applicationName}`
+                title: `Control Types Management | ${environment.applicationName}`
             },
             {
-                path: 'industries',
+                path: 'industries-management',
                 canActivate: [superAdminGuard],
                 component: Industry,
-                title: `Industries | ${environment.applicationName}`
+                title: `Industries Management | ${environment.applicationName}`
             },
             {
                 path:'profile',
                 component:Profile,
                 title:`Profile | ${environment.applicationName}`
+            },
+            {
+                path:'profile/login-logs',
+                component: LoginLog,
+                title:`Login Logs | ${environment.applicationName}`
             }
 
 

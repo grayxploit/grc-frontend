@@ -6,7 +6,7 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client
   },
   {
-    path: 'controls',
+    path: 'controls-management',
     renderMode: RenderMode.Client
   },
   {
@@ -14,16 +14,16 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client
   },
   {
-    path: 'control-types',
+    path: 'control-types-management',
     renderMode: RenderMode.Client
   },
   {
-    path: 'frameworks',
+    path: 'frameworks-management',
     renderMode: RenderMode.Client
   },
 
   {
-    path: 'framework-categories',
+    path: 'framework-categories-management',
     renderMode: RenderMode.Client
   },
   {

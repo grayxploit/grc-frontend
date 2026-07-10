@@ -1,8 +1,8 @@
 import { inject, Service , signal, computed} from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { catchError, map, Observable, throwError , tap} from 'rxjs'
-import { ApiResponse } from '../api/api-response.model';
-import {  UpdateProfileRequest, User } from './user.model';
+import { ApiResponse, PaginatedResponse } from '../api/api-response.model';
+import {  LoginLog, LoginLogQueryParam, UpdateProfileRequest, User } from './user.model';
 import { sign } from 'crypto';
 
 
@@ -48,6 +48,19 @@ export class UserService {
       tap(response => this.#userData.set(response.data)),
       catchError(passthroughError)
     );
+  }
+
+
+  getLoginLog(queryParam : LoginLogQueryParam) : Observable<PaginatedResponse<LoginLog>> {
+    let queryParams = `page=${queryParam.page}&size=${queryParam.size || 5}`;
+                
+                if (queryParam.filter) {
+                    queryParams += this.apiService.buildFilter(queryParam.filter);
+                }
+    return this.apiService.protectedGet<PaginatedResponse<LoginLog>>(`profile/login-logs?${queryParams}`).pipe(
+      map(response => response.data),
+      catchError(passthroughError)
+    )
   }
 
 

@@ -1,3 +1,5 @@
+import { QueryFilter } from "../api/api-response.model";
+
 export interface SocialMedia {
     name: string;
     link: string;
@@ -85,3 +87,17 @@ export interface UpdateProfileRequest {
     address?: UpdateAddressRequest;
 }
 
+export interface LoginLogQueryParam {
+    page: number;
+    size: number;
+    filter?: QueryFilter
+}
+
+
+export interface LoginLog {
+    ip_address: string;
+    city: string;
+    country: string;
+    device_info: string;
+    user_agent: string;
+}
