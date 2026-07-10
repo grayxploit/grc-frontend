@@ -5,7 +5,7 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SafeHtmlPipePipe } from '../../../pipes/safe-html-pipe';
 import { Logo } from '../../components/common/logo/logo';
-
+import { MatIconModule } from '@angular/material/icon';
 
 
 export type NavItem = {
@@ -21,6 +21,7 @@ export type NavItem = {
     // LogoComponent,
     RouterModule,
     CommonModule,
+   
 
     // Links,
     SafeHtmlPipePipe,

@@ -1,11 +1,13 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   Component,
   ElementRef,
   EventEmitter,
   HostListener,
+  Inject,
   Input,
-  Output
+  Output,
+  PLATFORM_ID
 } from '@angular/core';
 @Component({
   selector: 'app-modal',
@@ -22,20 +24,27 @@ export class Modal {
   @Input() showCloseButton = true;
   @Input() isFullscreen = false;
 
-  constructor(private el: ElementRef) {}
+  constructor(
+    private el: ElementRef,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngOnInit() {
-    if (this.isOpen) {
+    if (isPlatformBrowser(this.platformId) && this.isOpen) {
       document.body.style.overflow = 'hidden';
     }
   }
 
   ngOnDestroy() {
-    document.body.style.overflow = 'unset';
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = 'unset';
+    }
   }
 
   ngOnChanges() {
-    document.body.style.overflow = this.isOpen ? 'hidden' : 'unset';
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = this.isOpen ? 'hidden' : 'unset';
+    }
   }
 
   onBackdropClick(event: MouseEvent) {
