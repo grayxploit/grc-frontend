@@ -39,7 +39,7 @@
                         <th scope="col" class="px-6 py-3 font-semibold">IP Address</th>
                         <th scope="col" class="px-6 py-3 font-semibold">City</th>
                         <th scope="col" class="px-6 py-3 font-semibold">Country</th>
-                        <th scope="col" class="px-6 py-3 font-semibold">User Agent</th>
+                        <th scope="col" class="px-6 py-3 font-semibold">Device Info</th>
                         
                     </tr>
                 </thead>
@@ -52,7 +52,16 @@
                         <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ loginLog.city }}</td>
                         
                         <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ loginLog.country }}</td>
-                       <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ loginLog.user_agent }}</td>
+                       <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
+                           <div class="text-xs space-y-1">
+                               <div><span class="font-medium">Browser:</span> {{ loginLog.device_info?.browser }}</div>
+                               <div><span class="font-medium">OS:</span> {{ loginLog.device_info?.os }}</div>
+                               <div><span class="font-medium">Device:</span> {{ loginLog.device_info?.device }}</div>
+                               <div><span class="font-medium">Mobile:</span> {{ loginLog.device_info?.is_mobile ? 'Yes' : 'No' }}</div>
+                               <div><span class="font-medium">Tablet:</span> {{ loginLog.device_info?.is_tablet ? 'Yes' : 'No' }}</div>
+                               <div><span class="font-medium">Bot:</span> {{ loginLog.device_info?.is_bot ? 'Yes' : 'No' }}</div>
+                           </div>
+                       </td>
                     </tr>
                     } @empty {
                     <tr>

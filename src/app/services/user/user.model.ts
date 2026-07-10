@@ -98,6 +98,13 @@ export interface LoginLog {
     ip_address: string;
     city: string;
     country: string;
-    device_info: string;
+    device_info: {
+        os: string;
+        device: string;
+        is_bot: boolean;
+        browser: string;
+        is_mobile: boolean;
+        is_tablet: boolean;
+    }
     user_agent: string;
 }
