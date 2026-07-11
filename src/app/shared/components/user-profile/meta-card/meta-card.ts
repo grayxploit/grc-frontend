@@ -29,7 +29,9 @@ export class MetaCard implements OnInit {
   showModal = signal<boolean>(false)
   isSubmitting = signal<boolean>(false)
 
-
+  errorMessage = signal<string | null>(null);
+  
+  avatarUploadError = signal<string | null>(null);
   public readonly userService = inject(UserService)
   public readonly profileData: () => User | null = this.userService.userData
   private readonly urlPattern =

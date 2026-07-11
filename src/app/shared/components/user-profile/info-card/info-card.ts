@@ -23,7 +23,7 @@ export class InfoCard implements OnInit {
   
   showModal = signal<boolean>(false)
   isSubmitting = signal<boolean>(false)
-
+  errorMessage = signal<string>('')
   
   public readonly userService = inject(UserService)
   public readonly profileData : () => User | null = this.userService.userData

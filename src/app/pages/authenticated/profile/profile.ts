@@ -50,6 +50,11 @@ export class Profile {
       },
       error: (error) => {
         console.error(error);
+        const err = this.authService.apiService.extractApiErrorMessage(error);
+        console.error("Error message:", err);
+        this.metaCard?.errorMessage.set(err || "Profile update not done");
+        this.infoCard?.errorMessage.set(err || "Profile update not done");
+        this.addressCard?.errorMessage.set(err || "Address update not done");
         this.metaCard?.isSubmitting.set(false);
         this.infoCard?.isSubmitting.set(false);
         this.addressCard?.isSubmitting.set(false);
@@ -66,7 +71,9 @@ export class Profile {
         this.authService.updateAuthUser(response.data);
       },
       error: (error) => {
+        const err = this.authService.apiService.extractApiErrorMessage(error);
         console.error('Error uploading avatar:', error);
+        this.metaCard?.avatarUploadError.set(err || "Avatar upload failed");
       }
     });
   }

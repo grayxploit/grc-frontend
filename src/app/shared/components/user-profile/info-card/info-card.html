@@ -69,7 +69,11 @@
         Update your details to keep your profile up-to-date.
       </p>
     </div>
-
+    @if (errorMessage()) {
+    <div class="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400">
+      {{ errorMessage() }}
+    </div>
+    }
     <form id="userProfileForm" [formGroup]="userProfileForm" class="flex flex-col" (ngSubmit)="onSave()" novalidate>
       <div class="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
 
